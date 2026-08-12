@@ -10,6 +10,10 @@
     return window.BITDGlossary ? window.BITDGlossary.termHTML(termKey, label) : label;
   }
 
+  function typeClassName(typeSite) {
+    return `type-${String(typeSite || 'autre').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   // Marker Factories
   // ──────────────────────────────────────────────────────────────────────────
@@ -318,7 +322,7 @@
     const typeLabels = { 'siege': 'Siège', 'production': 'Production', 'R&D': 'R&D', 'MCO': 'MCO', 'essais': 'Essais', 'services': 'Services', 'autre': 'Autre' };
 
     const typeSummary = Object.entries(typeCounts)
-      .map(([t, n]) => `<span class="etab-type-count"><span class="etab-type-dot type-${t}"></span>${n} ${typeLabels[t] || t}</span>`)
+      .map(([t, n]) => `<span class="etab-type-count"><span class="etab-type-dot ${typeClassName(t)}"></span>${n} ${typeLabels[t] || t}</span>`)
       .join('');
 
     const sectorBadges = company.sectors.map(makeSectorBadge).join(' ');
