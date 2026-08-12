@@ -205,15 +205,15 @@
     title.textContent = company.entreprise;
 
     if (snapshot.statutEtablissements === 'tous') {
-      subtitle.textContent = `${allCompanyEtabs.length} établissements au total · ${regions.size} régions`;
-      counter.textContent = `${company.entreprise} · ${allCompanyEtabs.length} établissements au total`;
+      subtitle.textContent = `${visibleEtabs.length} établissements au total · ${regions.size} régions`;
+      counter.textContent = `${company.entreprise} · ${visibleEtabs.length} établissements au total`;
     } else {
       subtitle.textContent = `${visibleEtabs.length} établissements actifs affichés · ${regions.size} régions`;
       counter.textContent = `${company.entreprise} · ${visibleEtabs.length} établissements actifs affichés`;
     }
 
     if (note) {
-      note.innerHTML = `Statut <span class="term-definition" data-term="etablissement_actif">établissement actif</span> basé sur les colonnes SIRENE disponibles.`;
+      note.innerHTML = `Statut <span class="term-definition" data-term="etablissement_actif">établissement actif</span> basé sur SIRENE et, en l'absence de statut rapproché, sur une preuve corporate validée.`;
       if (window.BITDGlossary) window.BITDGlossary.initRoot(note);
     }
   }
@@ -289,8 +289,8 @@
       if (company.latitude == null || company.longitude == null) return;
       const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
       const marker = L.marker([company.latitude, company.longitude], { icon: companyIcon(color, false) });
-      const allEtabs = window.BITDData.getEtablissementsForCompany(company.id);
-      const activeEtabs = allEtabs.filter((etab) => etab.sirene_is_active);
+      const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
+      const activeEtabs = window.BITDData.getVisibleEstablishments(company.id, 'actifs');
       marker.bindPopup(getNationalPopupHtml(company, activeEtabs.length, allEtabs.length), {
         className: 'bitd-popup',
         maxWidth: 320
@@ -394,8 +394,8 @@
     focusLayer.clearLayers();
 
     const company = snapshot.selectedCompany;
-    const allEtabs = window.BITDData.getEtablissementsForCompany(company.id);
-    const visibleEtabs = window.BITDData.getVisibleEstablishments();
+    const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
+    const visibleEtabs = window.BITDData.getVisibleEstablishments(company.id, snapshot.statutEtablissements);
     const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
     currentFocusColor = color;
     const bounds = [];
@@ -483,8 +483,12 @@
     fillEntrepriseSelect(snapshot);
     syncControlValues(snapshot);
 
-    const visibleEtabs = snapshot.entrepriseId ? window.BITDData.getVisibleEstablishments() : [];
-    const allCompanyEtabs = snapshot.entrepriseId ? window.BITDData.getEtablissementsForCompany(snapshot.entrepriseId) : [];
+    const visibleEtabs = snapshot.entrepriseId
+      ? window.BITDData.getVisibleEstablishments(snapshot.entrepriseId, snapshot.statutEtablissements)
+      : [];
+    const allCompanyEtabs = snapshot.entrepriseId
+      ? window.BITDData.getVisibleEstablishments(snapshot.entrepriseId, 'tous')
+      : [];
     setContext(snapshot, visibleEtabs, allCompanyEtabs);
 
     if (snapshot.entrepriseId && snapshot.selectedCompany) {
