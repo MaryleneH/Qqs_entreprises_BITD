@@ -5,14 +5,13 @@ page-layout: full
 
 ```{=html}
 <div class="page-intro">
-  <p>Tableau filtrable des 30 entreprises de la BITD française retenues pour cette vue 2026. Les valeurs <code>n.c.</code> sont volontairement conservées lorsque la source publique n'expose pas de donnée comparable. Cliquez sur <strong>N sites →</strong> pour visualiser les implantations sur la carte.</p>
+  <p>Tableau filtrable des 30 entreprises suivies dans le panorama <span class="term-definition" data-term="bitd">BITD</span>. Les valeurs <code>n.c.</code> restent affichées lorsque la source publique ne publie pas un indicateur comparable. Cliquez sur <strong>N sites →</strong> pour ouvrir le focus cartographique d'une entreprise, ou consultez <a href="comprendre.html">Comprendre les données</a> pour les définitions financières et industrielles.</p>
 </div>
 
 <div class="table-shell">
   <div class="table-toolbar" id="table-toolbar">
     <input id="table-search" type="search" placeholder="Rechercher une entreprise, un site, un programme…" aria-label="Recherche tableau" />
     <select id="table-sector"><option value="all">Tous les secteurs</option></select>
-    <select id="table-risk"><option value="all">Tous les niveaux de risque</option></select>
   </div>
   <div class="table-meta">
     <span id="table-count">Chargement…</span>
@@ -23,15 +22,16 @@ page-layout: full
       <thead>
         <tr>
           <th data-sort="entreprise">Entreprise</th>
-          <th data-sort="categorie">Catégorie</th>
-          <th data-sort="secteurs">Secteurs</th>
-          <th data-sort="siege_region">Région siège</th>
-          <th data-sort="effectif">Effectif</th>
-          <th data-sort="ca_defense">CA Défense / proxy</th>
-          <th data-sort="risque_fournisseur">Risque fournisseur</th>
-          <th data-sort="criticite_souveraine">Criticité souveraine</th>
-          <th>Programmes</th>
-          <th>Implantations</th>
+          <th data-sort="specialite">Spécialité</th>
+          <th data-sort="secteurs">Secteur</th>
+          <th data-sort="siege_region">Siège</th>
+          <th data-sort="implantations_count">Implantations</th>
+          <th data-sort="effectif">Effectifs</th>
+          <th data-sort="ca_defense">CA / <span class="term-definition" data-term="ca_defense">CA Défense</span></th>
+          <th data-sort="carnet_commandes"><span class="term-definition" data-term="carnet_commandes">Carnet de commandes</span></th>
+          <th data-sort="financial_indicator_sort">Indicateur financier</th>
+          <th>Programmes phares</th>
+          <th>Site officiel</th>
         </tr>
       </thead>
       <tbody id="entreprises-table-body"></tbody>

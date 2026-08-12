@@ -1,0 +1,221 @@
+{
+  "bitd": {
+    "term": "BITD",
+    "short": "Base industrielle et technologique de défense.",
+    "long": "Ensemble des entreprises, compétences, technologies et capacités industrielles participant à la conception, à la production et au maintien des équipements nécessaires aux forces armées.",
+    "category": "Industrie de Défense"
+  },
+  "dga": {
+    "term": "DGA",
+    "short": "Direction générale de l'armement.",
+    "long": "Administration du ministère des Armées chargée notamment de préparer, acquérir et évaluer les systèmes d'armes destinés aux forces françaises et de contribuer à la politique industrielle de défense.",
+    "category": "Industrie de Défense"
+  },
+  "lpm": {
+    "term": "LPM",
+    "short": "Loi de programmation militaire.",
+    "long": "Loi fixant pour plusieurs années les grandes orientations de la politique de défense et la trajectoire des moyens financiers associés.",
+    "category": "Industrie de Défense"
+  },
+  "maitre_oeuvre_industriel": {
+    "term": "Maître d'œuvre industriel",
+    "short": "Entreprise responsable de la conception et de l'intégration d'un système complexe.",
+    "long": "Entreprise responsable de la conception et de l'intégration d'un système complexe, ainsi que de la coordination de nombreux équipementiers et sous-traitants.",
+    "category": "Industrie de Défense"
+  },
+  "equipementier": {
+    "term": "Équipementier",
+    "short": "Fournisseur d'un équipement, d'un sous-système ou d'un composant.",
+    "long": "Entreprise fournissant un équipement, un sous-système ou un composant intégré dans un système plus large.",
+    "category": "Industrie de Défense"
+  },
+  "eti": {
+    "term": "ETI",
+    "short": "Entreprise de taille intermédiaire.",
+    "long": "Catégorie statistique d'entreprise située entre la PME et le grand groupe.",
+    "category": "Industrie de Défense"
+  },
+  "mco": {
+    "term": "MCO",
+    "short": "Maintien en condition opérationnelle.",
+    "long": "Ensemble des actions permettant de conserver ou de remettre un matériel militaire en état de remplir les missions attendues.",
+    "category": "Industrie de Défense"
+  },
+  "systemier": {
+    "term": "Systémier",
+    "short": "Entreprise capable de concevoir et de livrer un système complexe complet.",
+    "long": "Entreprise capable de concevoir, intégrer et livrer un système complexe complet.",
+    "category": "Industrie de Défense"
+  },
+  "souverainete_industrielle": {
+    "term": "Souveraineté industrielle",
+    "short": "Capacité à maîtriser des technologies et moyens industriels stratégiques.",
+    "long": "Capacité à maîtriser sur le territoire national ou dans un cadre maîtrisé les technologies, compétences ou moyens industriels nécessaires à certaines fonctions stratégiques.",
+    "category": "Industrie de Défense"
+  },
+  "chiffre_affaires": {
+    "term": "Chiffre d'affaires",
+    "short": "Montant des ventes de biens et services réalisées sur une période.",
+    "long": "Montant des ventes de biens et services réalisées par l'entreprise sur une période.",
+    "category": "Finance"
+  },
+  "ca_defense": {
+    "term": "Chiffre d'affaires Défense",
+    "short": "Part du chiffre d'affaires attribuable aux activités de défense.",
+    "long": "Part du chiffre d'affaires attribuable aux activités de défense lorsque l'entreprise publie cette ventilation. Tous les groupes ne publient pas cette information selon le même périmètre.",
+    "category": "Finance"
+  },
+  "carnet_commandes": {
+    "term": "Carnet de commandes",
+    "short": "Valeur des commandes déjà enregistrées mais pas encore reconnues en chiffre d'affaires.",
+    "long": "Valeur des commandes enregistrées par l'entreprise mais qui n'ont pas encore été intégralement reconnues en chiffre d'affaires.",
+    "category": "Finance"
+  },
+  "book_to_bill": {
+    "term": "Book-to-bill",
+    "short": "Indicateur comparant les nouvelles commandes au chiffre d'affaires.",
+    "long": "Indicateur permettant de comparer les nouvelles commandes reçues au chiffre d'affaires réalisé pendant une même période. Un ratio supérieur à 1 indique généralement que le carnet de commandes augmente.",
+    "formula": "Prises de commandes / chiffre d'affaires",
+    "category": "Finance"
+  },
+  "carnet_ca": {
+    "term": "Carnet / CA",
+    "short": "Ordre de grandeur de la visibilité commerciale exprimée en années de chiffre d'affaires.",
+    "long": "Donne un ordre de grandeur de la visibilité commerciale de l'entreprise exprimée en années de chiffre d'affaires. Il ne correspond pas nécessairement au nombre exact d'années de production, car le calendrier de livraison peut être irrégulier.",
+    "formula": "Carnet de commandes / chiffre d'affaires annuel",
+    "category": "Finance"
+  },
+  "ebitda": {
+    "term": "EBITDA",
+    "short": "Résultat opérationnel avant intérêts, impôts, amortissements et dépréciations.",
+    "long": "Indicateur de performance opérationnelle avant certains éléments financiers et comptables. Il ne doit pas être présenté comme strictement équivalent à l'EBE français.",
+    "category": "Finance"
+  },
+  "ebit": {
+    "term": "EBIT",
+    "short": "Résultat avant intérêts et impôts.",
+    "long": "Indicateur proche de l'EBITDA mais tenant déjà compte des amortissements et de certaines charges d'exploitation.",
+    "category": "Finance"
+  },
+  "marge_ebitda": {
+    "term": "Marge EBITDA",
+    "short": "Part de l'EBITDA dans le chiffre d'affaires.",
+    "long": "Permet de comparer la performance opérationnelle à la taille de l'activité.",
+    "formula": "EBITDA / chiffre d'affaires",
+    "category": "Finance"
+  },
+  "free_cash_flow": {
+    "term": "Free Cash Flow",
+    "short": "Flux de trésorerie disponible après les dépenses nécessaires à l'activité et aux investissements.",
+    "long": "Flux de trésorerie disponible après les dépenses nécessaires au fonctionnement et aux investissements selon la définition retenue par l'entreprise. La définition exacte peut varier d'un groupe à l'autre.",
+    "category": "Finance"
+  },
+  "dette_nette": {
+    "term": "Dette nette",
+    "short": "Endettement financier diminué de la trésorerie disponible.",
+    "long": "Endettement financier diminué de la trésorerie et des équivalents de trésorerie selon la définition retenue par l'entreprise.",
+    "category": "Finance"
+  },
+  "supply_chain": {
+    "term": "Supply chain",
+    "short": "Ensemble des fournisseurs et opérations nécessaires à la fabrication d'un produit.",
+    "long": "Ensemble des fournisseurs, flux de matières, composants, équipements et opérations nécessaires à la fabrication d'un produit.",
+    "category": "Production"
+  },
+  "montee_en_cadence": {
+    "term": "Montée en cadence",
+    "short": "Augmentation progressive du rythme de production.",
+    "long": "Augmentation progressive du rythme de production d'un équipement ou d'une munition.",
+    "category": "Production"
+  },
+  "mono_source": {
+    "term": "Mono-source",
+    "short": "Situation où un composant ou savoir-faire provient d'une seule source qualifiée.",
+    "long": "Situation dans laquelle un composant, produit ou savoir-faire est fourni par une seule source qualifiée.",
+    "category": "Production"
+  },
+  "qualification": {
+    "term": "Qualification",
+    "short": "Vérification de conformité technique, industrielle ou réglementaire.",
+    "long": "Processus permettant de vérifier qu'un composant, équipement ou fournisseur répond aux exigences techniques, industrielles ou réglementaires attendues.",
+    "category": "Production"
+  },
+  "scorpion": {
+    "term": "SCORPION",
+    "short": "Programme français de modernisation du combat terrestre.",
+    "long": "Programme français de modernisation du combat terrestre associant notamment véhicules, systèmes d'information et numérisation du champ de bataille.",
+    "category": "Programmes"
+  },
+  "scaf": {
+    "term": "SCAF",
+    "short": "Système de combat aérien du futur.",
+    "long": "Programme franco-germano-espagnol de système de combat aérien du futur articulé autour d'un avion de nouvelle génération et de systèmes connectés.",
+    "category": "Programmes"
+  },
+  "mgcs": {
+    "term": "MGCS",
+    "short": "Main Ground Combat System.",
+    "long": "Programme de char de combat du futur destiné à succéder à des générations actuelles de chars lourds européens.",
+    "category": "Programmes"
+  },
+  "snle_3g": {
+    "term": "SNLE 3G",
+    "short": "Sous-marins nucléaires lanceurs d'engins de troisième génération.",
+    "long": "Programme français de sous-marins nucléaires lanceurs d'engins de troisième génération destinés à renouveler la composante océanique de la dissuasion.",
+    "category": "Programmes"
+  },
+  "pa_ng": {
+    "term": "PA-NG",
+    "short": "Porte-avions de nouvelle génération.",
+    "long": "Programme français de porte-avions de nouvelle génération destiné à succéder au Charles de Gaulle.",
+    "category": "Programmes"
+  },
+  "fdi": {
+    "term": "FDI",
+    "short": "Frégate de défense et d'intervention.",
+    "long": "Programme de frégates de défense et d'intervention de la Marine nationale.",
+    "category": "Programmes"
+  },
+  "barracuda": {
+    "term": "Barracuda",
+    "short": "Programme de sous-marins nucléaires d'attaque de nouvelle génération.",
+    "long": "Programme français de sous-marins nucléaires d'attaque de classe Suffren.",
+    "category": "Programmes"
+  },
+  "rafale": {
+    "term": "Rafale",
+    "short": "Avion de combat multirôle de Dassault Aviation.",
+    "long": "Avion de combat multirôle utilisé par les forces françaises et plusieurs clients export.",
+    "category": "Programmes"
+  },
+  "m51": {
+    "term": "M51",
+    "short": "Missile balistique stratégique mer-sol.",
+    "long": "Missile balistique stratégique mer-sol équipant la composante océanique de la dissuasion française.",
+    "category": "Programmes"
+  },
+  "aster": {
+    "term": "Aster",
+    "short": "Famille de missiles sol-air et anti-aériens.",
+    "long": "Famille de missiles sol-air utilisée pour la défense aérienne navale et terrestre.",
+    "category": "Programmes"
+  },
+  "vl_mica": {
+    "term": "VL MICA",
+    "short": "Système de défense aérienne à courte et moyenne portée.",
+    "long": "Système de défense aérienne basé sur le missile MICA en version verticale.",
+    "category": "Programmes"
+  },
+  "mrtt": {
+    "term": "MRTT",
+    "short": "Avion ravitailleur multirôle.",
+    "long": "Avion ravitailleur multirôle utilisé pour le ravitaillement en vol et le transport stratégique.",
+    "category": "Programmes"
+  },
+  "a400m": {
+    "term": "A400M",
+    "short": "Avion de transport militaire européen.",
+    "long": "Avion de transport militaire européen destiné aux missions logistiques, tactiques et stratégiques.",
+    "category": "Programmes"
+  }
+}
