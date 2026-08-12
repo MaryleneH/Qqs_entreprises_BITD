@@ -4,6 +4,8 @@
   let focusLayer;
   let activeSiteId = null;
   const markerIndex = new Map();
+  const markerData = new Map();
+  let currentFocusColor = null;
 
   const FRANCE_VIEW = { center: [46.603354, 1.888334], zoom: 5.6 };
 
@@ -27,8 +29,8 @@
   }
 
   function bitdMessage(etab) {
-    if (etab.bitd_status === 'confirme') return 'Activité BITD documentée';
-    if (etab.bitd_status === 'a_confirmer') return 'Activité BITD locale à documenter';
+    if (etab.bitd_status === 'confirme') return '✓ Activité BITD documentée';
+    if (etab.bitd_status === 'a_confirmer') return '◎ Activité BITD locale à documenter';
     if (etab.bitd_status === 'non_identifie') return 'Activité BITD locale non identifiée dans les sources disponibles.';
     return '';
   }
@@ -36,9 +38,29 @@
   function precisionMessage(etab) {
     const precision = (etab.precision_coordonnees || '').toLowerCase();
     if (precision.includes('ville') || precision.includes('commune')) {
-      return 'Localisation approximative à l’échelle de la commune';
+      return "Localisation approximative à l\u2019échelle de la commune";
     }
     return '';
+  }
+
+  // --- SVG icons for site types ---
+  const SVG_ICONS = {
+    production: '<svg viewBox="0 0 12 12" width="9" height="9" fill="currentColor"><path d="M1 10V5l3-2v2l3-2v2l3-2v7H1zm1-1h8V6.5L8 8V6L5 8V6L2 7.5V9z"/></svg>',
+    recherche: '<svg viewBox="0 0 12 12" width="9" height="9" fill="currentColor"><path d="M5 2a3 3 0 100 6 3 3 0 000-6zm-1 3a2 2 0 114 0 2 2 0 01-4 0zm5.3 2.3l2.4 2.4-.7.7-2.4-2.4.7-.7z"/></svg>',
+    mco: '<svg viewBox="0 0 12 12" width="9" height="9" fill="currentColor"><path d="M8.5 1.5a1.5 1.5 0 00-1.06.44L6 3.38 2.5 6.88 2 10l3.12-.5 3.5-3.5 1.44-1.44A1.5 1.5 0 008.5 1.5zm-4.4 6.25l-.6.6-.9.15.15-.9.6-.6.75.75z"/></svg>',
+    essais: '<svg viewBox="0 0 12 12" width="9" height="9" fill="currentColor"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="6" cy="6" r="0.8"/></svg>',
+    services: '<svg viewBox="0 0 12 12" width="9" height="9" fill="currentColor"><path d="M2 10V5.5L6 2l4 3.5V10H7.5V7h-3v3H2z"/></svg>',
+    default: ''
+  };
+
+  function getTypeSvg(typeSite) {
+    const t = (typeSite || '').toLowerCase();
+    if (t.includes('production') || t.includes('fabrication') || t.includes('usine')) return SVG_ICONS.production;
+    if (t.includes('r&d') || t.includes('recherche') || t.includes('bureau') || t.includes('labo')) return SVG_ICONS.recherche;
+    if (t.includes('mco') || t.includes('maintenance') || t.includes('entretien')) return SVG_ICONS.mco;
+    if (t.includes('essai') || t.includes('test')) return SVG_ICONS.essais;
+    if (t.includes('service') || t.includes('siège') || t.includes('siege') || t.includes('quartier')) return SVG_ICONS.services;
+    return SVG_ICONS.default;
   }
 
   function ensureMap() {
@@ -65,7 +87,12 @@
       const div = L.DomUtil.create('div', 'map-legend map-legend--simple');
       div.innerHTML = `
         <div class="legend-title">Légende</div>
-        <div class="legend-item"><span class="legend-symbol legend-symbol--siege">★</span><span>Siège</span></div>
+        <div class="legend-item">
+          <span class="legend-symbol legend-symbol--siege">
+            <svg viewBox="0 0 14 14" width="12" height="12" fill="rgba(245,246,242,0.9)"><path d="M7 1l1.6 4.4H14l-3.7 2.7 1.4 4.4L7 9.8 2.3 12.5l1.4-4.4L0 5.4h5.4z"/></svg>
+          </span>
+          <span>Siège</span>
+        </div>
         <div class="legend-item"><span class="legend-symbol legend-symbol--active">●</span><span>Établissement actif</span></div>
         <div class="legend-item"><span class="legend-symbol legend-symbol--inactive">○</span><span>Établissement inactif</span></div>
       `;
@@ -84,47 +111,63 @@
     });
   }
 
-  function siteIcon(color, etab, selected) {
-    const isInactive = !etab.sirene_is_active;
-    const isSiege = etab.est_siege;
-    const symbol = isSiege ? '★' : (isInactive ? '○' : '●');
-    const size = isSiege ? (selected ? 26 : 22) : (selected ? 18 : (isInactive ? 13 : 15));
+  function siegeIcon(color, selected) {
+    const outer = selected ? 44 : 36;
+    const svgSize = selected ? 15 : 12;
     return L.divIcon({
       className: '',
-      html: `<span class="marker-site ${isSiege ? 'marker-site--siege' : ''} ${isInactive ? 'marker-site--inactive' : 'marker-site--active'} ${selected ? 'is-selected' : ''}" style="--marker-color:${color};width:${size}px;height:${size}px"><span>${symbol}</span></span>`,
-      iconSize: [size + 8, size + 8],
-      iconAnchor: [(size + 8) / 2, (size + 8) / 2]
+      html: `<div class="marker-siege${selected ? ' is-selected' : ''}" style="--mc:${color};width:${outer}px;height:${outer}px"><svg viewBox="0 0 20 20" width="${svgSize}" height="${svgSize}" fill="white" stroke="none"><path d="M10 1l2.4 6.6H19l-5.5 4 2.1 6.6L10 14 4.4 18.2l2.1-6.6L1 7.6h6.6z"/></svg></div>`,
+      iconSize: [outer, outer],
+      iconAnchor: [outer / 2, outer / 2]
     });
+  }
+
+  function etabIcon(color, etab, selected) {
+    const isInactive = !etab.sirene_is_active;
+    const typeSvg = getTypeSvg(etab.type_site);
+    const cls = isInactive ? 'marker-etab--inactive' : 'marker-etab--active';
+    const size = isInactive ? (selected ? 18 : 14) : (selected ? 22 : 18);
+    const style = isInactive ? `width:${size}px;height:${size}px` : `--mc:${color};width:${size}px;height:${size}px`;
+    return L.divIcon({
+      className: '',
+      html: `<div class="${cls}${selected ? ' is-selected' : ''}" style="${style}">${typeSvg}</div>`,
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2]
+    });
+  }
+
+  // Keep legacy siteIcon for any remaining references
+  function siteIcon(color, etab, selected) {
+    if (etab.est_siege) return siegeIcon(color, selected);
+    return etabIcon(color, etab, selected);
   }
 
   function getPopupHtml(etab, company) {
     const title = escapeHtml(company?.entreprise || etab.entreprise || 'Entreprise');
     const city = escapeHtml(etab.ville || etab.nom_site || 'Ville non renseignée');
-    const type = escapeHtml(etab.type_site || 'Établissement SIRENE');
+    const type = escapeHtml(etab.type_site || (etab.est_siege ? 'Siège' : 'Établissement SIRENE'));
     const region = escapeHtml(etab.region || 'Région non renseignée');
     const dep = escapeHtml(etab.departement || '');
     const activityLabel = escapeHtml(etab.activite || etab.ape_label || 'Non documentée');
     const programmes = (etab.programmes || []).slice(0, 4).map(escapeHtml).join(' · ');
     const sireneLabel = normalizeStatusLabel(etab.sirene_status_label);
-    const sireneLine = etab.sirene_is_active ? 'SIRENE : établissement actif' : `SIRENE : ${escapeHtml(sireneLabel)}`;
+    const sireneLine = etab.sirene_is_active ? '● Établissement actif' : `○ ${escapeHtml(sireneLabel)}`;
     const bitdLine = bitdMessage(etab);
     const precisionLine = precisionMessage(etab);
     const inactiveBadge = etab.sirene_is_active ? '' : '<div class="popup-badge popup-badge--inactive">ÉTABLISSEMENT FERMÉ / INACTIF</div>';
-    const siretLine = etab.siret_value ? `<div><strong>SIRET :</strong> ${escapeHtml(etab.siret_value)}</div>` : '';
 
     return `
       <article class="site-popup">
-        <h3>${title}</h3>
-        <p class="site-popup__city"><strong>${city}</strong>${etab.est_siege ? ' <span class="popup-badge popup-badge--siege">★ SIÈGE</span>' : ''}</p>
+        <h3>${title}${etab.est_siege ? ' <span class="popup-badge popup-badge--siege">★ SIÈGE</span>' : ''}</h3>
+        <p class="site-popup__city">${city}</p>
         <p class="site-popup__type">${type}</p>
         <p class="site-popup__geo">📍 ${dep ? `${dep} · ` : ''}${region}</p>
         ${inactiveBadge}
-        <div class="site-popup__section"><strong>Activité</strong><br>${activityLabel}</div>
-        ${programmes ? `<div class="site-popup__section"><strong>Programmes</strong><br>${programmes}</div>` : ''}
+        <div class="site-popup__section"><strong>Activité</strong>${activityLabel}</div>
+        ${programmes ? `<div class="site-popup__section"><strong>Programmes</strong>${programmes}</div>` : ''}
         <div class="site-popup__meta">${escapeHtml(sireneLine)}</div>
         ${bitdLine ? `<div class="site-popup__meta">${escapeHtml(bitdLine)}</div>` : ''}
         ${precisionLine ? `<div class="site-popup__meta">${escapeHtml(precisionLine)}</div>` : ''}
-        ${siretLine ? `<div class="site-popup__meta">${siretLine}</div>` : ''}
       </article>
     `;
   }
@@ -133,11 +176,10 @@
     return `
       <article class="site-popup">
         <h3>${escapeHtml(company.entreprise)}</h3>
-        <p class="site-popup__city"><strong>${escapeHtml(company.siege_ville || 'Siège')}</strong></p>
+        <p class="site-popup__city">${escapeHtml(company.siege_ville || 'Siège')}</p>
         <p class="site-popup__geo">📍 ${escapeHtml(company.siege_region || '')}</p>
-        <div class="site-popup__meta">${activeCount} établissement${activeCount > 1 ? 's' : ''} actif${activeCount > 1 ? 's' : ''}</div>
-        ${totalCount !== activeCount ? `<div class="site-popup__meta">${totalCount} établissement${totalCount > 1 ? 's' : ''} au total</div>` : ''}
-        <div class="site-popup__meta">Cliquez pour passer en focus entreprise</div>
+        <div class="site-popup__section"><strong>Implantations</strong>${activeCount} établissement${activeCount > 1 ? 's' : ''} actif${activeCount > 1 ? 's' : ''}${totalCount !== activeCount ? ` · ${totalCount} au total` : ''}</div>
+        <div class="site-popup__meta" style="margin-top:0.5rem;font-style:italic;">Cliquez pour explorer les établissements</div>
       </article>
     `;
   }
@@ -210,7 +252,19 @@
   }
 
   function setActiveSite(siteId) {
+    const prevId = activeSiteId;
     activeSiteId = siteId || null;
+
+    // Refresh icon for previous and new active marker
+    [prevId, activeSiteId].forEach((sid) => {
+      if (!sid) return;
+      const marker = markerIndex.get(sid);
+      const etab = markerData.get(sid);
+      if (!marker || !etab || !currentFocusColor) return;
+      const isSelected = sid === activeSiteId;
+      marker.setIcon(etab.est_siege ? siegeIcon(currentFocusColor, isSelected) : etabIcon(currentFocusColor, etab, isSelected));
+    });
+
     const panel = document.getElementById('company-panel-content');
     if (!panel) return;
     panel.querySelectorAll('.site-list-item').forEach((item) => {
@@ -222,7 +276,9 @@
     ensureMap();
     if (!map) return;
     markerIndex.clear();
+    markerData.clear();
     activeSiteId = null;
+    currentFocusColor = null;
     nationalLayer.clearLayers();
     focusLayer.clearLayers();
 
@@ -332,6 +388,8 @@
     if (!map || !snapshot.selectedCompany) return;
 
     markerIndex.clear();
+    markerData.clear();
+    activeSiteId = null;
     nationalLayer.clearLayers();
     focusLayer.clearLayers();
 
@@ -339,11 +397,35 @@
     const allEtabs = window.BITDData.getEtablissementsForCompany(company.id);
     const visibleEtabs = window.BITDData.getVisibleEstablishments();
     const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
+    currentFocusColor = color;
     const bounds = [];
 
+    // Find siege
+    const siegeEtab = visibleEtabs.find((e) => e.est_siege);
+
+    // Draw constellation lines FIRST (so markers appear on top)
+    if (siegeEtab && siegeEtab.latitude != null && siegeEtab.longitude != null) {
+      visibleEtabs.forEach((etab) => {
+        if (etab === siegeEtab || etab.latitude == null || etab.longitude == null) return;
+        const lineOpacity = etab.sirene_is_active ? 0.28 : 0.13;
+        L.polyline(
+          [[siegeEtab.latitude, siegeEtab.longitude], [etab.latitude, etab.longitude]],
+          {
+            color: color,
+            weight: 1.2,
+            opacity: lineOpacity,
+            dashArray: '4 6',
+            interactive: false
+          }
+        ).addTo(focusLayer);
+      });
+    }
+
+    // Draw establishment markers
     visibleEtabs.forEach((etab) => {
       if (etab.latitude == null || etab.longitude == null) return;
-      const marker = L.marker([etab.latitude, etab.longitude], { icon: siteIcon(color, etab, false) });
+      const icon = etab.est_siege ? siegeIcon(color, false) : etabIcon(color, etab, false);
+      const marker = L.marker([etab.latitude, etab.longitude], { icon, zIndexOffset: etab.est_siege ? 1000 : 0 });
       marker.bindPopup(getPopupHtml(etab, company), {
         className: 'bitd-popup',
         maxWidth: 360,
@@ -354,6 +436,7 @@
       });
       marker.addTo(focusLayer);
       markerIndex.set(etab.site_id, marker);
+      markerData.set(etab.site_id, etab);
       bounds.push([etab.latitude, etab.longitude]);
     });
 
