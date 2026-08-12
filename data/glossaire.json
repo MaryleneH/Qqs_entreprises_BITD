@@ -217,5 +217,35 @@
     "short": "Avion de transport militaire européen.",
     "long": "Avion de transport militaire européen destiné aux missions logistiques, tactiques et stratégiques.",
     "category": "Programmes"
+  },
+  "etablissement": {
+    "term": "Établissement",
+    "short": "Unité géographiquement localisée où une entreprise exerce une activité.",
+    "long": "Un établissement est une unité de production ou de service localisée en un lieu précis. Une même entreprise peut avoir plusieurs établissements sur le territoire.",
+    "category": "Données territoriales"
+  },
+  "sirene": {
+    "term": "SIRENE",
+    "short": "Répertoire géré par l’Insee recensant les entreprises et leurs établissements en France.",
+    "long": "SIRENE (Système national d’identification et du répertoire des entreprises et de leurs établissements) est le répertoire officiel qui référence les unités légales et leurs établissements.",
+    "category": "Données territoriales"
+  },
+  "siret": {
+    "term": "SIRET",
+    "short": "Identifiant à 14 chiffres attribué à chaque établissement d’une entreprise.",
+    "long": "Le SIRET identifie un établissement précis. Il combine le numéro SIREN de l’entreprise et un numéro interne de classement de l’établissement (NIC).",
+    "category": "Données territoriales"
+  },
+  "code_ape": {
+    "term": "Code APE",
+    "short": "Code d’activité principale attribué par l’Insee.",
+    "long": "Le code APE (ou NAF) décrit l’activité principale déclarée d’un établissement ou d’une entreprise selon la nomenclature statistique française.",
+    "category": "Données territoriales"
+  },
+  "etablissement_actif": {
+    "term": "Établissement actif",
+    "short": "Établissement enregistré comme administrativement actif dans SIRENE à la date de référence.",
+    "long": "Établissement enregistré comme administrativement actif dans le répertoire SIRENE à la date de référence des données. Ce statut ne signifie pas nécessairement que le site exerce une activité industrielle de Défense.",
+    "category": "Données territoriales"
   }
 }

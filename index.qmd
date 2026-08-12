@@ -1,105 +1,53 @@
 ---
-title: "Tableau de bord BITD France"
+title: "BITD France"
 page-layout: full
 title-block: false
 ---
 
 ```{=html}
-<div class="hero-panel">
-  <span class="hero-kicker">✦ Géographie industrielle · 30 acteurs suivis</span>
-  <h1><span class="term-definition" data-term="bitd">BITD</span> France · géographie, activités et indicateurs publics</h1>
-  <p>Panorama statique construit à partir de sources publiques consolidées au 12 août 2026. Le dashboard montre où sont implantées les entreprises et leurs établissements industriels, ce qu'elles produisent et quels indicateurs économiques publics permettent d'en lire la dimension.</p>
-  <div class="hero-meta">
-    <span class="chip">100 % statique</span>
-    <span class="chip">Carte Leaflet</span>
-    <span class="chip">Filtres territoriaux</span>
-    <a class="chip chip-link" href="comprendre.html">? Comprendre les indicateurs</a>
-  </div>
-</div>
+<section class="explorer-shell" aria-labelledby="explorer-title">
+  <header class="explorer-header">
+    <h1 id="explorer-title">BITD France</h1>
+    <p class="explorer-subtitle">Entreprises &amp; implantations industrielles</p>
+    <p class="explorer-intro">Explorez les établissements français des 30 principaux acteurs de la Base industrielle et technologique de défense.</p>
+  </header>
 
-<div class="kpi-grid" id="kpi-grid">
-  <div class="kpi-card"><div class="kpi-label">Acteurs référencés</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-note" id="kpi-total-note">Chargement des données…</div></div>
-  <div class="kpi-card"><div class="kpi-label">Implantations cartographiées</div><div class="kpi-value" id="kpi-sites">—</div><div class="kpi-note" id="kpi-sites-note">Sièges et établissements industriels</div></div>
-  <div class="kpi-card"><div class="kpi-label">Régions représentées</div><div class="kpi-value" id="kpi-regions">—</div><div class="kpi-note" id="kpi-regions-note">Empreinte territoriale visible</div></div>
-  <div class="kpi-card"><div class="kpi-label">Grands domaines industriels</div><div class="kpi-value" id="kpi-sectors">—</div><div class="kpi-note" id="kpi-sectors-note">Aéronautique, naval, terrestre…</div></div>
-  <div class="kpi-card"><div class="kpi-label">Entreprises multi-régionales</div><div class="kpi-value" id="kpi-multiregional">—</div><div class="kpi-note" id="kpi-multiregional-note">Présence dans plus d'une région</div></div>
-</div>
-
-<div class="dashboard-grid">
-  <div>
-    <div class="filter-bar" id="dashboard-filters">
-      <div class="filter-group filter-search">
-        <label for="filter-search">Recherche</label>
-        <input id="filter-search" class="filter-input" type="search" placeholder="Entreprise, programme, établissement…" aria-label="Recherche" />
-      </div>
-      <div class="filter-group">
-        <label for="filter-sector">Secteur</label>
-        <select id="filter-sector" class="filter-select" aria-label="Secteur"><option value="all">Tous les secteurs</option></select>
-      </div>
-      <div class="filter-group">
-        <label for="filter-region">Région d'implantation</label>
-        <select id="filter-region" class="filter-select" aria-label="Région d'implantation"><option value="all">Toutes les régions</option></select>
-      </div>
-      <button type="button" id="filter-reset" class="btn-reset">Réinitialiser</button>
+  <section class="explorer-controls" aria-label="Contrôles d'exploration">
+    <div class="control-group control-group--wide">
+      <label for="entreprise-select">Entreprise</label>
+      <select id="entreprise-select" class="explorer-select" aria-label="Sélection de l'entreprise">
+        <option value="">Toutes les entreprises</option>
+      </select>
     </div>
 
-    <div class="surface-card map-stage">
-      <div class="map-mode-bar" role="group" aria-label="Mode d'affichage de la carte">
-        <span class="map-mode-label">Vue</span>
-        <button id="mode-national" class="map-mode-btn active" type="button" title="Afficher les 30 sièges sur la carte de France">
-          <span class="mode-icon">🗺</span> France — sièges
-        </button>
-        <button id="mode-focus" class="map-mode-btn" type="button" title="Afficher les implantations de l'entreprise sélectionnée" disabled>
-          <span class="mode-icon">🔍</span> Implantations
-        </button>
-      </div>
-      <div id="bitd-map" aria-label="Carte des entreprises BITD"></div>
-      <div class="map-side-panel" id="map-side-panel" aria-live="polite">
-        <button class="close-panel" id="close-map-panel" type="button" aria-label="Fermer le panneau">×</button>
-        <div id="map-side-panel-content">
-          <h3>Sélection carte</h3>
-          <p class="small-note">Cliquez sur un siège pour basculer sur la fiche entreprise puis sur ses implantations françaises.</p>
-        </div>
+    <div class="control-group">
+      <span id="etabs-label">Établissements</span>
+      <div class="segmented" role="group" aria-labelledby="etabs-label">
+        <button type="button" class="segmented-btn is-active" data-etab-filter="actifs" aria-pressed="true">Actifs uniquement</button>
+        <button type="button" class="segmented-btn" data-etab-filter="tous" aria-pressed="false">Tous</button>
       </div>
     </div>
-  </div>
 
-  <div class="analysis-panel" id="analysis-panel">
-    <div class="panel-block">
-      <h2 class="panel-title">Lecture d'ensemble</h2>
-      <p class="small-note" id="analysis-summary">Chargement des données…</p>
-    </div>
-    <div class="panel-block">
-      <h3 class="section-hand">Top secteurs visibles</h3>
-      <div class="list-compact" id="analysis-sectors"></div>
-    </div>
-    <div class="panel-block">
-      <h3 class="section-hand">Régions les plus représentées</h3>
-      <div class="list-compact" id="analysis-regions"></div>
-    </div>
-    <div class="panel-block">
-      <h3 class="section-hand">Programmes récurrents</h3>
-      <div class="list-compact" id="analysis-programs"></div>
-    </div>
-    <div class="panel-block">
-      <h3 class="section-hand">Filtres actifs</h3>
-      <div id="analysis-filters" class="hero-meta"></div>
-    </div>
-  </div>
-</div>
+    <div class="control-summary" id="site-count" aria-live="polite">30 entreprises · Vue nationale</div>
+  </section>
 
-<script>
-document.addEventListener('bitd:company-selected', function() {
-  var btn = document.getElementById('mode-focus');
-  if (btn) { btn.disabled = false; btn.classList.add('active'); }
-  var btnN = document.getElementById('mode-national');
-  if (btnN) btnN.classList.remove('active');
-});
-document.addEventListener('bitd:company-cleared', function() {
-  var btn = document.getElementById('mode-focus');
-  if (btn) { btn.disabled = true; btn.classList.remove('active'); }
-  var btnN = document.getElementById('mode-national');
-  if (btnN) btnN.classList.add('active');
-});
-</script>
+  <section class="map-context" aria-live="polite">
+    <h2 id="map-context-title">30 entreprises de la BITD</h2>
+    <p id="map-context-subtitle">Sélectionnez une entreprise pour explorer ses établissements.</p>
+    <p id="map-context-note" class="small-note"></p>
+  </section>
+
+  <section class="explorer-grid">
+    <div class="explorer-map-wrap surface-card">
+      <div id="bitd-map" aria-label="Carte des entreprises et établissements BITD"></div>
+    </div>
+
+    <aside class="company-panel surface-card" id="company-panel" aria-live="polite">
+      <div id="company-panel-content">
+        <h3>Vue nationale</h3>
+        <p class="small-note">Les 30 sièges des entreprises sont affichés. Sélectionnez une entreprise dans le menu ou cliquez sur un siège pour passer en focus.</p>
+      </div>
+    </aside>
+  </section>
+</section>
 ```
