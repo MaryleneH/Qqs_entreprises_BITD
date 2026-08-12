@@ -669,3 +669,666 @@ main.content { padding: 0 !important; }
 // HANDDRAWN DECORATIVE ELEMENTS
 // =============================================================================
 .annotation { font-family: 'Kalam', cursive; font-size: 0.8rem; font-weight: 300; color: var(--gold); opacity: 0.75; }
+
+// =============================================================================
+// MAP MODE CONTROL BAR
+// =============================================================================
+.map-mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 1rem;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+.map-mode-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 0.2rem;
+}
+.map-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.map-mode-btn:hover:not(:disabled) {
+  border-color: var(--teal);
+  color: var(--teal);
+  background: rgba(95,127,130,0.06);
+}
+.map-mode-btn.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #F5F6F2;
+  font-weight: 600;
+}
+.map-mode-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.mode-icon { font-size: 0.85em; }
+
+// =============================================================================
+// MAP STAGE (updated)
+// =============================================================================
+.map-stage {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  background: var(--card);
+}
+
+// =============================================================================
+// MAP SIDE PANEL — FOCUS VIEW
+// =============================================================================
+
+// Back button
+.btn-back-national {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(245,246,242,0.82);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-back-national:hover {
+  background: rgba(255,255,255,0.14);
+  color: #F5F6F2;
+}
+
+// Focus KPI grid
+.focus-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+.focus-kpi {
+  background: rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  text-align: center;
+}
+.focus-kpi-val {
+  font-family: 'Kalam', cursive;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #F5F6F2;
+  line-height: 1;
+}
+.focus-kpi-lbl {
+  font-size: 0.68rem;
+  color: rgba(245,246,242,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.1rem;
+}
+
+// Établissement type summary
+.etab-type-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+.etab-type-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  color: rgba(245,246,242,0.7);
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+  padding: 0.18rem 0.55rem;
+}
+.etab-type-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.type-siege       { background: var(--gold); }
+.type-production  { background: #4A90D9; }
+.type-R\&D        { background: #8E44AD; }
+.type-MCO         { background: #27AE60; }
+.type-essais      { background: #C0392B; }
+.type-services    { background: #5F7F82; }
+.type-autre       { background: #95A5A6; }
+
+// Établissement list
+.etab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.etab-list::-webkit-scrollbar { width: 3px; }
+.etab-list::-webkit-scrollbar-track { background: transparent; }
+.etab-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+.etab-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  outline: none;
+}
+.etab-list-item:hover,
+.etab-list-item:focus { background: rgba(255,255,255,0.09); }
+.etab-list-item.active { background: rgba(201,154,74,0.15); }
+
+.etab-symbol {
+  font-size: 0.7rem;
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  min-width: 12px;
+}
+.etab-item-body { flex: 1; min-width: 0; }
+.etab-item-body strong { font-size: 0.83rem; color: #F5F6F2; display: block; }
+.etab-item-desc { font-size: 0.7rem; color: rgba(245,246,242,0.55); line-height: 1.35; margin-top: 0.05rem; }
+
+// Siege badge small
+.badge-siege-sm {
+  display: inline-block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  background: rgba(201,154,74,0.25);
+  color: var(--gold);
+  border: 1px solid rgba(201,154,74,0.4);
+  border-radius: 4px;
+  padding: 0 0.35rem;
+  vertical-align: middle;
+  margin-left: 0.3rem;
+}
+
+// Tooltip badges
+.badge-siege-tt {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  background: rgba(201,154,74,0.25);
+  color: var(--gold);
+  border: 1px solid rgba(201,154,74,0.4);
+  border-radius: 4px;
+  padding: 0.08rem 0.4rem;
+  vertical-align: middle;
+}
+.badge-type-tt {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  background: rgba(245,246,242,0.1);
+  color: rgba(245,246,242,0.75);
+  border-radius: 4px;
+  padding: 0.08rem 0.4rem;
+  vertical-align: middle;
+}
+
+// =============================================================================
+// TABLE PAGE — IMPLANTATIONS COLUMN
+// =============================================================================
+.etab-link {
+  display: inline-block;
+  color: var(--teal);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid rgba(95,127,130,0.3);
+  border-radius: 6px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.etab-link:hover {
+  background: rgba(95,127,130,0.1);
+  border-color: var(--teal);
+  text-decoration: none;
+  color: var(--teal);
+}
+
+// =============================================================================
+// CONTRAST FIXES — DARK TEXT ON LIGHT SURFACES
+// =============================================================================
+
+// KPI cards — ensure dark text on white/beige
+.kpi-card .kpi-label { color: var(--text-secondary); }
+.kpi-card .kpi-note  { font-size: 0.68rem; color: var(--text-secondary); }
+.kpi-sublabel        { color: var(--text-secondary); }
+
+// Filter bar — dark text
+.filter-group label { color: var(--text-secondary); }
+.filter-input, .filter-select { color: var(--text) !important; background-color: var(--background) !important; }
+.filter-input::placeholder { color: #8A97A5; }
+.filter-input:focus, .filter-select:focus { color: var(--text) !important; background-color: var(--card) !important; }
+
+// Tooltips — tooltips are on dark navy so white is correct; no fix needed there
+
+// Analysis panel text on white card
+.panel-block .panel-title { color: var(--navy); }
+.panel-block .section-hand { color: var(--navy-secondary); }
+.panel-block .small-note   { color: var(--text-secondary); }
+.list-compact .row         { color: var(--text); }
+
+// Detail list (national panel) — text on white
+.map-side-panel .detail-list .detail-item strong { color: var(--text-secondary); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.map-side-panel .detail-list .detail-item span   { color: var(--text); }
+
+// Hero panel — on light background, use dark text for chips
+.hero-meta .chip {
+  background: rgba(22,32,51,0.08);
+  color: var(--text);
+  border: 1px solid rgba(22,32,51,0.12);
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+.hero-meta .chip.handwritten {
+  font-family: 'Kalam', cursive;
+  color: var(--navy-secondary);
+}
+
+// Nav footer text contrast
+.nav-footer .footer-signature { color: rgba(245,246,242,0.6) !important; }
+
+// Map side panel — always dark background, white text is correct
+.map-side-panel {
+  color: #F5F6F2;
+}
+.map-side-panel h3 { color: #F5F6F2; font-size: 1rem; font-weight: 700; margin-top: 0; }
+.map-side-panel .small-note { color: rgba(245,246,242,0.6); }
+.map-side-panel .detail-list { margin-top: 0.75rem; }
+.map-side-panel .detail-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.75rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  align-items: baseline;
+}
+.map-side-panel .detail-item:last-child { border-bottom: none; }
+.map-side-panel .detail-item strong { color: rgba(245,246,242,0.5); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+.map-side-panel .detail-item span { color: #F5F6F2; font-size: 0.8rem; line-height: 1.4; }
+.map-side-panel .detail-item a { color: var(--gold); }
+
+// =============================================================================
+// BADGE SYSTEM — standardized (all badges must be readable)
+// =============================================================================
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 0.18rem 0.6rem;
+  border-radius: var(--radius-badge);
+  font-size: 0.67rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap;
+}
+.badge--sector {
+  color: #F5F6F2 !important;
+  border-radius: var(--radius-badge);
+}
+// Risk badges on light backgrounds
+.badge--FAIBLE,
+.badge--FAIBLE_À_MODÉRÉ    { background: var(--risk-faible-bg);       color: var(--risk-faible) !important; }
+.badge--MODÉRÉ              { background: var(--risk-modere-bg);       color: var(--risk-modere) !important; }
+.badge--MODÉRÉ_À_SIGNIFICATIF { background: var(--risk-modere-bg);    color: var(--risk-modere) !important; }
+.badge--SIGNIFICATIF,
+.badge--SIGNIFICATIF_À_ÉLEVÉ { background: var(--risk-significatif-bg); color: var(--risk-significatif) !important; }
+.badge--ÉLEVÉ               { background: var(--risk-eleve-bg);        color: var(--risk-eleve) !important; }
+.badge--CRITIQUE            { background: var(--risk-critique-bg);     color: var(--risk-critique) !important; }
+.badge--TRÈS_ÉLEVÉE,
+.badge--IMPORTANTE_À_TRÈS_ÉLEVÉE { background: var(--risk-tres-elevee-bg); color: var(--risk-tres-elevee) !important; }
+.badge--IMPORTANTE          { background: var(--risk-importante-bg);   color: var(--risk-importante) !important; }
+
+// On dark map panel, risk/crit badges get adjusted for visibility
+.map-side-panel .badge--FAIBLE,
+.map-side-panel .badge--FAIBLE_À_MODÉRÉ    { background: rgba(39,174,96,0.2); color: #7ED6A8 !important; }
+.map-side-panel .badge--MODÉRÉ,
+.map-side-panel .badge--MODÉRÉ_À_SIGNIFICATIF { background: rgba(212,134,11,0.2); color: #F0B94A !important; }
+.map-side-panel .badge--SIGNIFICATIF,
+.map-side-panel .badge--SIGNIFICATIF_À_ÉLEVÉ { background: rgba(192,104,26,0.2); color: #E8965A !important; }
+.map-side-panel .badge--ÉLEVÉ               { background: rgba(169,50,38,0.2); color: #E8756A !important; }
+.map-side-panel .badge--CRITIQUE            { background: rgba(123,36,28,0.25); color: #F08080 !important; }
+.map-side-panel .badge--TRÈS_ÉLEVÉE,
+.map-side-panel .badge--IMPORTANTE_À_TRÈS_ÉLEVÉE { background: rgba(107,47,138,0.2); color: #C39DE0 !important; }
+.map-side-panel .badge--IMPORTANTE          { background: rgba(26,82,118,0.2); color: #7EC8E8 !important; }
+
+// Sector badges in panel keep white text (they have colored bg)
+.map-side-panel .badge--sector { color: #F5F6F2 !important; }
+
+// =============================================================================
+// HERO PANEL CONTRAST
+// =============================================================================
+.hero-panel {
+  background: var(--background);
+  padding: 2rem 2rem 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.hero-panel .hero-kicker {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.hero-panel h1 {
+  font-family: 'Kalam', cursive;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.hero-panel p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 720px;
+  line-height: 1.65;
+  margin: 0 0 0.85rem;
+}
+.hero-panel code {
+  background: rgba(22,32,51,0.07);
+  color: var(--navy);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+// =============================================================================
+// DASHBOARD GRID
+// =============================================================================
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.25rem;
+  padding: 0 2rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+@media (max-width: 1200px) { .dashboard-grid { grid-template-columns: 1fr 300px; } }
+@media (max-width: 900px)  { .dashboard-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px)  { .dashboard-grid { padding: 0 1rem 1.5rem; } }
+
+// =============================================================================
+// ANALYSIS PANEL (right column)
+// =============================================================================
+.analysis-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  align-self: start;
+}
+.panel-block {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.panel-block:last-child { border-bottom: none; }
+.panel-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.panel-title::before { content: ''; width: 14px; height: 2px; background: var(--gold); border-radius: 1px; }
+.section-hand {
+  font-family: 'Kalam', cursive;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy-secondary);
+  margin: 0 0 0.5rem;
+}
+.list-compact { display: flex; flex-direction: column; gap: 0.3rem; }
+.list-compact .row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.78rem; color: var(--text);
+}
+.list-compact .row strong { color: var(--navy); font-size: 0.85rem; }
+
+// =============================================================================
+// MAP SIDE PANEL (left map overlay)
+// =============================================================================
+.map-side-panel {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 300px;
+  background: rgba(14,24,40,0.97);
+  backdrop-filter: blur(12px);
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 1.1rem 1.1rem 1.5rem;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.2);
+  transform: translateX(100%);
+  transition: transform 0.22s ease;
+  border-left: 1px solid rgba(255,255,255,0.08);
+}
+.map-side-panel.is-open { transform: translateX(0); }
+.map-side-panel::-webkit-scrollbar { width: 3px; }
+.map-side-panel::-webkit-scrollbar-track { background: transparent; }
+.map-side-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+.close-panel {
+  position: absolute; top: 0.6rem; right: 0.65rem;
+  background: rgba(255,255,255,0.08); border: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  cursor: pointer; color: rgba(245,246,242,0.65);
+  font-size: 13px; display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); line-height: 1;
+}
+.close-panel:hover { background: rgba(255,255,255,0.16); color: #F5F6F2; }
+
+// =============================================================================
+// TABLE PAGE — Page intro
+// =============================================================================
+.page-intro {
+  max-width: 1400px; margin: 0 auto;
+  padding: 1.25rem 2rem 0.5rem;
+  font-size: 0.875rem; color: var(--text-secondary);
+  line-height: 1.65;
+}
+.page-intro code {
+  background: rgba(22,32,51,0.06);
+  color: var(--navy);
+  padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.85em;
+}
+.table-shell {
+  max-width: 1400px; margin: 0 auto;
+  padding: 0 2rem 2rem;
+}
+.table-toolbar {
+  display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+  padding: 0.85rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  border-bottom: none;
+}
+.table-toolbar input, .table-toolbar select {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.83rem;
+  color: var(--text);
+  background: var(--background);
+  outline: none;
+  transition: var(--transition);
+}
+.table-toolbar input:focus, .table-toolbar select:focus {
+  border-color: var(--teal);
+  background: var(--card);
+}
+.table-toolbar input { flex: 2; min-width: 180px; }
+.table-toolbar select { flex: 1; min-width: 140px; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2365707F' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 12px; padding-right: 1.8rem; cursor: pointer; }
+.table-meta {
+  padding: 0.45rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  font-size: 0.75rem; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 0.75rem;
+}
+#entreprises-table {
+  width: 100%; border-collapse: collapse; font-size: 0.82rem;
+  background: var(--card);
+}
+#entreprises-table thead tr {
+  background: var(--background); border-bottom: 2px solid var(--border);
+}
+#entreprises-table thead th {
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+  font-size: 0.66rem; font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.07em;
+  cursor: pointer; user-select: none; white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+#entreprises-table thead th:hover { color: var(--navy); }
+#entreprises-table tbody tr { border-bottom: 1px solid var(--border); transition: var(--transition); }
+#entreprises-table tbody tr:hover { background: rgba(95,127,130,0.04); }
+#entreprises-table tbody tr:last-child { border-bottom: none; }
+#entreprises-table tbody td { padding: 0.6rem 0.9rem; vertical-align: middle; line-height: 1.4; color: var(--text); }
+#entreprises-table tbody td strong { color: var(--navy); }
+#entreprises-table .small-note { font-size: 0.72rem; color: var(--text-secondary); }
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+}
+.table-scroll::-webkit-scrollbar { height: 4px; }
+.table-scroll::-webkit-scrollbar-track { background: var(--background); }
+.table-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+// =============================================================================
+// MOBILE
+// =============================================================================
+@media (max-width: 900px) {
+  .map-side-panel {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    top: auto;
+    width: 100%;
+    max-height: 55vh;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+    transform: translateY(100%);
+    transition: transform 0.22s ease;
+  }
+  .map-side-panel.is-open { transform: translateY(0); }
+  #bitd-map { height: 420px; }
+  .kpi-grid { grid-template-columns: repeat(2,1fr); padding: 1rem; }
+  .hero-panel { padding: 1.5rem 1rem 0.75rem; }
+  .hero-panel h1 { font-size: 1.7rem; }
+  .table-shell { padding: 0 1rem 1.5rem; }
+  .page-intro { padding: 1rem 1rem 0.5rem; }
+  .map-mode-bar { flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  #bitd-map { height: 300px; }
+  .kpi-grid { grid-template-columns: 1fr; }
+}
+
+// =============================================================================
+// UTILITY CLASSES (originally relying on Cosmo defaults — explicit overrides)
+// =============================================================================
+
+// surface-card: neutral white surface
+.surface-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+// hero-meta: inline meta tags row
+.hero-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+// chip: small pill tag
+.chip {
+  display: inline-block;
+  background: rgba(22,32,51,0.07);
+  color: var(--text);
+  border: 1px solid rgba(22,32,51,0.1);
+  border-radius: 20px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.chip.handwritten {
+  font-family: 'Kalam', cursive;
+  color: var(--navy-secondary);
+  font-size: 0.82rem;
+}
+
+// small-note: subdued small text
+.small-note {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+// detail-list / detail-item used in map panel
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.detail-item {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.detail-item:last-child { border-bottom: none; }
