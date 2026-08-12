@@ -1,0 +1,54 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - entreprises.qmd
+    - risques.qmd
+    - methodologie.qmd
+  resources:
+    - data/**
+    - scripts/**
+    - styles/**
+    - sources/**
+
+website:
+  title: "BITD France"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Tableau de bord
+      - href: entreprises.qmd
+        text: Entreprises
+      - href: risques.qmd
+        text: Matrice des risques
+      - href: methodologie.qmd
+        text: Méthodologie
+    right:
+      - text: Situation au 12 août 2026
+  page-footer:
+    left: "<span class='footer-signature'>BITD France · Panorama des 30 acteurs stratégiques</span>"
+    right: "<span class='footer-signature'>Sources publiques consolidées · Quarto statique</span>"
+  reader-mode: false
+  page-navigation: true
+
+format:
+  html:
+    theme: none
+    css: styles/dashboard.scss
+    toc: false
+    smooth-scroll: true
+    anchor-sections: true
+    include-in-header:
+      - text: |
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Inter:wght@300;400;500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+          <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+          <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+      - text: |
+          <script src="scripts/dashboard.js" defer></script>
+          <script src="scripts/filters.js" defer></script>
+          <script src="scripts/map.js" defer></script>
+          <script src="scripts/table.js" defer></script>

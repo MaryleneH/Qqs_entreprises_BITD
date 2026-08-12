@@ -1,0 +1,74 @@
+---
+title: "Tableau de bord BITD France"
+page-layout: full
+title-block: false
+---
+
+```{=html}
+<div class="hero-panel">
+  <span class="hero-kicker">✦ Panorama stratégique · 30 entreprises clés</span>
+  <h1>BITD France · Dashboard souveraineté &amp; risque fournisseur</h1>
+  <p>Vue statique premium construite à partir de sources publiques consolidées au 12 août 2026. Les indicateurs se recalculent depuis <code>data/entreprises.csv</code> et la carte met en perspective les dépendances industrielles, les risques d’exécution et la criticité souveraine.</p>
+  <div class="hero-meta">
+    <span class="chip">100 % statique</span>
+    <span class="chip">Carte Leaflet</span>
+    <span class="chip">Filtres synchronisés</span>
+    <span class="chip handwritten">Analyse prête pour revue fournisseur</span>
+  </div>
+</div>
+
+<div class="kpi-grid" id="kpi-grid">
+  <div class="kpi-card"><div class="kpi-label">Entreprises</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-note" id="kpi-total-note">Chargement des données…</div></div>
+  <div class="kpi-card"><div class="kpi-label">Criticité critique</div><div class="kpi-value" id="kpi-critical">—</div><div class="kpi-note">Acteurs non substituables à court terme</div></div>
+  <div class="kpi-card"><div class="kpi-label">CA documenté</div><div class="kpi-value" id="kpi-revenue">—</div><div class="kpi-note" id="kpi-revenue-note">Somme des valeurs renseignées</div></div>
+  <div class="kpi-card"><div class="kpi-label">Risque ≥ significatif</div><div class="kpi-value" id="kpi-risky">—</div><div class="kpi-note">Tension de capacité ou dépendances amont</div></div>
+  <div class="kpi-card"><div class="kpi-label">Book-to-bill moyen</div><div class="kpi-value" id="kpi-book">—</div><div class="kpi-note" id="kpi-book-note">Entreprises avec ratio publié</div></div>
+</div>
+
+<div class="dashboard-grid">
+  <div>
+    <div class="filter-bar" id="dashboard-filters">
+      <input id="filter-search" type="search" placeholder="Rechercher une entreprise, un programme, une dépendance…" aria-label="Recherche" />
+      <select id="filter-sector" aria-label="Secteur"><option value="all">Tous les secteurs</option></select>
+      <select id="filter-risk" aria-label="Risque fournisseur"><option value="all">Tous les risques fournisseur</option></select>
+      <select id="filter-criticality" aria-label="Criticité souveraine"><option value="all">Toutes les criticités</option></select>
+      <select id="filter-region" aria-label="Région"><option value="all">Toutes les régions</option></select>
+      <button type="button" id="filter-reset">Réinitialiser</button>
+    </div>
+
+    <div class="surface-card map-stage">
+      <div id="bitd-map" aria-label="Carte des entreprises"></div>
+      <div class="map-side-panel" id="map-side-panel" aria-live="polite">
+        <button class="close-panel" id="close-map-panel" type="button" aria-label="Fermer">×</button>
+        <div id="map-side-panel-content">
+          <h3>Sélection carte</h3>
+          <p class="small-note">Cliquez sur un marqueur pour afficher le détail entreprise, ses programmes critiques, ses dépendances et le point de vigilance associé.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="analysis-panel" id="analysis-panel">
+    <div class="panel-block">
+      <h2 class="panel-title">Lecture analytique</h2>
+      <p class="small-note" id="analysis-summary">Chargement des données…</p>
+    </div>
+    <div class="panel-block">
+      <h3 class="section-hand">Top secteurs visibles</h3>
+      <div class="list-compact" id="analysis-sectors"></div>
+    </div>
+    <div class="panel-block">
+      <h3 class="section-hand">Distribution des risques</h3>
+      <div class="list-compact" id="analysis-risks"></div>
+    </div>
+    <div class="panel-block">
+      <h3 class="section-hand">Programmes récurrents</h3>
+      <div class="list-compact" id="analysis-programs"></div>
+    </div>
+    <div class="panel-block">
+      <h3 class="section-hand">Filtres actifs</h3>
+      <div id="analysis-filters" class="hero-meta"></div>
+    </div>
+  </div>
+</div>
+```
