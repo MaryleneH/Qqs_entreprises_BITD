@@ -37,9 +37,11 @@
 
     body.innerHTML = rows.map((row) => {
       const etabs = window.BITDData.getEtablissementsForCompany(row.id);
-      const etabCount = etabs.length;
-      const etabCell = etabCount > 0
-        ? `<a class="etab-link" href="${getBaseUrl()}?entreprise=${encodeURIComponent(row.id)}" title="Voir les implantations de ${row.entreprise} sur la carte">${etabCount} site${etabCount > 1 ? 's' : ''} →</a><br><span class="small-note">${row.regions_count} région${row.regions_count > 1 ? 's' : ''}</span>`
+      const totalCount = etabs.length;
+      const activeCount = etabs.filter((etab) => etab.sirene_is_active).length;
+      const etabLabel = `${activeCount} site${activeCount > 1 ? 's' : ''} actif${activeCount > 1 ? 's' : ''}`;
+      const etabCell = totalCount > 0
+        ? `<a class="etab-link" href="${getBaseUrl()}?entreprise=${encodeURIComponent(row.id)}" title="Voir les implantations de ${row.entreprise} sur la carte">${etabLabel} →</a><br><span class="small-note">${row.regions_count} région${row.regions_count > 1 ? 's' : ''}${totalCount !== activeCount ? ` · ${totalCount} total` : ''}</span>`
         : '<span class="small-note">—</span>';
       const caCell = row.ca_defense_num == null
         ? `<span class="small-note">${row.ca_defense_label}</span>`

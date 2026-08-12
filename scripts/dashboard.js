@@ -14,20 +14,26 @@
     dataPromise: null,
     etablissementsPromise: null,
     allRows: [],
-    filteredRows: [],
     allEtablissements: [],
-    selectedCompany: null,
-    mapMode: 'national',
-    filters: { search: '', sector: 'all', region: 'all' },
-    consumers: []
+    entrepriseId: null,
+    statutEtablissements: 'actifs',
+    subscribers: [],
+    schema: {
+      statusColumn: null,
+      bitdColumn: null,
+      precisionColumn: null,
+      siretColumn: null,
+      apeLabelColumn: null,
+      apeCodeColumn: null
+    }
   };
 
   function normalizeText(value) {
-    return (value || '')
-      .toString()
+    return String(value || '')
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
+      .toLowerCase()
+      .trim();
   }
 
   function parseCSV(text) {
@@ -69,6 +75,7 @@
     }
 
     const [header, ...body] = rows;
+    if (!header) return [];
     return body.map((cells) => Object.fromEntries(header.map((key, index) => [key, cells[index] ?? ''])));
   }
 
@@ -78,6 +85,10 @@
     if (!trimmed || trimmed === 'n.c.') return null;
     const num = Number(trimmed);
     return Number.isFinite(num) ? num : null;
+  }
+
+  function splitValues(value) {
+    return String(value || '').split(';').map((item) => item.trim()).filter(Boolean);
   }
 
   function formatMillions(value) {
@@ -91,65 +102,85 @@
     return new Intl.NumberFormat('fr-FR').format(value);
   }
 
-  function makeSectorBadge(value) {
-    const color = sectorColors[value] || '#5F7F82';
-    return `<span class="badge badge--sector" style="background:${color}">${value}</span>`;
+  function detectSchema(rows) {
+    const keys = Object.keys(rows[0] || {});
+    const normalizedMap = Object.fromEntries(keys.map((k) => [normalizeText(k), k]));
+    const pick = (candidates) => {
+      for (const candidate of candidates) {
+        if (normalizedMap[candidate]) return normalizedMap[candidate];
+      }
+      return null;
+    };
+
+    state.schema.statusColumn = pick([
+      'etat_administratif',
+      'et_at_administratif',
+      'etatadministratifetablissement',
+      'etablissement_actif',
+      'statut_sirene',
+      'statut_etablissement',
+      'sirene_statut'
+    ]);
+
+    state.schema.bitdColumn = pick([
+      'signe_activite_bitd',
+      'qualification_activite_bitd',
+      'niveau_activite_bitd'
+    ]);
+
+    state.schema.precisionColumn = pick([
+      'precision_coordonnees',
+      'niveau_precision',
+      'precision_localisation'
+    ]);
+
+    state.schema.siretColumn = pick(['siret', 'siret_etablissement', 'siret_site']);
+    state.schema.apeLabelColumn = pick(['libelle_ape', 'activite_principale_sirene', 'libelle_activite_principale']);
+    state.schema.apeCodeColumn = pick(['code_ape', 'activite_principale_ape', 'naf']);
   }
 
-  function splitValues(value) {
-    return (value || '').split(';').map((item) => item.trim()).filter(Boolean);
+  function parseSireneStatus(rawStatus, row) {
+    const raw = normalizeText(rawStatus);
+    if (raw) {
+      if (['true', '1', 'actif', 'active', 'ouvert'].includes(raw)) return { isActive: true, label: 'actif' };
+      if (['false', '0', 'inactif', 'ferme', 'fermé', 'fermeture', 'historique', 'cesse', 'cessé', 'radie', 'radié'].includes(raw)) return { isActive: false, label: rawStatus };
+    }
+
+    const joined = normalizeText(`${row.type_site || ''} ${row.activite || ''} ${row.description_courte || ''}`);
+    if (/(ferme|fermee|inactif|historique|fermeture|cess|radie)/.test(joined)) {
+      return { isActive: false, label: 'inactif' };
+    }
+
+    return { isActive: true, label: 'actif' };
   }
 
-  function getCompanyRegions(row) {
-    const regions = new Set();
-    if (row.siege_region) regions.add(row.siege_region);
-    state.allEtablissements
-      .filter((e) => e.entreprise_id === row.id && e.region)
-      .forEach((e) => regions.add(e.region));
-    return [...regions];
+  function parseBitdStatus(value) {
+    const raw = normalizeText(value);
+    if (!raw) return null;
+    if (raw.includes('confirm')) return 'confirme';
+    if (raw.includes('document') || raw.includes('a_confirmer') || raw.includes('a confirmer')) return 'a_confirmer';
+    if (raw.includes('non_ident')) return 'non_identifie';
+    return null;
   }
 
   function computeFinancialIndicator(row) {
     if (row.book_to_bill_num != null) {
-      return {
-        label: 'Book-to-bill',
-        value: `${row.book_to_bill_num.toFixed(2)}x`,
-        type: 'publié',
-        term: 'book_to_bill',
-        sort: row.book_to_bill_num
-      };
+      return { label: 'Book-to-bill', value: `${row.book_to_bill_num.toFixed(2)}x`, type: 'publié', term: 'book_to_bill', sort: row.book_to_bill_num };
     }
     if (row.ratio_carnet_ca_num != null) {
-      return {
-        label: 'Carnet / CA',
-        value: `${row.ratio_carnet_ca_num.toFixed(2)}x`,
-        type: 'calculé',
-        term: 'carnet_ca',
-        sort: row.ratio_carnet_ca_num
-      };
+      return { label: 'Carnet / CA', value: `${row.ratio_carnet_ca_num.toFixed(2)}x`, type: 'calculé', term: 'carnet_ca', sort: row.ratio_carnet_ca_num };
     }
     if (row.marge_num != null) {
-      return {
-        label: 'Marge EBITDA',
-        value: `${row.marge_num.toFixed(1)} %`,
-        type: 'publié',
-        term: 'marge_ebitda',
-        sort: row.marge_num
-      };
+      return { label: 'Marge EBITDA', value: `${row.marge_num.toFixed(1)} %`, type: 'publié', term: 'marge_ebitda', sort: row.marge_num };
     }
-    return {
-      label: 'Indicateur',
-      value: 'n.c.',
-      type: 'non disponible',
-      term: null,
-      sort: -Infinity
-    };
+    return { label: 'Indicateur', value: 'n.c.', type: 'non disponible', term: null, sort: -Infinity };
   }
 
-  function hydrateRow(row) {
+  function hydrateRow(row, index) {
     const sectors = splitValues(row.secteurs);
     return {
       ...row,
+      _order: index,
       latitude: numberOrNull(row.latitude),
       longitude: numberOrNull(row.longitude),
       effectif_num: numberOrNull(row.effectif),
@@ -163,169 +194,163 @@
     };
   }
 
-  function hydrateEtablissement(row) {
+  function hydrateEtablissement(row, index) {
+    const statusRaw = state.schema.statusColumn ? row[state.schema.statusColumn] : '';
+    const sireneStatus = parseSireneStatus(statusRaw, row);
+    const bitdRaw = state.schema.bitdColumn ? row[state.schema.bitdColumn] : '';
+    const precision = state.schema.precisionColumn ? (row[state.schema.precisionColumn] || '').trim() : '';
+
     return {
       ...row,
+      _order: index,
       latitude: numberOrNull(row.latitude),
       longitude: numberOrNull(row.longitude),
-      est_siege: row.est_siege === 'true',
+      est_siege: normalizeText(row.est_siege) === 'true',
       specialites: splitValues(row.specialites),
-      programmes: splitValues(row.programmes_associes)
+      programmes: splitValues(row.programmes_associes),
+      sirene_status_raw: statusRaw,
+      sirene_status_label: (sireneStatus.label || '').toString().trim() || 'actif',
+      sirene_is_active: sireneStatus.isActive,
+      bitd_status: parseBitdStatus(bitdRaw),
+      bitd_status_raw: bitdRaw,
+      precision_coordonnees: precision,
+      siret_value: state.schema.siretColumn ? (row[state.schema.siretColumn] || '').trim() : '',
+      ape_label: state.schema.apeLabelColumn ? (row[state.schema.apeLabelColumn] || '').trim() : '',
+      ape_code: state.schema.apeCodeColumn ? (row[state.schema.apeCodeColumn] || '').trim() : ''
     };
   }
 
   function enrichRows() {
+    const byCompany = buildEtablissementsByCompany();
+
     state.allRows = state.allRows.map((row) => {
-      const regions = getCompanyRegions(row);
-      const etabs = getEtablissementsForCompany(row.id);
-      const indicator = computeFinancialIndicator(row);
+      const etabs = byCompany.get(row.id) || [];
+      const activeEtabs = etabs.filter((e) => e.sirene_is_active);
+      const regions = new Set();
+      if (row.siege_region) regions.add(row.siege_region);
+      etabs.forEach((e) => { if (e.region) regions.add(e.region); });
+
       const searchIndex = normalizeText([
         row.entreprise,
         row.specialite,
-        row.secteurs,
         row.siege_ville,
         row.siege_region,
         row.programmes,
-        row.sites_industriels,
-        row.actionnariat,
-        etabs.map((etab) => `${etab.nom_site} ${etab.ville} ${etab.activite || ''}`).join(' ')
+        etabs.map((e) => `${e.nom_site || ''} ${e.ville || ''} ${e.activite || ''}`).join(' ')
       ].join(' '));
 
       return {
         ...row,
-        regions,
-        regions_count: regions.length,
+        regions: [...regions],
+        regions_count: regions.size,
         implantations_count: etabs.length,
-        financial_indicator: indicator,
-        financial_indicator_sort: indicator.sort,
+        implantations_actives_count: activeEtabs.length,
+        financial_indicator: computeFinancialIndicator(row),
         searchIndex
       };
     });
   }
 
+  function buildEtablissementsByCompany() {
+    const map = new Map();
+    state.allEtablissements.forEach((etab) => {
+      const key = etab.entreprise_id;
+      if (!key) return;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(etab);
+    });
+    return map;
+  }
+
+  function getCompanyById(companyId) {
+    if (!companyId) return null;
+    return state.allRows.find((row) => row.id === companyId) || null;
+  }
+
   function getEtablissementsForCompany(companyId) {
-    return state.allEtablissements.filter((e) => e.entreprise_id === companyId);
+    return state.allEtablissements
+      .filter((e) => e.entreprise_id === companyId)
+      .sort((a, b) => Number(b.est_siege) - Number(a.est_siege) || String(a.ville || '').localeCompare(String(b.ville || ''), 'fr'));
   }
 
-  function getVisibleEtablissements(rows) {
-    const visibleIds = new Set(rows.map((row) => row.id));
-    return state.allEtablissements.filter((e) => visibleIds.has(e.entreprise_id));
+  function getVisibleEstablishments() {
+    if (!state.entrepriseId) return [];
+    const all = getEtablissementsForCompany(state.entrepriseId);
+    if (state.statutEtablissements === 'tous') return all;
+    return all.filter((e) => e.sirene_is_active);
   }
 
-  function applyFilters() {
-    const { search, sector, region } = state.filters;
-    state.filteredRows = state.allRows.filter((row) => {
-      const matchesSearch = !search || row.searchIndex.includes(normalizeText(search));
-      const matchesSector = sector === 'all' || row.sectors.includes(sector);
-
-      let matchesRegion = region === 'all';
-      if (!matchesRegion) {
-        matchesRegion = row.regions.includes(region);
-      }
-
-      return matchesSearch && matchesSector && matchesRegion;
-    });
-
-    updateKpis(state.filteredRows, state.allRows);
-    updateAnalysis(state.filteredRows, state.filters);
-    state.consumers.forEach((consumer) => consumer(state.filteredRows, state));
-    document.dispatchEvent(new CustomEvent('bitd:data-updated', { detail: { rows: state.filteredRows, state } }));
+  function getMapNationalCompanies() {
+    return state.allRows.slice().sort((a, b) => a._order - b._order);
   }
 
-  function accumulateCounts(list, getter) {
-    return list.reduce((acc, item) => {
-      const key = getter(item);
-      if (!key) return acc;
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {});
+  function getState() {
+    return {
+      ...state,
+      selectedCompany: getCompanyById(state.entrepriseId),
+      mapMode: state.entrepriseId ? 'focus' : 'national'
+    };
   }
 
-  function topEntries(counts, limit = 5) {
-    return Object.entries(counts)
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'fr'))
-      .slice(0, limit);
+  function notify() {
+    const snapshot = getState();
+    state.subscribers.forEach((subscriber) => subscriber(snapshot));
+    document.dispatchEvent(new CustomEvent('bitd:state-changed', { detail: snapshot }));
   }
 
-  function renderCountList(containerId, entries, formatter) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = entries.length
-      ? entries.map(([label, count]) => formatter(label, count)).join('')
-      : '<p class="small-note">Aucun résultat pour la sélection.</p>';
+  function subscribe(subscriber) {
+    state.subscribers.push(subscriber);
+    if (state.allRows.length) subscriber(getState());
   }
 
-  function updateKpis(rows, allRows) {
-    const totalEl = document.getElementById('kpi-total');
-    if (!totalEl) return;
-
-    const visibleEtabs = getVisibleEtablissements(rows);
-    const visibleRegions = new Set();
-    const visibleSectors = new Set();
-    let multiregionalCount = 0;
-
-    rows.forEach((row) => {
-      row.regions.forEach((region) => visibleRegions.add(region));
-      row.sectors.forEach((sector) => visibleSectors.add(sector));
-      if (row.regions_count > 1) multiregionalCount += 1;
-    });
-
-    visibleEtabs.forEach((etab) => {
-      if (etab.region) visibleRegions.add(etab.region);
-    });
-
-    totalEl.textContent = String(rows.length);
-    document.getElementById('kpi-total-note').textContent = `${rows.length} sur ${allRows.length} entreprises visibles`;
-    document.getElementById('kpi-sites').textContent = String(visibleEtabs.length);
-    document.getElementById('kpi-sites-note').textContent = `${visibleEtabs.length} sièges et établissements cartographiés`;
-    document.getElementById('kpi-regions').textContent = String(visibleRegions.size);
-    document.getElementById('kpi-regions-note').textContent = `${visibleRegions.size} régions couvertes par la sélection`;
-    document.getElementById('kpi-sectors').textContent = String(visibleSectors.size);
-    document.getElementById('kpi-sectors-note').textContent = `${visibleSectors.size} familles industrielles représentées`;
-    document.getElementById('kpi-multiregional').textContent = String(multiregionalCount);
-    document.getElementById('kpi-multiregional-note').textContent = `${multiregionalCount} entreprises présentes dans plusieurs régions`;
+  function setEntreprise(companyId) {
+    state.entrepriseId = companyId || null;
+    notify();
   }
 
-  function updateAnalysis(rows, filters) {
-    const summary = document.getElementById('analysis-summary');
-    if (!summary) return;
+  function setStatutEtablissements(mode) {
+    state.statutEtablissements = mode === 'tous' ? 'tous' : 'actifs';
+    notify();
+  }
 
-    const visibleEtabs = getVisibleEtablissements(rows);
-    const uniqueRegions = new Set();
-    rows.forEach((row) => row.regions.forEach((region) => uniqueRegions.add(region)));
-    const multiRegional = rows.filter((row) => row.regions_count > 1).length;
+  function setFilters() {
+    // Compatibility no-op for legacy filters script.
+  }
 
-    summary.innerHTML = `<strong>${rows.length}</strong> entreprises affichées, <strong>${visibleEtabs.length}</strong> implantations cartographiées et <strong>${multiRegional}</strong> groupes présents dans plusieurs régions.`;
+  function clearSelection() {
+    state.entrepriseId = null;
+    notify();
+  }
 
-    const sectorCounts = {};
-    rows.forEach((row) => row.sectors.forEach((sector) => {
-      sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+  function selectCompany(companyId) {
+    setEntreprise(companyId);
+  }
+
+  function runDataAudit() {
+    const missingCoords = state.allEtablissements.filter((e) => e.latitude == null || e.longitude == null).length;
+    const missingCompanyId = state.allEtablissements.filter((e) => !String(e.entreprise_id || '').trim()).length;
+    const companyCounts = state.allRows.map((row) => ({
+      id: row.id,
+      entreprise: row.entreprise,
+      total: getEtablissementsForCompany(row.id).length,
+      actifs: getEtablissementsForCompany(row.id).filter((e) => e.sirene_is_active).length
     }));
-    renderCountList('analysis-sectors', topEntries(sectorCounts, 6), (label, count) => `<div class="row"><span>${makeSectorBadge(label)}</span><strong>${count}</strong></div>`);
+    const noSites = companyCounts.filter((item) => item.total === 0).map((item) => item.entreprise);
 
-    const regionCounts = {};
-    visibleEtabs.forEach((etab) => {
-      if (etab.region) regionCounts[etab.region] = (regionCounts[etab.region] || 0) + 1;
+    const totalActifs = state.allEtablissements.filter((e) => e.sirene_is_active).length;
+    const totalInactifs = state.allEtablissements.length - totalActifs;
+
+    console.info('[BITD][DATA_CHECK]', {
+      entreprises: state.allRows.length,
+      etablissements_total: state.allEtablissements.length,
+      etablissements_actifs: totalActifs,
+      etablissements_inactifs: totalInactifs,
+      entreprises_sans_etablissement: noSites,
+      lignes_sans_coordonnees: missingCoords,
+      lignes_sans_entreprise_id: missingCompanyId,
+      colonnes_detectees: state.schema
     });
-    rows.forEach((row) => {
-      if (row.siege_region) regionCounts[row.siege_region] = (regionCounts[row.siege_region] || 0) + 1;
-    });
-    renderCountList('analysis-regions', topEntries(regionCounts, 6), (label, count) => `<div class="row"><span>${label}</span><strong>${count}</strong></div>`);
-
-    const programCounts = {};
-    rows.forEach((row) => splitValues(row.programmes).forEach((program) => {
-      programCounts[program] = (programCounts[program] || 0) + 1;
-    }));
-    renderCountList('analysis-programs', topEntries(programCounts, 6), (label, count) => `<div class="row"><span>${label}</span><strong>${count}</strong></div>`);
-
-    const activeFilters = document.getElementById('analysis-filters');
-    if (activeFilters) {
-      const chips = [];
-      if (filters.search) chips.push(`<span class="chip">Recherche · ${filters.search}</span>`);
-      if (filters.sector !== 'all') chips.push(`<span class="chip">Secteur · ${filters.sector}</span>`);
-      if (filters.region !== 'all') chips.push(`<span class="chip">Région · ${filters.region}</span>`);
-      activeFilters.innerHTML = chips.length ? chips.join('') : '<span class="chip">Aucun filtre actif</span>';
-    }
+    console.table(companyCounts);
   }
 
   async function loadEtablissements() {
@@ -336,14 +361,11 @@
           if (!response.ok) throw new Error(`Impossible de charger ${url}`);
           return response.text();
         })
-        .then((text) => parseCSV(text).map(hydrateEtablissement))
+        .then((text) => parseCSV(text))
         .then((rows) => {
-          state.allEtablissements = rows;
-          return rows;
-        })
-        .catch((error) => {
-          console.warn('etablissements.csv non disponible:', error.message);
-          return [];
+          detectSchema(rows);
+          state.allEtablissements = rows.map((row, index) => hydrateEtablissement(row, index));
+          return state.allEtablissements;
         });
     }
     return state.etablissementsPromise;
@@ -353,86 +375,53 @@
     if (!state.dataPromise) {
       const url = new URL('data/entreprises.csv', document.baseURI);
       state.dataPromise = Promise.all([
-        fetch(url)
-          .then((response) => {
-            if (!response.ok) throw new Error(`Impossible de charger ${url}`);
-            return response.text();
-          })
-          .then((text) => parseCSV(text).map(hydrateRow)),
+        fetch(url).then((response) => {
+          if (!response.ok) throw new Error(`Impossible de charger ${url}`);
+          return response.text();
+        }).then((text) => parseCSV(text).map((row, index) => hydrateRow(row, index))),
         loadEtablissements()
-      ])
-        .then(([rows]) => {
-          state.allRows = rows;
-          enrichRows();
-          state.filteredRows = state.allRows.slice();
-          applyFilters();
-          document.dispatchEvent(new CustomEvent('bitd:data-ready', { detail: { rows: state.allRows, state } }));
-          return state.allRows;
-        })
-        .catch((error) => {
-          console.error(error);
-          document.querySelectorAll('#kpi-grid .kpi-value').forEach((el) => {
-            el.textContent = 'Erreur';
-          });
-          throw error;
-        });
+      ]).then(([rows]) => {
+        state.allRows = rows;
+        enrichRows();
+        runDataAudit();
+        notify();
+        document.dispatchEvent(new CustomEvent('bitd:data-ready', { detail: getState() }));
+        return state.allRows;
+      });
     }
     return state.dataPromise;
   }
 
   function registerConsumer(consumer) {
-    state.consumers.push(consumer);
-    if (state.filteredRows.length) consumer(state.filteredRows, state);
-  }
-
-  function setFilters(nextFilters) {
-    state.filters = { ...state.filters, ...nextFilters };
-    applyFilters();
-  }
-
-  function selectCompany(companyId) {
-    const company = state.allRows.find((row) => row.id === companyId);
-    if (!company) return;
-    state.selectedCompany = company;
-    state.mapMode = 'focus';
-    const etabs = getEtablissementsForCompany(companyId);
-    document.dispatchEvent(new CustomEvent('bitd:company-selected', {
-      detail: { company, etablissements: etabs, state }
-    }));
-  }
-
-  function clearSelection() {
-    state.selectedCompany = null;
-    state.mapMode = 'national';
-    document.dispatchEvent(new CustomEvent('bitd:company-cleared', { detail: { state } }));
-    applyFilters();
-  }
-
-  function getState() {
-    return state;
+    subscribe((snapshot) => consumer(snapshot.allRows, snapshot));
   }
 
   window.BITDData = {
     loadEntreprises,
     loadEtablissements,
     registerConsumer,
+    subscribe,
     setFilters,
     selectCompany,
+    setEntreprise,
+    setStatutEtablissements,
     clearSelection,
+    getCompanyById,
     getEtablissementsForCompany,
+    getVisibleEstablishments,
+    getMapNationalCompanies,
     getState,
     constants: { sectorColors },
     helpers: {
       normalizeText,
       numberOrNull,
+      splitValues,
       formatMillions,
-      formatInteger,
-      makeSectorBadge,
-      splitValues
+      formatInteger
     }
   };
 
   document.addEventListener('DOMContentLoaded', () => {
-    loadEntreprises().catch(() => {});
+    loadEntreprises().catch((error) => console.error(error));
   });
 })();
