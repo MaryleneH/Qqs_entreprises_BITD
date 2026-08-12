@@ -4,6 +4,7 @@ project:
   render:
     - index.qmd
     - entreprises.qmd
+    - comprendre.qmd
     - risques.qmd
     - methodologie.qmd
   resources:
@@ -17,18 +18,18 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Tableau de bord
+        text: Vue d'ensemble
       - href: entreprises.qmd
         text: Entreprises
-      - href: risques.qmd
-        text: Matrice des risques
+      - href: comprendre.qmd
+        text: Comprendre les données
       - href: methodologie.qmd
         text: Méthodologie
     right:
       - text: Situation au 12 août 2026
   page-footer:
-    left: "<span class='footer-signature'>BITD France · Panorama des 30 acteurs stratégiques</span>"
-    right: "<span class='footer-signature'>Sources publiques consolidées · Quarto statique</span>"
+    left: "<span class='footer-signature'>BITD France · Données issues de sources publiques</span>"
+    right: "<span class='footer-signature'>Outil documentaire d'analyse économique, industrielle et territoriale de la BITD française · Publication non officielle de la DGA</span>"
   reader-mode: false
   page-navigation: true
 
@@ -49,7 +50,9 @@ format:
           <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
           <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
       - text: |
+          <script src="scripts/glossary.js" defer></script>
           <script src="scripts/dashboard.js" defer></script>
           <script src="scripts/filters.js" defer></script>
           <script src="scripts/map.js" defer></script>
           <script src="scripts/table.js" defer></script>
+          <script src="scripts/comprendre.js" defer></script>

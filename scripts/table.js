@@ -9,56 +9,82 @@
   }
 
   function getBaseUrl() {
-    // Resolve path to index.html relative to current page
-    const path = window.location.pathname;
-    // If we're on /entreprises.html, index is at ./index.html
     return 'index.html';
+  }
+
+  function termHtml(termKey, label) {
+    return window.BITDGlossary ? window.BITDGlossary.termHTML(termKey, label) : label;
+  }
+
+  function renderFinancialIndicator(row) {
+    const indicator = row.financial_indicator;
+    if (!indicator || indicator.value === 'n.c.') return '<span class="small-note">n.c.</span>';
+    const title = indicator.term ? termHtml(indicator.term, indicator.label) : indicator.label;
+    return `
+      <div class="financial-indicator-cell">
+        <div class="financial-indicator-cell__title">${title}</div>
+        <div class="financial-indicator-cell__value">${indicator.value}</div>
+        <div class="financial-indicator-cell__meta">${indicator.type}</div>
+      </div>
+    `;
   }
 
   function renderRows(rows) {
     const body = document.getElementById('entreprises-table-body');
     const count = document.getElementById('table-count');
     if (!body || !count) return;
-    const { makeBadge, makeSectorBadge, splitValues, formatMillions, formatInteger } = window.BITDData.helpers;
+    const { makeSectorBadge, splitValues, formatMillions, formatInteger } = window.BITDData.helpers;
+
     body.innerHTML = rows.map((row) => {
       const etabs = window.BITDData.getEtablissementsForCompany(row.id);
       const etabCount = etabs.length;
       const etabCell = etabCount > 0
-        ? `<a class="etab-link" href="${getBaseUrl()}?entreprise=${encodeURIComponent(row.id)}" title="Voir les implantations de ${row.entreprise} sur la carte">${etabCount} site${etabCount > 1 ? 's' : ''} →</a>`
+        ? `<a class="etab-link" href="${getBaseUrl()}?entreprise=${encodeURIComponent(row.id)}" title="Voir les implantations de ${row.entreprise} sur la carte">${etabCount} site${etabCount > 1 ? 's' : ''} →</a><br><span class="small-note">${row.regions_count} région${row.regions_count > 1 ? 's' : ''}</span>`
         : '<span class="small-note">—</span>';
+      const caCell = row.ca_defense_num == null
+        ? `<span class="small-note">${row.ca_defense_label}</span>`
+        : `${formatMillions(row.ca_defense_num)}<br><span class="small-note">${row.ca_defense_label}</span>`;
+      const carnetCell = row.carnet_num == null
+        ? '<span class="small-note">n.c.</span>'
+        : `${formatMillions(row.carnet_num)}${row.ratio_carnet_ca_num == null ? '' : `<br><span class="small-note">ratio <span class="term-definition" data-term="carnet_ca">Carnet / CA</span> calculé</span>`}`;
+
       return `
-      <tr>
-        <td><strong>${row.entreprise}</strong><br><span class="small-note">${row.specialite}</span></td>
-        <td>${row.categorie}</td>
-        <td>${row.sectors.map(makeSectorBadge).join(' ')}</td>
-        <td>${row.siege_region}</td>
-        <td>${row.effectif_num == null ? row.effectif_label : formatInteger(row.effectif_num)}</td>
-        <td>${row.ca_defense_num == null ? row.ca_defense_label : `${formatMillions(row.ca_defense_num)}<br><span class="small-note">${row.ca_defense_label}</span>`}</td>
-        <td>${makeBadge(row.risque_fournisseur)}</td>
-        <td>${makeBadge(row.criticite_souveraine)}</td>
-        <td>${splitValues(row.programmes).slice(0, 4).join(' · ')}</td>
-        <td>${etabCell}</td>
-      </tr>`;
+        <tr>
+          <td><strong>${row.entreprise}</strong></td>
+          <td>${row.specialite}</td>
+          <td>${row.sectors.map(makeSectorBadge).join(' ')}</td>
+          <td>${row.siege_ville}<br><span class="small-note">${row.siege_region}</span></td>
+          <td>${etabCell}</td>
+          <td>${row.effectif_num == null ? row.effectif_label : formatInteger(row.effectif_num)}</td>
+          <td>${caCell}</td>
+          <td>${carnetCell}</td>
+          <td>${renderFinancialIndicator(row)}</td>
+          <td>${splitValues(row.programmes).slice(0, 4).join(' · ') || '<span class="small-note">n.c.</span>'}</td>
+          <td><a href="${row.site_web}" target="_blank" rel="noreferrer">${row.site_web.replace(/^https?:\/\//, '')}</a></td>
+        </tr>`;
     }).join('');
+
     count.textContent = `${rows.length} entreprise(s) affichée(s)`;
+    if (window.BITDGlossary) window.BITDGlossary.initRoot(body);
   }
 
   function applyTableFilters() {
     const search = document.getElementById('table-search');
     const sector = document.getElementById('table-sector');
-    const risk = document.getElementById('table-risk');
-    if (!search || !sector || !risk) return;
+    if (!search || !sector) return;
+
     const query = window.BITDData.helpers.normalizeText(search.value);
     tableState.filtered = tableState.rows.filter((row) => {
       const matchSearch = !query || row.searchIndex.includes(query);
       const matchSector = sector.value === 'all' || row.sectors.includes(sector.value);
-      const matchRisk = risk.value === 'all' || row.risque_fournisseur === risk.value;
-      return matchSearch && matchSector && matchRisk;
+      return matchSearch && matchSector;
     });
+
     tableState.filtered.sort((a, b) => {
       const result = compareValues(a, b, tableState.sortKey);
       return tableState.sortDirection === 'asc' ? result : -result;
     });
+
     renderRows(tableState.filtered);
   }
 
@@ -66,7 +92,6 @@
     if (!window.BITDData || !document.getElementById('entreprises-table')) return;
     const search = document.getElementById('table-search');
     const sector = document.getElementById('table-sector');
-    const risk = document.getElementById('table-risk');
 
     Promise.all([
       window.BITDData.loadEntreprises(),
@@ -74,13 +99,11 @@
     ]).then(([rows]) => {
       tableState.rows = rows.slice();
       const sectors = [...new Set(rows.flatMap((row) => row.sectors))].sort((a, b) => a.localeCompare(b, 'fr'));
-      const risks = [...new Set(rows.map((row) => row.risque_fournisseur))].sort((a, b) => (window.BITDData.helpers.riskScore(a) || 0) - (window.BITDData.helpers.riskScore(b) || 0));
       sector.innerHTML = ['<option value="all">Tous les secteurs</option>', ...sectors.map((value) => `<option value="${value}">${value}</option>`)].join('');
-      risk.innerHTML = ['<option value="all">Tous les niveaux de risque</option>', ...risks.map((value) => `<option value="${value}">${value}</option>`)].join('');
       applyTableFilters();
     });
 
-    [search, sector, risk].forEach((element) => element && element.addEventListener(element.tagName === 'INPUT' ? 'input' : 'change', applyTableFilters));
+    [search, sector].forEach((element) => element && element.addEventListener(element.tagName === 'INPUT' ? 'input' : 'change', applyTableFilters));
 
     document.querySelectorAll('#entreprises-table thead th[data-sort]').forEach((header) => {
       header.addEventListener('click', () => {

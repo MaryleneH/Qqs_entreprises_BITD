@@ -1,0 +1,39 @@
+---
+title: "Comprendre les données"
+format:
+  html:
+    page-layout: article
+    toc: false
+---
+
+```{=html}
+<div class="page-container">
+  <div class="methodo-container glossary-page">
+    <h1 class="page-title">Comprendre les données</h1>
+    <p class="page-subtitle">Les notions essentielles pour lire le dashboard BITD</p>
+
+    <div class="glossary-hero">
+      <p>Cette page rassemble les définitions utilisées dans le dashboard : vocabulaire de la défense, indicateurs financiers, notions industrielles et grands programmes.</p>
+      <a class="chip chip-link" href="index.html">← Retour au dashboard</a>
+    </div>
+
+    <div class="glossary-search-shell">
+      <label for="glossary-search">Rechercher une notion</label>
+      <div class="glossary-search-input">
+        <input id="glossary-search" type="search" placeholder="book-to-bill, MCO, DGA, Rafale…" aria-label="Rechercher une notion" />
+        <span aria-hidden="true">🔎</span>
+      </div>
+    </div>
+
+    <div class="glossary-section-intro">
+      <span class="chip">Industrie de Défense</span>
+      <span class="chip">Finance</span>
+      <span class="chip">Production</span>
+      <span class="chip">Programmes</span>
+    </div>
+
+    <div id="glossary-empty" class="disclaimer-box" hidden>Aucune notion ne correspond à votre recherche.</div>
+    <div id="glossary-groups" class="glossary-groups"></div>
+  </div>
+</div>
+```

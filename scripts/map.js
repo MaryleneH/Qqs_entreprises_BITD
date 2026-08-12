@@ -6,6 +6,10 @@
   let panelInitialized = false;
   let activeMarker = null;
 
+  function termHtml(termKey, label) {
+    return window.BITDGlossary ? window.BITDGlossary.termHTML(termKey, label) : label;
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   // Marker Factories
   // ──────────────────────────────────────────────────────────────────────────
@@ -126,13 +130,14 @@
   function buildCompanyTooltip(row) {
     const { formatMillions, splitValues } = window.BITDData.helpers;
     const programs = splitValues(row.programmes).slice(0, 4).join(' · ');
+    const etabCount = window.BITDData.getEtablissementsForCompany(row.id).length;
     return `<div class="tooltip-inner">
       <div class="tt-name">${row.entreprise}</div>
       <div class="tt-specialite">${row.specialite}</div>
       <div class="tt-location">📍 ${row.siege_ville} · ${row.siege_region}</div>
       <div class="tt-stats">
-        <div><div class="tt-stat-label">Criticité</div><div class="tt-stat-value">${row.criticite_souveraine}</div></div>
-        <div><div class="tt-stat-label">CA Défense</div><div class="tt-stat-value">${row.ca_defense_num != null ? formatMillions(row.ca_defense_num) : 'n.c.'}</div></div>
+        <div><div class="tt-stat-label">Implantations</div><div class="tt-stat-value">${etabCount}</div></div>
+        <div><div class="tt-stat-label">CA / Défense</div><div class="tt-stat-value">${row.ca_defense_num != null ? formatMillions(row.ca_defense_num) : 'n.c.'}</div></div>
         ${programs ? `<div style="grid-column:1/-1"><div class="tt-stat-label">Programmes</div><div class="tt-stat-value" style="font-size:0.68rem">${programs}</div></div>` : ''}
       </div>
     </div>`;
@@ -150,7 +155,7 @@
         ${company ? `<span>${company.entreprise}</span>` : ''}
         ${isSiege ? '<span class="badge-siege-tt">SIÈGE</span>' : `<span class="badge-type-tt">${typeLabel}</span>`}
       </div>
-      <div class="tt-specialite" style="font-weight:600;color:#F5F6F2;font-style:normal">${etab.ville}</div>
+      <div class="tt-specialite" style="font-weight:600;color:#162033;font-style:normal">${etab.ville}</div>
       ${specs ? `<div class="tt-specialite">${specs}</div>` : ''}
       <div class="tt-location">📍 ${etab.departement} · ${etab.region}</div>
       ${etab.activite ? `<div class="tt-stats"><div><div class="tt-stat-label">Activité</div><div class="tt-stat-value" style="font-size:0.7rem">${etab.activite}</div></div></div>` : ''}
@@ -279,32 +284,34 @@
     const panel = document.getElementById('map-side-panel');
     const content = document.getElementById('map-side-panel-content');
     if (!panel || !content || !row) return;
-    const { makeBadge, makeSectorBadge, splitValues, formatMillions } = window.BITDData.helpers;
+    const { makeSectorBadge, splitValues, formatMillions } = window.BITDData.helpers;
     const sectorBadges = row.sectors.map(makeSectorBadge).join(' ');
+    const etabs = window.BITDData.getEtablissementsForCompany(row.id);
     content.innerHTML = `
       <h3>${row.entreprise}</h3>
       <p>${sectorBadges}</p>
-      <p>${makeBadge(row.risque_fournisseur)} ${makeBadge(row.criticite_souveraine)}</p>
       <p class="small-note">${row.specialite}</p>
       <div class="detail-list">
         <div class="detail-item"><strong>Siège</strong><span>${row.siege_ville}, ${row.siege_region}</span></div>
+        <div class="detail-item"><strong>Empreinte territoriale</strong><span>${etabs.length} implantation(s) cartographiée(s) dans ${row.regions_count} région(s)</span></div>
         <div class="detail-item"><strong>Effectif</strong><span>${row.effectif_label}</span></div>
-        <div class="detail-item"><strong>CA Défense / proxy</strong><span>${row.ca_defense_label}</span></div>
-        <div class="detail-item"><strong>Carnet / visibilité</strong><span>${row.carnet_num == null ? 'n.c.' : formatMillions(row.carnet_num)}${row.ratio_carnet_ca_num == null ? '' : ` · ${row.ratio_carnet_ca_num.toFixed(2)}x CA`}</span></div>
+        <div class="detail-item"><strong>${termHtml('ca_defense', 'CA Défense')}</strong><span>${row.ca_defense_label}</span></div>
+        <div class="detail-item"><strong>${termHtml('carnet_commandes', 'Carnet de commandes')}</strong><span>${row.carnet_num == null ? 'n.c.' : formatMillions(row.carnet_num)}</span></div>
+        <div class="detail-item"><strong>Indicateur financier</strong><span>${row.financial_indicator.value === 'n.c.' ? 'n.c.' : `${row.financial_indicator.label} · ${row.financial_indicator.value} (${row.financial_indicator.type})`}</span></div>
         <div class="detail-item"><strong>Programmes</strong><span>${splitValues(row.programmes).join(' · ')}</span></div>
-        <div class="detail-item"><strong>Sites industriels</strong><span>${splitValues(row.sites_industriels).join(' · ')}</span></div>
+        <div class="detail-item"><strong>Sites principaux</strong><span>${splitValues(row.sites_industriels).join(' · ')}</span></div>
         <div class="detail-item"><strong>Actionnariat</strong><span>${row.actionnariat}</span></div>
-        <div class="detail-item"><strong>Dépendances critiques</strong><span>${splitValues(row.dependances_critiques).join(' · ')}</span></div>
         <div class="detail-item"><strong>Ressource</strong><span><a href="${row.site_web}" target="_blank" rel="noreferrer">${row.site_web.replace(/^https?:\/\//, '')}</a></span></div>
       </div>`;
     panel.classList.add('is-open');
+    if (window.BITDGlossary) window.BITDGlossary.initRoot(content);
   }
 
   function renderFocusPanel(company, etabs) {
     const panel = document.getElementById('map-side-panel');
     const content = document.getElementById('map-side-panel-content');
     if (!panel || !content) return;
-    const { makeBadge, makeSectorBadge } = window.BITDData.helpers;
+    const { makeSectorBadge, splitValues, formatMillions } = window.BITDData.helpers;
 
     const regions = [...new Set(etabs.map((e) => e.region).filter(Boolean))];
     const typeCounts = etabs.reduce((acc, e) => { acc[e.type_site] = (acc[e.type_site] || 0) + 1; return acc; }, {});
@@ -333,13 +340,21 @@
       <button class="btn-back-national" id="btn-back-national" type="button">← Retour aux 30 entreprises</button>
       <h3 style="margin-top:0.75rem">${company.entreprise}</h3>
       <p>${sectorBadges}</p>
-      <p>${makeBadge(company.risque_fournisseur)} ${makeBadge(company.criticite_souveraine)}</p>
+      <p class="small-note">${company.specialite}</p>
 
       <div class="focus-kpi-grid">
         <div class="focus-kpi"><div class="focus-kpi-val">${etabs.length}</div><div class="focus-kpi-lbl">implantations</div></div>
         <div class="focus-kpi"><div class="focus-kpi-val">${regions.length}</div><div class="focus-kpi-lbl">régions</div></div>
       </div>
       <div class="etab-type-summary">${typeSummary}</div>
+
+      <div class="detail-list detail-list--light">
+        <div class="detail-item"><strong>${termHtml('ca_defense', 'CA Défense')}</strong><span>${company.ca_defense_label}</span></div>
+        <div class="detail-item"><strong>${termHtml('carnet_commandes', 'Carnet de commandes')}</strong><span>${company.carnet_num == null ? 'n.c.' : formatMillions(company.carnet_num)}</span></div>
+        <div class="detail-item"><strong>Indicateur financier</strong><span>${company.financial_indicator.value === 'n.c.' ? 'n.c.' : `${company.financial_indicator.label} · ${company.financial_indicator.value} (${company.financial_indicator.type})`}</span></div>
+        <div class="detail-item"><strong>Programmes phares</strong><span>${splitValues(company.programmes).join(' · ') || 'n.c.'}</span></div>
+        <div class="detail-item"><strong>Actionnariat</strong><span>${company.actionnariat}</span></div>
+      </div>
 
       <div class="section-hand" style="font-size:0.7rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.07em;margin:0.85rem 0 0.4rem">Implantations</div>
       <div class="etab-list" id="etab-list">${etabList}</div>
@@ -348,6 +363,7 @@
       </div>`;
 
     panel.classList.add('is-open');
+    if (window.BITDGlossary) window.BITDGlossary.initRoot(content);
 
     // Back button
     document.getElementById('btn-back-national').addEventListener('click', () => {
