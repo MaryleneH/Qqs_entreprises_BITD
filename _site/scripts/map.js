@@ -2,6 +2,8 @@
   let map;
   let nationalLayer;
   let focusLayer;
+  let programmeLayer;
+  let currentLegend = null;
   let activeSiteId = null;
   const markerIndex = new Map();
   const markerData = new Map();
@@ -76,29 +78,57 @@
 
     nationalLayer = L.layerGroup().addTo(map);
     focusLayer = L.layerGroup().addTo(map);
-    addLegend();
+    programmeLayer = L.layerGroup().addTo(map);
+    addLegend('entreprise');
     return map;
   }
 
-  function addLegend() {
+  function addLegend(mode) {
     if (!map) return;
+    if (currentLegend) { currentLegend.remove(); currentLegend = null; }
     const legend = L.control({ position: 'bottomleft' });
-    legend.onAdd = function () {
-      const div = L.DomUtil.create('div', 'map-legend map-legend--simple');
-      div.innerHTML = `
-        <div class="legend-title">Légende</div>
-        <div class="legend-item">
-          <span class="legend-symbol legend-symbol--siege">
-            <svg viewBox="0 0 14 14" width="12" height="12" fill="rgba(245,246,242,0.9)"><path d="M7 1l1.6 4.4H14l-3.7 2.7 1.4 4.4L7 9.8 2.3 12.5l1.4-4.4L0 5.4h5.4z"/></svg>
-          </span>
-          <span>Siège</span>
-        </div>
-        <div class="legend-item"><span class="legend-symbol legend-symbol--active">●</span><span>Établissement actif</span></div>
-        <div class="legend-item"><span class="legend-symbol legend-symbol--inactive">○</span><span>Établissement inactif</span></div>
-      `;
-      return div;
-    };
+    if (mode === 'programme') {
+      legend.onAdd = function () {
+        const div = L.DomUtil.create('div', 'map-legend map-legend--programme');
+        div.innerHTML = `
+          <div class="legend-title">Légende</div>
+          <div class="legend-item">
+            <span class="legend-symbol legend-symbol--prog-moe">
+              <svg viewBox="0 0 14 14" width="13" height="13" fill="var(--gold)"><path d="M7 1l1.6 4.4H14l-3.7 2.7 1.4 4.4L7 9.8 2.3 12.5l1.4-4.4L0 5.4h5.4z"/></svg>
+            </span>
+            <span>Maître d'œuvre</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol legend-symbol--prog-company">◆</span>
+            <span>Entreprise participante</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol legend-symbol--prog-site">●</span>
+            <span>Site documenté</span>
+          </div>
+          <div class="legend-note">Les traits indiquent l'appartenance au programme,<br>non des flux contractuels détaillés.</div>
+        `;
+        return div;
+      };
+    } else {
+      legend.onAdd = function () {
+        const div = L.DomUtil.create('div', 'map-legend map-legend--simple');
+        div.innerHTML = `
+          <div class="legend-title">Légende</div>
+          <div class="legend-item">
+            <span class="legend-symbol legend-symbol--siege">
+              <svg viewBox="0 0 14 14" width="12" height="12" fill="rgba(245,246,242,0.9)"><path d="M7 1l1.6 4.4H14l-3.7 2.7 1.4 4.4L7 9.8 2.3 12.5l1.4-4.4L0 5.4h5.4z"/></svg>
+            </span>
+            <span>Siège</span>
+          </div>
+          <div class="legend-item"><span class="legend-symbol legend-symbol--active">●</span><span>Établissement actif</span></div>
+          <div class="legend-item"><span class="legend-symbol legend-symbol--inactive">○</span><span>Établissement inactif</span></div>
+        `;
+        return div;
+      };
+    }
     legend.addTo(map);
+    currentLegend = legend;
   }
 
   function companyIcon(color, selected) {
@@ -205,27 +235,213 @@
     title.textContent = company.entreprise;
 
     if (snapshot.statutEtablissements === 'tous') {
-      subtitle.textContent = `${allCompanyEtabs.length} établissements au total · ${regions.size} régions`;
-      counter.textContent = `${company.entreprise} · ${allCompanyEtabs.length} établissements au total`;
+      subtitle.textContent = `${visibleEtabs.length} établissements au total · ${regions.size} régions`;
+      counter.textContent = `${company.entreprise} · ${visibleEtabs.length} établissements au total`;
     } else {
       subtitle.textContent = `${visibleEtabs.length} établissements actifs affichés · ${regions.size} régions`;
       counter.textContent = `${company.entreprise} · ${visibleEtabs.length} établissements actifs affichés`;
     }
 
     if (note) {
-      note.innerHTML = `Statut <span class="term-definition" data-term="etablissement_actif">établissement actif</span> basé sur les colonnes SIRENE disponibles.`;
+      note.innerHTML = `Statut <span class="term-definition" data-term="etablissement_actif">établissement actif</span> basé sur SIRENE et, en l'absence de statut rapproché, sur une preuve corporate validée.`;
       if (window.BITDGlossary) window.BITDGlossary.initRoot(note);
+    }
+  }
+
+  // --- Programme marker icons ---
+  function progMoeIcon() {
+    return L.divIcon({
+      className: '',
+      html: '<div class="marker-prog-moe"><svg viewBox="0 0 20 20" width="16" height="16" fill="var(--navy)" stroke="none"><path d="M10 1l2.4 6.6H19l-5.5 4 2.1 6.6L10 14 4.4 18.2l2.1-6.6L1 7.6h6.6z"/></svg></div>',
+      iconSize: [44, 44],
+      iconAnchor: [22, 22]
+    });
+  }
+
+  function progCompanyIcon(color) {
+    return L.divIcon({
+      className: '',
+      html: `<div class="marker-prog-company" style="--mc:${color}"></div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+  }
+
+  function progSiteIcon(color) {
+    return L.divIcon({
+      className: '',
+      html: `<div class="marker-prog-site" style="--mc:${color}"></div>`,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9]
+    });
+  }
+
+  function getProgCompanyPopup(entrepriseNom, programmeAcronyme, role, sousSysteme, isMoe) {
+    return `
+      <div class="bitd-popup-inner bitd-popup--programme">
+        <div class="popup-company">${escapeHtml(entrepriseNom)}</div>
+        <div class="popup-programme">${escapeHtml(programmeAcronyme)}</div>
+        ${isMoe ? '<div class="popup-role popup-role--moe">Maître d\'œuvre</div>' : `<div class="popup-role">${escapeHtml(role)}</div>`}
+        ${sousSysteme ? `<div class="popup-subsystem">${escapeHtml(sousSysteme)}</div>` : ''}
+        <div class="popup-tag popup-tag--programme">Participation documentée</div>
+      </div>
+    `;
+  }
+
+  function getProgSitePopup(entrepriseNom, ville, programmeAcronyme, activite) {
+    return `
+      <div class="bitd-popup-inner bitd-popup--programme">
+        <div class="popup-company">${escapeHtml(entrepriseNom)}</div>
+        <div class="popup-city">${escapeHtml(ville)}</div>
+        <div class="popup-programme">${escapeHtml(programmeAcronyme)}</div>
+        <div class="popup-role">${escapeHtml(activite)}</div>
+        <div class="popup-tag popup-tag--site-documente">Site associé explicitement au programme dans les sources</div>
+      </div>
+    `;
+  }
+
+  function renderProgramme(snapshot) {
+    ensureMap();
+    if (!map || !window.BITDProgramme) return;
+
+    nationalLayer.clearLayers();
+    focusLayer.clearLayers();
+    programmeLayer.clearLayers();
+    markerIndex.clear();
+    markerData.clear();
+    activeSiteId = null;
+    addLegend('programme');
+
+    const programmeId = snapshot.selectedProgrammeId;
+    if (!programmeId || !window.BITDProgramme.getAllProgrammes().length) {
+      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+      if (window.BITDProgramme) window.BITDProgramme.renderProgrammeEmpty();
+      // If programme data not loaded yet, try loading then re-render
+      if (programmeId && !window.BITDProgramme.getAllProgrammes().length) {
+        window.BITDProgramme.loadAll().then(() => {
+          window.BITDProgramme.fillProgrammeSelect();
+          const snap = window.BITDData.getState();
+          if (snap.explorerMode === 'programme' && snap.selectedProgrammeId) renderProgramme(snap);
+        }).catch((err) => console.error('[BITD][Programme]', err));
+      }
+      return;
+    }
+
+    const programme = window.BITDProgramme.getProgramme(programmeId);
+    if (!programme) return;
+
+    const relations = window.BITDProgramme.getEntreprisesProgramme(programmeId);
+    const siteLinks = window.BITDProgramme.getSitesProgramme(programmeId);
+    const allCompanies = snapshot.allRows;
+    const sectorColors = window.BITDData.constants.sectorColors;
+
+    const bounds = [];
+    const companyPositions = new Map(); // entreprise_id → {lat, lng}
+
+    // Resolve positions: prefer a documented site, otherwise use siege coordinates
+    relations.forEach((rel) => {
+      const company = allCompanies.find((c) => String(c.id) === String(rel.entreprise_id));
+      if (!company) return;
+      const lat = parseFloat(company.siege_latitude) || null;
+      const lng = parseFloat(company.siege_longitude) || null;
+      if (lat != null && lng != null) {
+        companyPositions.set(String(rel.entreprise_id), { lat, lng });
+      }
+    });
+
+    // Draw relation lines from MOE to participants (very subtle)
+    const moe = relations.find((r) => r.role && r.role.toLowerCase().includes('maître'));
+    if (moe && companyPositions.has(String(moe.entreprise_id))) {
+      const moePos = companyPositions.get(String(moe.entreprise_id));
+      relations.forEach((rel) => {
+        if (String(rel.entreprise_id) === String(moe.entreprise_id)) return;
+        const pos = companyPositions.get(String(rel.entreprise_id));
+        if (!pos) return;
+        L.polyline([[moePos.lat, moePos.lng], [pos.lat, pos.lng]], {
+          color: '#263E59',
+          weight: 0.8,
+          opacity: 0.18,
+          dashArray: '3 7',
+          interactive: false
+        }).addTo(programmeLayer);
+      });
+    }
+
+    // Draw documented sites
+    siteLinks.forEach((sl) => {
+      const rel = relations.find((r) => String(r.entreprise_id) === String(sl.entreprise_id));
+      const company = allCompanies.find((c) => String(c.id) === String(sl.entreprise_id));
+      if (!company) return;
+
+      const etabs = window.BITDData.getEtablissementsForCompany(String(sl.entreprise_id));
+      const etab = etabs.find((e) => e.site_id === sl.site_id);
+      if (!etab || etab.latitude == null || etab.longitude == null) return;
+
+      const color = sectorColors[company.primarySector] || '#5F7F82';
+      const icon = progSiteIcon(color);
+      const marker = L.marker([etab.latitude, etab.longitude], { icon, zIndexOffset: 200 });
+      const acronyme = programme.acronyme || programme.nom;
+      marker.bindPopup(getProgSitePopup(company.entreprise, etab.ville || etab.nom_site, acronyme, sl.activite_programme), {
+        className: 'bitd-popup',
+        maxWidth: 340,
+        autoPanPadding: [16, 16]
+      });
+      marker.addTo(programmeLayer);
+      bounds.push([etab.latitude, etab.longitude]);
+    });
+
+    // Draw company markers (companies without documented site, or as overlay)
+    const siteEntrepriseIds = new Set(siteLinks.map((s) => String(s.entreprise_id)));
+
+    relations.forEach((rel) => {
+      const company = allCompanies.find((c) => String(c.id) === String(rel.entreprise_id));
+      if (!company) return;
+      const pos = companyPositions.get(String(rel.entreprise_id));
+      if (!pos) return;
+
+      const isMoe = rel.role && rel.role.toLowerCase().includes('maître');
+      const color = sectorColors[company.primarySector] || '#5F7F82';
+      const icon = isMoe ? progMoeIcon() : progCompanyIcon(color);
+      const marker = L.marker([pos.lat, pos.lng], { icon, zIndexOffset: isMoe ? 2000 : 500 });
+      const acronyme = programme.acronyme || programme.nom;
+      marker.bindPopup(getProgCompanyPopup(company.entreprise, acronyme, rel.role, rel.sous_systeme, isMoe), {
+        className: 'bitd-popup',
+        maxWidth: 340,
+        autoPanPadding: [16, 16]
+      });
+      marker.on('click', () => marker.openPopup());
+      marker.addTo(programmeLayer);
+      bounds.push([pos.lat, pos.lng]);
+    });
+
+    if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: isMobileViewport() ? [32, 32] : [60, 60], maxZoom: 8, animate: true });
+    } else if (bounds.length === 1) {
+      map.setView(bounds[0], 7, { animate: true });
+    } else {
+      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+    }
+
+    // Render programme panel
+    if (window.BITDProgramme) {
+      window.BITDProgramme.renderProgrammePanel(programme, relations, siteLinks, allCompanies);
     }
   }
 
   function updateUrl(snapshot) {
     const url = new URL(window.location.href);
-    if (snapshot.entrepriseId) url.searchParams.set('entreprise', snapshot.entrepriseId);
-    else url.searchParams.delete('entreprise');
-
-    if (snapshot.statutEtablissements === 'tous') url.searchParams.set('etablissements', 'tous');
-    else url.searchParams.delete('etablissements');
-
+    if (snapshot.explorerMode === 'programme') {
+      url.searchParams.delete('entreprise');
+      url.searchParams.delete('etablissements');
+      if (snapshot.selectedProgrammeId) url.searchParams.set('programme', snapshot.selectedProgrammeId);
+      else url.searchParams.delete('programme');
+    } else {
+      url.searchParams.delete('programme');
+      if (snapshot.entrepriseId) url.searchParams.set('entreprise', snapshot.entrepriseId);
+      else url.searchParams.delete('entreprise');
+      if (snapshot.statutEtablissements === 'tous') url.searchParams.set('etablissements', 'tous');
+      else url.searchParams.delete('etablissements');
+    }
     window.history.replaceState({}, '', url);
   }
 
@@ -242,12 +458,30 @@
   function syncControlValues(snapshot) {
     const select = document.getElementById('entreprise-select');
     const buttons = document.querySelectorAll('.segmented-btn[data-etab-filter]');
-    if (select) select.value = snapshot.entrepriseId || '';
+    const modeButtons = document.querySelectorAll('.explorer-mode-btn');
+    const entrepriseControls = document.getElementById('entreprise-controls');
+    const programmeControls = document.getElementById('programme-controls');
 
-    buttons.forEach((button) => {
-      const isActive = button.getAttribute('data-etab-filter') === snapshot.statutEtablissements;
-      button.classList.toggle('is-active', isActive);
-      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    if (snapshot.explorerMode === 'programme') {
+      if (entrepriseControls) entrepriseControls.hidden = true;
+      if (programmeControls) programmeControls.hidden = false;
+      const progSelect = document.getElementById('programme-select');
+      if (progSelect) progSelect.value = snapshot.selectedProgrammeId || '';
+    } else {
+      if (entrepriseControls) entrepriseControls.hidden = false;
+      if (programmeControls) programmeControls.hidden = true;
+      if (select) select.value = snapshot.entrepriseId || '';
+      buttons.forEach((button) => {
+        const isActive = button.getAttribute('data-etab-filter') === snapshot.statutEtablissements;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+
+    modeButtons.forEach((btn) => {
+      const isActive = btn.getAttribute('data-mode') === snapshot.explorerMode;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
   }
 
@@ -289,8 +523,8 @@
       if (company.latitude == null || company.longitude == null) return;
       const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
       const marker = L.marker([company.latitude, company.longitude], { icon: companyIcon(color, false) });
-      const allEtabs = window.BITDData.getEtablissementsForCompany(company.id);
-      const activeEtabs = allEtabs.filter((etab) => etab.sirene_is_active);
+      const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
+      const activeEtabs = window.BITDData.getVisibleEstablishments(company.id, 'actifs');
       marker.bindPopup(getNationalPopupHtml(company, activeEtabs.length, allEtabs.length), {
         className: 'bitd-popup',
         maxWidth: 320
@@ -361,6 +595,7 @@
       <ul class="panel-company-infos">${companyInfos}</ul>
       <h4>Implantations</h4>
       <div class="site-list" id="site-list">${listRows || '<p class="small-note">Aucun site avec coordonnées pour ce filtre.</p>'}</div>
+      <div id="company-programmes-section"></div>
     `;
 
     const back = document.getElementById('back-to-national');
@@ -394,8 +629,8 @@
     focusLayer.clearLayers();
 
     const company = snapshot.selectedCompany;
-    const allEtabs = window.BITDData.getEtablissementsForCompany(company.id);
-    const visibleEtabs = window.BITDData.getVisibleEstablishments();
+    const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
+    const visibleEtabs = window.BITDData.getVisibleEstablishments(company.id, snapshot.statutEtablissements);
     const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
     currentFocusColor = color;
     const bounds = [];
@@ -469,6 +704,12 @@
     const params = new URLSearchParams(window.location.search);
     const fromUrlEntreprise = params.get('entreprise');
     const fromUrlEtabs = params.get('etablissements');
+    const fromUrlProgramme = params.get('programme');
+
+    if (fromUrlProgramme && window.BITDData) {
+      window.BITDData.setProgramme(fromUrlProgramme);
+      return;
+    }
 
     if (fromUrlEtabs === 'tous') {
       window.BITDData.setStatutEtablissements('tous');
@@ -480,25 +721,60 @@
   }
 
   function render(snapshot) {
-    fillEntrepriseSelect(snapshot);
     syncControlValues(snapshot);
 
-    const visibleEtabs = snapshot.entrepriseId ? window.BITDData.getVisibleEstablishments() : [];
-    const allCompanyEtabs = snapshot.entrepriseId ? window.BITDData.getEtablissementsForCompany(snapshot.entrepriseId) : [];
-    setContext(snapshot, visibleEtabs, allCompanyEtabs);
-
-    if (snapshot.entrepriseId && snapshot.selectedCompany) {
-      renderFocus(snapshot);
+    if (snapshot.explorerMode === 'programme') {
+      nationalLayer.clearLayers();
+      focusLayer.clearLayers();
+      setContextProgramme(snapshot);
+      renderProgramme(snapshot);
     } else {
-      renderNational(snapshot);
+      programmeLayer.clearLayers();
+      addLegend('entreprise');
+
+      fillEntrepriseSelect(snapshot);
+
+      const visibleEtabs = snapshot.entrepriseId
+        ? window.BITDData.getVisibleEstablishments(snapshot.entrepriseId, snapshot.statutEtablissements)
+        : [];
+      const allCompanyEtabs = snapshot.entrepriseId
+        ? window.BITDData.getVisibleEstablishments(snapshot.entrepriseId, 'tous')
+        : [];
+      setContext(snapshot, visibleEtabs, allCompanyEtabs);
+
+      if (snapshot.entrepriseId && snapshot.selectedCompany) {
+        renderFocus(snapshot);
+      } else {
+        renderNational(snapshot);
+      }
     }
 
     updateUrl(snapshot);
   }
 
+  function setContextProgramme(snapshot) {
+    const title = document.getElementById('map-context-title');
+    const subtitle = document.getElementById('map-context-subtitle');
+    const note = document.getElementById('map-context-note');
+    if (!snapshot.selectedProgrammeId) {
+      if (title) title.textContent = 'Explorer un programme';
+      if (subtitle) subtitle.textContent = 'Sélectionnez un programme pour découvrir les entreprises du référentiel qui y participent.';
+      if (note) note.textContent = '';
+      return;
+    }
+    const prog = window.BITDProgramme && window.BITDProgramme.getProgramme(snapshot.selectedProgrammeId);
+    if (!prog) return;
+    if (title) title.textContent = prog.acronyme || prog.nom;
+    if (subtitle) subtitle.textContent = prog.description_courte;
+    if (note) note.textContent = `${prog.domaine} · ${prog.statut}`;
+  }
+
   function bindControls() {
     const select = document.getElementById('entreprise-select');
     const buttons = document.querySelectorAll('.segmented-btn[data-etab-filter]');
+    const modeButtons = document.querySelectorAll('.explorer-mode-btn');
+    const progSelect = document.getElementById('programme-select');
+
     if (select) {
       select.addEventListener('change', () => {
         selectEntreprise(select.value || null);
@@ -510,12 +786,32 @@
         setEtabFilter(button.getAttribute('data-etab-filter'));
       });
     });
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode');
+        if (window.BITDData) window.BITDData.setExplorerMode(mode);
+      });
+    });
+
+    if (progSelect) {
+      progSelect.addEventListener('change', () => {
+        if (window.BITDData) window.BITDData.setProgramme(progSelect.value || null);
+      });
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!window.BITDData || !document.getElementById('bitd-map')) return;
     ensureMap();
     bindControls();
+
+    // Load programme data and fill select when ready
+    if (window.BITDProgramme) {
+      window.BITDProgramme.loadAll().then(() => {
+        window.BITDProgramme.fillProgrammeSelect();
+      }).catch((err) => console.error('[BITD][Programme]', err));
+    }
 
     let urlApplied = false;
     window.BITDData.subscribe((snapshot) => {
@@ -524,6 +820,12 @@
         applyUrlStateWhenReady(snapshot);
       }
       render(snapshot);
+
+      // Refresh company programmes section if in entreprise mode
+      if (snapshot.explorerMode !== 'programme' && snapshot.entrepriseId && window.BITDProgramme && window.BITDProgramme.renderProgrammesForEntreprise) {
+        window.BITDProgramme.renderProgrammesForEntreprise(snapshot.entrepriseId);
+      }
+
       if (window.BITDGlossary) window.BITDGlossary.initRoot(document);
     });
 
