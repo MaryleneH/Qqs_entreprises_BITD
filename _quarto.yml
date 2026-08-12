@@ -34,8 +34,9 @@ website:
 
 format:
   html:
-    theme: none
-    css: styles/dashboard.scss
+    theme:
+      - cosmo
+      - styles/dashboard.scss
     toc: false
     smooth-scroll: true
     anchor-sections: true
