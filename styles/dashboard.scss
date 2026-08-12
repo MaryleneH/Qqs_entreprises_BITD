@@ -782,13 +782,13 @@ main.content { padding: 0 !important; }
   border-radius: 50%;
   display: inline-block;
 }
-.type-siege       { background: var(--gold); }
-.type-production  { background: #4A90D9; }
-.type-R\&D        { background: #8E44AD; }
-.type-MCO         { background: #27AE60; }
-.type-essais      { background: #C0392B; }
-.type-services    { background: #5F7F82; }
-.type-autre       { background: #95A5A6; }
+.type-siege { background: var(--gold); }
+.type-production { background: #4A90D9; }
+.type-r-d { background: #8E44AD; }
+.type-mco { background: #27AE60; }
+.type-essais { background: #C0392B; }
+.type-services { background: #5F7F82; }
+.type-autre { background: #95A5A6; }
 
 // Établissement list
 .etab-list {
