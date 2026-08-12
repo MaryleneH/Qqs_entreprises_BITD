@@ -8,7 +8,7 @@ title-block: false
 <div class="hero-panel">
   <span class="hero-kicker">✦ Panorama stratégique · 30 entreprises clés</span>
   <h1>BITD France · Dashboard souveraineté &amp; risque fournisseur</h1>
-  <p>Vue statique premium construite à partir de sources publiques consolidées au 12 août 2026. Les indicateurs se recalculent depuis <code>data/entreprises.csv</code> et la carte met en perspective les dépendances industrielles, les risques d’exécution et la criticité souveraine.</p>
+  <p>Vue statique premium construite à partir de sources publiques consolidées au 12 août 2026. Les indicateurs se recalculent depuis <code>data/entreprises.csv</code> et la carte met en perspective les dépendances industrielles, les risques d'exécution et la criticité souveraine.</p>
   <div class="hero-meta">
     <span class="chip">100 % statique</span>
     <span class="chip">Carte Leaflet</span>
@@ -28,18 +28,42 @@ title-block: false
 <div class="dashboard-grid">
   <div>
     <div class="filter-bar" id="dashboard-filters">
-      <input id="filter-search" type="search" placeholder="Rechercher une entreprise, un programme, une dépendance…" aria-label="Recherche" />
-      <select id="filter-sector" aria-label="Secteur"><option value="all">Tous les secteurs</option></select>
-      <select id="filter-risk" aria-label="Risque fournisseur"><option value="all">Tous les risques fournisseur</option></select>
-      <select id="filter-criticality" aria-label="Criticité souveraine"><option value="all">Toutes les criticités</option></select>
-      <select id="filter-region" aria-label="Région"><option value="all">Toutes les régions</option></select>
-      <button type="button" id="filter-reset">Réinitialiser</button>
+      <div class="filter-group filter-search">
+        <label for="filter-search">Recherche</label>
+        <input id="filter-search" class="filter-input" type="search" placeholder="Entreprise, programme, dépendance…" aria-label="Recherche" />
+      </div>
+      <div class="filter-group">
+        <label for="filter-sector">Secteur</label>
+        <select id="filter-sector" class="filter-select" aria-label="Secteur"><option value="all">Tous les secteurs</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-risk">Risque fournisseur</label>
+        <select id="filter-risk" class="filter-select" aria-label="Risque fournisseur"><option value="all">Tous les risques fournisseur</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-criticality">Criticité</label>
+        <select id="filter-criticality" class="filter-select" aria-label="Criticité souveraine"><option value="all">Toutes les criticités</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-region">Région d'implantation</label>
+        <select id="filter-region" class="filter-select" aria-label="Région d'implantation"><option value="all">Toutes les régions</option></select>
+      </div>
+      <button type="button" id="filter-reset" class="btn-reset">Réinitialiser</button>
     </div>
 
     <div class="surface-card map-stage">
-      <div id="bitd-map" aria-label="Carte des entreprises"></div>
+      <div class="map-mode-bar" role="group" aria-label="Mode d'affichage de la carte">
+        <span class="map-mode-label">Vue</span>
+        <button id="mode-national" class="map-mode-btn active" type="button" title="Afficher les 30 sièges sur la carte de France">
+          <span class="mode-icon">🗺</span> France — sièges
+        </button>
+        <button id="mode-focus" class="map-mode-btn" type="button" title="Afficher les implantations de l'entreprise sélectionnée" disabled>
+          <span class="mode-icon">🔍</span> Implantations
+        </button>
+      </div>
+      <div id="bitd-map" aria-label="Carte des entreprises BITD"></div>
       <div class="map-side-panel" id="map-side-panel" aria-live="polite">
-        <button class="close-panel" id="close-map-panel" type="button" aria-label="Fermer">×</button>
+        <button class="close-panel" id="close-map-panel" type="button" aria-label="Fermer le panneau">×</button>
         <div id="map-side-panel-content">
           <h3>Sélection carte</h3>
           <p class="small-note">Cliquez sur un marqueur pour afficher le détail entreprise, ses programmes critiques, ses dépendances et le point de vigilance associé.</p>
@@ -71,4 +95,20 @@ title-block: false
     </div>
   </div>
 </div>
+
+<script>
+// Wire mode-focus button: enable/disable based on selection state
+document.addEventListener('bitd:company-selected', function() {
+  var btn = document.getElementById('mode-focus');
+  if (btn) { btn.disabled = false; btn.classList.add('active'); }
+  var btnN = document.getElementById('mode-national');
+  if (btnN) btnN.classList.remove('active');
+});
+document.addEventListener('bitd:company-cleared', function() {
+  var btn = document.getElementById('mode-focus');
+  if (btn) { btn.disabled = true; btn.classList.remove('active'); }
+  var btnN = document.getElementById('mode-national');
+  if (btnN) btnN.classList.add('active');
+});
+</script>
 ```

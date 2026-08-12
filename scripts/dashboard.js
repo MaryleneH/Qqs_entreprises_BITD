@@ -12,8 +12,12 @@
 
   const state = {
     dataPromise: null,
+    etablissementsPromise: null,
     allRows: [],
     filteredRows: [],
+    allEtablissements: [],
+    selectedCompany: null,
+    mapMode: 'national', // 'national' | 'focus'
     filters: { search: '', sector: 'all', risk: 'all', criticality: 'all', region: 'all' },
     consumers: []
   };
@@ -65,7 +69,7 @@
     }
 
     const [header, ...body] = rows;
-    return body.map((cells) => Object.fromEntries(header.map((key, index) => [key, cells[index] ?? 'n.c.'])));
+    return body.map((cells) => Object.fromEntries(header.map((key, index) => [key, cells[index] ?? ''])));
   }
 
   function numberOrNull(value) {
@@ -124,7 +128,7 @@
   }
 
   function splitValues(value) {
-    return (value || 'n.c.').split(';').map((item) => item.trim()).filter(Boolean);
+    return (value || '').split(';').map((item) => item.trim()).filter(Boolean);
   }
 
   function hydrateRow(row) {
@@ -157,6 +161,21 @@
     };
   }
 
+  function hydrateEtablissement(row) {
+    return {
+      ...row,
+      latitude: numberOrNull(row.latitude),
+      longitude: numberOrNull(row.longitude),
+      est_siege: row.est_siege === 'true',
+      specialites: splitValues(row.specialites),
+      programmes: splitValues(row.programmes_associes)
+    };
+  }
+
+  function getEtablissementsForCompany(companyId) {
+    return state.allEtablissements.filter((e) => e.entreprise_id === companyId);
+  }
+
   function applyFilters() {
     const { search, sector, risk, criticality, region } = state.filters;
     state.filteredRows = state.allRows.filter((row) => {
@@ -164,7 +183,15 @@
       const matchesSector = sector === 'all' || row.sectors.includes(sector);
       const matchesRisk = risk === 'all' || row.risque_fournisseur === risk;
       const matchesCriticality = criticality === 'all' || row.criticite_souveraine === criticality;
-      const matchesRegion = region === 'all' || row.siege_region === region;
+      // Filter by region of any établissement, not just siege
+      let matchesRegion = region === 'all';
+      if (!matchesRegion) {
+        matchesRegion = row.siege_region === region;
+        if (!matchesRegion) {
+          const etabs = getEtablissementsForCompany(row.id);
+          matchesRegion = etabs.some((e) => e.region === region);
+        }
+      }
       return matchesSearch && matchesSector && matchesRisk && matchesCriticality && matchesRegion;
     });
 
@@ -245,34 +272,54 @@
       if (filters.sector !== 'all') chips.push(`<span class="chip">Secteur · ${filters.sector}</span>`);
       if (filters.risk !== 'all') chips.push(`<span class="chip">Risque · ${filters.risk}</span>`);
       if (filters.criticality !== 'all') chips.push(`<span class="chip">Criticité · ${filters.criticality}</span>`);
-      if (filters.region !== 'all') chips.push(`<span class="chip">Région · ${filters.region}</span>`);
+      if (filters.region !== 'all') chips.push(`<span class="chip">Région d'implantation · ${filters.region}</span>`);
       activeFilters.innerHTML = chips.length ? chips.join('') : '<span class="chip">Aucun filtre actif</span>';
     }
+  }
+
+  async function loadEtablissements() {
+    if (!state.etablissementsPromise) {
+      const url = new URL('data/etablissements.csv', document.baseURI);
+      state.etablissementsPromise = fetch(url)
+        .then((r) => {
+          if (!r.ok) throw new Error(`Impossible de charger ${url}`);
+          return r.text();
+        })
+        .then((text) => parseCSV(text).map(hydrateEtablissement))
+        .then((rows) => {
+          state.allEtablissements = rows;
+          return rows;
+        })
+        .catch((err) => {
+          console.warn('etablissements.csv non disponible:', err.message);
+          return [];
+        });
+    }
+    return state.etablissementsPromise;
   }
 
   async function loadEntreprises() {
     if (!state.dataPromise) {
       const url = new URL('data/entreprises.csv', document.baseURI);
-      state.dataPromise = fetch(url)
-        .then((response) => {
-          if (!response.ok) throw new Error(`Impossible de charger ${url}`);
-          return response.text();
-        })
-        .then((text) => parseCSV(text).map(hydrateRow))
-        .then((rows) => {
-          state.allRows = rows;
-          state.filteredRows = rows.slice();
-          applyFilters();
-          document.dispatchEvent(new CustomEvent('bitd:data-ready', { detail: { rows, state } }));
-          return rows;
-        })
-        .catch((error) => {
-          console.error(error);
-          document.querySelectorAll('#kpi-grid .kpi-value').forEach((el) => {
-            el.textContent = 'Erreur';
-          });
-          throw error;
+      state.dataPromise = Promise.all([
+        fetch(url).then((r) => {
+          if (!r.ok) throw new Error(`Impossible de charger ${url}`);
+          return r.text();
+        }).then((text) => parseCSV(text).map(hydrateRow)),
+        loadEtablissements()
+      ]).then(([rows]) => {
+        state.allRows = rows;
+        state.filteredRows = rows.slice();
+        applyFilters();
+        document.dispatchEvent(new CustomEvent('bitd:data-ready', { detail: { rows, state } }));
+        return rows;
+      }).catch((error) => {
+        console.error(error);
+        document.querySelectorAll('#kpi-grid .kpi-value').forEach((el) => {
+          el.textContent = 'Erreur';
         });
+        throw error;
+      });
     }
     return state.dataPromise;
   }
@@ -287,14 +334,36 @@
     applyFilters();
   }
 
+  function selectCompany(companyId) {
+    const company = state.allRows.find((r) => r.id === companyId);
+    if (!company) return;
+    state.selectedCompany = company;
+    state.mapMode = 'focus';
+    const etabs = getEtablissementsForCompany(companyId);
+    document.dispatchEvent(new CustomEvent('bitd:company-selected', {
+      detail: { company, etablissements: etabs, state }
+    }));
+  }
+
+  function clearSelection() {
+    state.selectedCompany = null;
+    state.mapMode = 'national';
+    document.dispatchEvent(new CustomEvent('bitd:company-cleared', { detail: { state } }));
+    applyFilters();
+  }
+
   function getState() {
     return state;
   }
 
   window.BITDData = {
     loadEntreprises,
+    loadEtablissements,
     registerConsumer,
     setFilters,
+    selectCompany,
+    clearSelection,
+    getEtablissementsForCompany,
     getState,
     constants: { sectorColors },
     helpers: {

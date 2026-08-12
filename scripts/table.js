@@ -8,12 +8,25 @@
     return String(a[key] || '').localeCompare(String(b[key] || ''), 'fr');
   }
 
+  function getBaseUrl() {
+    // Resolve path to index.html relative to current page
+    const path = window.location.pathname;
+    // If we're on /entreprises.html, index is at ./index.html
+    return 'index.html';
+  }
+
   function renderRows(rows) {
     const body = document.getElementById('entreprises-table-body');
     const count = document.getElementById('table-count');
     if (!body || !count) return;
     const { makeBadge, makeSectorBadge, splitValues, formatMillions, formatInteger } = window.BITDData.helpers;
-    body.innerHTML = rows.map((row) => `
+    body.innerHTML = rows.map((row) => {
+      const etabs = window.BITDData.getEtablissementsForCompany(row.id);
+      const etabCount = etabs.length;
+      const etabCell = etabCount > 0
+        ? `<a class="etab-link" href="${getBaseUrl()}?entreprise=${encodeURIComponent(row.id)}" title="Voir les implantations de ${row.entreprise} sur la carte">${etabCount} site${etabCount > 1 ? 's' : ''} →</a>`
+        : '<span class="small-note">—</span>';
+      return `
       <tr>
         <td><strong>${row.entreprise}</strong><br><span class="small-note">${row.specialite}</span></td>
         <td>${row.categorie}</td>
@@ -24,7 +37,9 @@
         <td>${makeBadge(row.risque_fournisseur)}</td>
         <td>${makeBadge(row.criticite_souveraine)}</td>
         <td>${splitValues(row.programmes).slice(0, 4).join(' · ')}</td>
-      </tr>`).join('');
+        <td>${etabCell}</td>
+      </tr>`;
+    }).join('');
     count.textContent = `${rows.length} entreprise(s) affichée(s)`;
   }
 
@@ -53,7 +68,10 @@
     const sector = document.getElementById('table-sector');
     const risk = document.getElementById('table-risk');
 
-    window.BITDData.loadEntreprises().then((rows) => {
+    Promise.all([
+      window.BITDData.loadEntreprises(),
+      window.BITDData.loadEtablissements()
+    ]).then(([rows]) => {
       tableState.rows = rows.slice();
       const sectors = [...new Set(rows.flatMap((row) => row.sectors))].sort((a, b) => a.localeCompare(b, 'fr'));
       const risks = [...new Set(rows.map((row) => row.risque_fournisseur))].sort((a, b) => (window.BITDData.helpers.riskScore(a) || 0) - (window.BITDData.helpers.riskScore(b) || 0));

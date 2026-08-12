@@ -5,7 +5,7 @@ page-layout: full
 
 ```{=html}
 <div class="page-intro">
-  <p>Tableau filtrable des 30 entreprises de la BITD française retenues pour cette vue 2026. Les valeurs <code>n.c.</code> sont volontairement conservées lorsque la source publique n’expose pas de donnée comparable.</p>
+  <p>Tableau filtrable des 30 entreprises de la BITD française retenues pour cette vue 2026. Les valeurs <code>n.c.</code> sont volontairement conservées lorsque la source publique n'expose pas de donnée comparable. Cliquez sur <strong>N sites →</strong> pour visualiser les implantations sur la carte.</p>
 </div>
 
 <div class="table-shell">
@@ -25,12 +25,13 @@ page-layout: full
           <th data-sort="entreprise">Entreprise</th>
           <th data-sort="categorie">Catégorie</th>
           <th data-sort="secteurs">Secteurs</th>
-          <th data-sort="siege_region">Région</th>
+          <th data-sort="siege_region">Région siège</th>
           <th data-sort="effectif">Effectif</th>
           <th data-sort="ca_defense">CA Défense / proxy</th>
           <th data-sort="risque_fournisseur">Risque fournisseur</th>
           <th data-sort="criticite_souveraine">Criticité souveraine</th>
           <th>Programmes</th>
+          <th>Implantations</th>
         </tr>
       </thead>
       <tbody id="entreprises-table-body"></tbody>
