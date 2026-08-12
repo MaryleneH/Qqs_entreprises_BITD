@@ -13,18 +13,38 @@ title-block: false
   </header>
 
   <section class="explorer-controls" aria-label="Contrôles d'exploration">
-    <div class="control-group control-group--wide">
-      <label for="entreprise-select">Entreprise</label>
-      <select id="entreprise-select" class="explorer-select" aria-label="Sélection de l'entreprise">
-        <option value="">Toutes les entreprises</option>
-      </select>
+
+    <div class="control-group control-group--mode">
+      <span class="control-mode-label">Explorer par</span>
+      <div class="segmented segmented--mode" role="group" aria-label="Mode d'exploration">
+        <button type="button" class="segmented-btn explorer-mode-btn is-active" data-mode="entreprise" aria-pressed="true">Entreprise</button>
+        <button type="button" class="segmented-btn explorer-mode-btn" data-mode="programme" aria-pressed="false">Programme</button>
+      </div>
     </div>
 
-    <div class="control-group">
-      <span id="etabs-label">Établissements</span>
-      <div class="segmented" role="group" aria-labelledby="etabs-label">
-        <button type="button" class="segmented-btn is-active" data-etab-filter="actifs" aria-pressed="true">Actifs uniquement</button>
-        <button type="button" class="segmented-btn" data-etab-filter="tous" aria-pressed="false">Tous</button>
+    <div id="entreprise-controls">
+      <div class="control-group control-group--wide">
+        <label for="entreprise-select">Entreprise</label>
+        <select id="entreprise-select" class="explorer-select" aria-label="Sélection de l'entreprise">
+          <option value="">Toutes les entreprises</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <span id="etabs-label">Établissements</span>
+        <div class="segmented" role="group" aria-labelledby="etabs-label">
+          <button type="button" class="segmented-btn is-active" data-etab-filter="actifs" aria-pressed="true">Actifs uniquement</button>
+          <button type="button" class="segmented-btn" data-etab-filter="tous" aria-pressed="false">Tous</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="programme-controls" hidden>
+      <div class="control-group control-group--wide">
+        <label for="programme-select">Programme</label>
+        <select id="programme-select" class="explorer-select" aria-label="Sélection du programme">
+          <option value="">Sélectionner un programme</option>
+        </select>
       </div>
     </div>
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.42">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -35,10 +35,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-e6907289520d0e52f51f8243c6aece01.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -76,6 +76,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="scripts/glossary.js" defer=""></script>
 <script src="scripts/dashboard.js" defer=""></script>
 <script src="scripts/filters.js" defer=""></script>
+<script src="scripts/programme.js" defer=""></script>
 <script src="scripts/map.js" defer=""></script>
 <script src="scripts/table.js" defer=""></script>
 <script src="scripts/comprendre.js" defer=""></script>
@@ -182,6 +183,40 @@ ul.task-list li input[type="checkbox"] {
       <span class="chip">Programmes</span>
     </div>
 
+    <div class="comprendre-section comprendre-section--programmes">
+      <h2 class="comprendre-section-title anchored">Programmes d'armement</h2>
+      <p class="comprendre-section-intro">Le mode <strong>Explorer par › Programme</strong> du dashboard permet d'identifier les entreprises du référentiel participant à un programme d'armement donné. Voici les notions clés pour interpréter ces données.</p>
+
+      <dl class="comprendre-dl">
+        <dt>Programme d'armement</dt>
+        <dd>Projet d'acquisition d'un système d'armes ou d'équipement militaire, financé par la DGA pour les forces françaises. Un programme rassemble un maître d'œuvre industriel, des systémiers, équipementiers et sous-traitants autour d'une capacité opérationnelle définie.</dd>
+
+        <dt>Maître d'œuvre</dt>
+        <dd>Entreprise responsable de la conception, de l'intégration et de la livraison du système global. Elle répond contractuellement de l'ensemble devant la DGA et coordonne les contributions des partenaires et sous-traitants. Exemple&nbsp;: Dassault Aviation pour le Rafale, Naval Group pour les FDI.</dd>
+
+        <dt>Systémier</dt>
+        <dd>Industriel capable de concevoir et d'intégrer des sous-systèmes complexes au sein d'un programme. Thales, par exemple, est systémier pour le radar et l'avionique du Rafale, ou le radar Sea Fire des FDI.</dd>
+
+        <dt>Équipementier</dt>
+        <dd>Fournisseur de composants, sous-ensembles ou équipements intégrés par le maître d'œuvre ou les systémiers. Safran est à la fois motoriste (M88) et équipementier optronique pour plusieurs programmes.</dd>
+
+        <dt>Sous-système</dt>
+        <dd>Partie identifiable d'un système d'armes remplissant une fonction spécifique&nbsp;: propulsion, radar, communications, armement, navigation, etc. Le champ <em>sous_systeme</em> des données identifie, lorsqu'elle est documentée, la contribution précise d'un industriel.</dd>
+
+        <dt>MCO (Maintien en Condition Opérationnelle)</dt>
+        <dd>Ensemble des activités d'entretien, réparation, modification et soutien technique permettant de maintenir un système en état de fonctionnement. Peut représenter une part importante de l'activité industrielle d'un programme sur sa durée de vie.</dd>
+
+        <dt>Niveau de confirmation</dt>
+        <dd>Dans les données du dashboard, chaque relation entreprise-programme est qualifiée&nbsp;:
+          <ul>
+            <li><strong>Documenté</strong>&nbsp;: lien explicitement mentionné dans les sources du référentiel.</li>
+            <li><strong>Documenté partiellement</strong>&nbsp;: présence dans la chaîne documentée de façon générique.</li>
+          </ul>
+          Aucune relation sans source n'est affichée.
+        </dd>
+      </dl>
+    </div>
+
     <div id="glossary-empty" class="disclaimer-box" hidden="">Aucune notion ne correspond à votre recherche.</div>
     <div id="glossary-groups" class="glossary-groups"></div>
   </div>
@@ -272,6 +307,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -382,6 +419,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
+      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

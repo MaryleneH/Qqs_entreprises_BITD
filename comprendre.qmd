@@ -32,6 +32,40 @@ format:
       <span class="chip">Programmes</span>
     </div>
 
+    <div class="comprendre-section comprendre-section--programmes">
+      <h2 class="comprendre-section-title">Programmes d'armement</h2>
+      <p class="comprendre-section-intro">Le mode <strong>Explorer par › Programme</strong> du dashboard permet d'identifier les entreprises du référentiel participant à un programme d'armement donné. Voici les notions clés pour interpréter ces données.</p>
+
+      <dl class="comprendre-dl">
+        <dt>Programme d'armement</dt>
+        <dd>Projet d'acquisition d'un système d'armes ou d'équipement militaire, financé par la DGA pour les forces françaises. Un programme rassemble un maître d'œuvre industriel, des systémiers, équipementiers et sous-traitants autour d'une capacité opérationnelle définie.</dd>
+
+        <dt>Maître d'œuvre</dt>
+        <dd>Entreprise responsable de la conception, de l'intégration et de la livraison du système global. Elle répond contractuellement de l'ensemble devant la DGA et coordonne les contributions des partenaires et sous-traitants. Exemple&nbsp;: Dassault Aviation pour le Rafale, Naval Group pour les FDI.</dd>
+
+        <dt>Systémier</dt>
+        <dd>Industriel capable de concevoir et d'intégrer des sous-systèmes complexes au sein d'un programme. Thales, par exemple, est systémier pour le radar et l'avionique du Rafale, ou le radar Sea Fire des FDI.</dd>
+
+        <dt>Équipementier</dt>
+        <dd>Fournisseur de composants, sous-ensembles ou équipements intégrés par le maître d'œuvre ou les systémiers. Safran est à la fois motoriste (M88) et équipementier optronique pour plusieurs programmes.</dd>
+
+        <dt>Sous-système</dt>
+        <dd>Partie identifiable d'un système d'armes remplissant une fonction spécifique&nbsp;: propulsion, radar, communications, armement, navigation, etc. Le champ <em>sous_systeme</em> des données identifie, lorsqu'elle est documentée, la contribution précise d'un industriel.</dd>
+
+        <dt>MCO (Maintien en Condition Opérationnelle)</dt>
+        <dd>Ensemble des activités d'entretien, réparation, modification et soutien technique permettant de maintenir un système en état de fonctionnement. Peut représenter une part importante de l'activité industrielle d'un programme sur sa durée de vie.</dd>
+
+        <dt>Niveau de confirmation</dt>
+        <dd>Dans les données du dashboard, chaque relation entreprise-programme est qualifiée&nbsp;:
+          <ul>
+            <li><strong>Documenté</strong>&nbsp;: lien explicitement mentionné dans les sources du référentiel.</li>
+            <li><strong>Documenté partiellement</strong>&nbsp;: présence dans la chaîne documentée de façon générique.</li>
+          </ul>
+          Aucune relation sans source n'est affichée.
+        </dd>
+      </dl>
+    </div>
+
     <div id="glossary-empty" class="disclaimer-box" hidden>Aucune notion ne correspond à votre recherche.</div>
     <div id="glossary-groups" class="glossary-groups"></div>
   </div>

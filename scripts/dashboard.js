@@ -17,6 +17,8 @@
     allEtablissements: [],
     entrepriseId: null,
     statutEtablissements: 'actifs',
+    explorerMode: 'entreprise',
+    selectedProgrammeId: null,
     subscribers: [],
     schema: {
       statusColumn: null,
@@ -316,6 +318,32 @@
     };
   }
 
+  function setExplorerMode(mode) {
+    const validMode = mode === 'programme' ? 'programme' : 'entreprise';
+    state.explorerMode = validMode;
+    if (validMode === 'entreprise') {
+      state.selectedProgrammeId = null;
+    }
+    if (validMode === 'programme') {
+      state.entrepriseId = null;
+    }
+    notify();
+  }
+
+  function setProgramme(programmeId) {
+    state.selectedProgrammeId = programmeId || null;
+    state.explorerMode = 'programme';
+    state.entrepriseId = null;
+    notify();
+  }
+
+  function switchToEntreprise(companyId) {
+    state.explorerMode = 'entreprise';
+    state.selectedProgrammeId = null;
+    state.entrepriseId = companyId || null;
+    notify();
+  }
+
   function notify() {
     const snapshot = getState();
     state.subscribers.forEach((subscriber) => subscriber(snapshot));
@@ -443,6 +471,9 @@
     getVisibleEstablishments,
     getMapNationalCompanies,
     getState,
+    setExplorerMode,
+    setProgramme,
+    switchToEntreprise,
     constants: { sectorColors },
     helpers: {
       normalizeText,

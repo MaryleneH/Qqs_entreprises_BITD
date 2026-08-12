@@ -1,0 +1,9 @@
+programme_id,site_id,entreprise_id,activite_programme,niveau_confirmation,source
+rafale,03-002-villaroche-reau,3,"Production du moteur M88 (motorisation du Rafale)",confirme,"etablissements.csv col. programmes_associes : M88"
+rafale,19-001-toulouse-periole,19,"Production de structures et d'interconnexions pour le Rafale",confirme,"etablissements.csv col. programmes_associes : Rafale"
+a400m,19-004-labege,19,"Structures pour l'A400M",confirme,"etablissements.csv col. programmes_associes : A400M"
+scorpion,07-002-roanne,7,"Assemblage des véhicules blindés Griffon, Jaguar et Serval du programme SCORPION",confirme,"etablissements.csv col. programmes_associes : Griffon ; Jaguar ; Serval"
+barracuda,04-002-cherbourg,4,"Construction et intégration des sous-marins nucléaires d'attaque Barracuda",confirme,"etablissements.csv col. programmes_associes : Barracuda"
+snle-3g,04-002-cherbourg,4,"Contribution à la construction des SNLE 3G",confirme,"etablissements.csv col. programmes_associes : SNLE 3G"
+fdi,04-005-lorient,4,"Construction et intégration des frégates de Défense et d'Intervention (FDI)",confirme,"etablissements.csv col. programmes_associes : FDI"
+m51,08-001-les-mureaux,8,"Intégration et développement du missile balistique stratégique M51",confirme,"etablissements.csv col. programmes_associes : M51"

@@ -17,6 +17,8 @@
     allEtablissements: [],
     entrepriseId: null,
     statutEtablissements: 'actifs',
+    explorerMode: 'entreprise',
+    selectedProgrammeId: null,
     subscribers: [],
     schema: {
       statusColumn: null,
@@ -34,6 +36,10 @@
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .trim();
+  }
+
+  function isTrue(value) {
+    return normalizeText(value) === 'true';
   }
 
   function parseCSV(text) {
@@ -113,6 +119,7 @@
     };
 
     state.schema.statusColumn = pick([
+      'etat_sirene',
       'etat_administratif',
       'et_at_administratif',
       'etatadministratifetablissement',
@@ -139,19 +146,31 @@
     state.schema.apeCodeColumn = pick(['code_ape', 'activite_principale_ape', 'naf']);
   }
 
-  function parseSireneStatus(rawStatus, row) {
-    const raw = normalizeText(rawStatus);
-    if (raw) {
-      if (['true', '1', 'actif', 'active', 'ouvert'].includes(raw)) return { isActive: true, label: 'actif' };
-      if (['false', '0', 'inactif', 'ferme', 'fermé', 'fermeture', 'historique', 'cesse', 'cessé', 'radie', 'radié'].includes(raw)) return { isActive: false, label: rawStatus };
-    }
+  function normalizeSireneLabel(rawStatus) {
+    const label = String(rawStatus ?? '').trim();
+    return label || 'Statut SIRENE non rapproché';
+  }
 
-    const joined = normalizeText(`${row.type_site || ''} ${row.activite || ''} ${row.description_courte || ''}`);
-    if (/(ferme|fermee|inactif|historique|fermeture|cess|radie)/.test(joined)) {
-      return { isActive: false, label: 'inactif' };
-    }
+  function isSireneClosedStatus(normalizedStatus) {
+    if (!normalizedStatus) return false;
+    return (
+      normalizedStatus.includes('ferme')
+      || normalizedStatus.includes('fermeture')
+      || normalizedStatus.includes('inactif')
+      || normalizedStatus.includes('historique')
+      || normalizedStatus.includes('cesse')
+      || normalizedStatus.includes('radie')
+      || normalizedStatus === 'false'
+      || normalizedStatus === '0'
+    );
+  }
 
-    return { isActive: true, label: 'actif' };
+  function isActiveEstablishment(site) {
+    const etatSirene = normalizeText(site.etat_sirene);
+    if (['actif', 'active', 'ouvert', 'true', '1'].includes(etatSirene)) return true;
+    if (isSireneClosedStatus(etatSirene)) return false;
+    if (isTrue(site.preuve_activite_corporate) && normalizeText(site.statut_validation).includes('valide')) return true;
+    return false;
   }
 
   function parseBitdStatus(value) {
@@ -195,28 +214,35 @@
   }
 
   function hydrateEtablissement(row, index) {
-    const statusRaw = state.schema.statusColumn ? row[state.schema.statusColumn] : '';
-    const sireneStatus = parseSireneStatus(statusRaw, row);
+    const statusRaw = state.schema.statusColumn ? row[state.schema.statusColumn] : (row.etat_sirene || '');
     const bitdRaw = state.schema.bitdColumn ? row[state.schema.bitdColumn] : '';
     const precision = state.schema.precisionColumn ? (row[state.schema.precisionColumn] || '').trim() : '';
-
-    return {
+    const hydrated = {
       ...row,
       _order: index,
       latitude: numberOrNull(row.latitude),
       longitude: numberOrNull(row.longitude),
-      est_siege: normalizeText(row.est_siege) === 'true',
+      est_siege: isTrue(row.est_siege),
+      est_siege_unite_legale_sirene: isTrue(row.est_siege_unite_legale_sirene),
+      preuve_activite_corporate_bool: isTrue(row.preuve_activite_corporate),
+      affichage_carte_defaut_bool: isTrue(row.affichage_carte_defaut),
+      rattachement_siret_trouve_bool: isTrue(row.rattachement_siret_trouve),
+      deja_dans_referentiel_initial_bool: isTrue(row.deja_dans_referentiel_initial),
       specialites: splitValues(row.specialites),
       programmes: splitValues(row.programmes_associes),
       sirene_status_raw: statusRaw,
-      sirene_status_label: (sireneStatus.label || '').toString().trim() || 'actif',
-      sirene_is_active: sireneStatus.isActive,
+      sirene_status_label: normalizeSireneLabel(statusRaw),
       bitd_status: parseBitdStatus(bitdRaw),
       bitd_status_raw: bitdRaw,
       precision_coordonnees: precision,
       siret_value: state.schema.siretColumn ? (row[state.schema.siretColumn] || '').trim() : '',
       ape_label: state.schema.apeLabelColumn ? (row[state.schema.apeLabelColumn] || '').trim() : '',
       ape_code: state.schema.apeCodeColumn ? (row[state.schema.apeCodeColumn] || '').trim() : ''
+    };
+
+    return {
+      ...hydrated,
+      sirene_is_active: isActiveEstablishment(hydrated)
     };
   }
 
@@ -225,7 +251,7 @@
 
     state.allRows = state.allRows.map((row) => {
       const etabs = byCompany.get(row.id) || [];
-      const activeEtabs = etabs.filter((e) => e.sirene_is_active);
+      const activeEtabs = getVisibleEstablishments(row.id, 'actifs');
       const regions = new Set();
       if (row.siege_region) regions.add(row.siege_region);
       etabs.forEach((e) => { if (e.region) regions.add(e.region); });
@@ -269,15 +295,15 @@
 
   function getEtablissementsForCompany(companyId) {
     return state.allEtablissements
-      .filter((e) => e.entreprise_id === companyId)
+      .filter((e) => String(e.entreprise_id) === String(companyId))
       .sort((a, b) => Number(b.est_siege) - Number(a.est_siege) || String(a.ville || '').localeCompare(String(b.ville || ''), 'fr'));
   }
 
-  function getVisibleEstablishments() {
-    if (!state.entrepriseId) return [];
-    const all = getEtablissementsForCompany(state.entrepriseId);
-    if (state.statutEtablissements === 'tous') return all;
-    return all.filter((e) => e.sirene_is_active);
+  function getVisibleEstablishments(companyId = state.entrepriseId, mode = state.statutEtablissements) {
+    if (!companyId) return [];
+    const companySites = getEtablissementsForCompany(companyId);
+    if (mode === 'tous') return companySites;
+    return companySites.filter((site) => isActiveEstablishment(site));
   }
 
   function getMapNationalCompanies() {
@@ -290,6 +316,32 @@
       selectedCompany: getCompanyById(state.entrepriseId),
       mapMode: state.entrepriseId ? 'focus' : 'national'
     };
+  }
+
+  function setExplorerMode(mode) {
+    const validMode = mode === 'programme' ? 'programme' : 'entreprise';
+    state.explorerMode = validMode;
+    if (validMode === 'entreprise') {
+      state.selectedProgrammeId = null;
+    }
+    if (validMode === 'programme') {
+      state.entrepriseId = null;
+    }
+    notify();
+  }
+
+  function setProgramme(programmeId) {
+    state.selectedProgrammeId = programmeId || null;
+    state.explorerMode = 'programme';
+    state.entrepriseId = null;
+    notify();
+  }
+
+  function switchToEntreprise(companyId) {
+    state.explorerMode = 'entreprise';
+    state.selectedProgrammeId = null;
+    state.entrepriseId = companyId || null;
+    notify();
   }
 
   function notify() {
@@ -333,18 +385,26 @@
       id: row.id,
       entreprise: row.entreprise,
       total: getEtablissementsForCompany(row.id).length,
-      actifs: getEtablissementsForCompany(row.id).filter((e) => e.sirene_is_active).length
+      actifs: getVisibleEstablishments(row.id, 'actifs').length
     }));
     const noSites = companyCounts.filter((item) => item.total === 0).map((item) => item.entreprise);
 
-    const totalActifs = state.allEtablissements.filter((e) => e.sirene_is_active).length;
+    const totalActifs = state.allEtablissements.filter((e) => isActiveEstablishment(e)).length;
     const totalInactifs = state.allEtablissements.length - totalActifs;
+    const totalSansStatutSirene = state.allEtablissements.filter((e) => !normalizeText(e.etat_sirene)).length;
+    const totalSansStatutSireneAvecPreuveCorporate = state.allEtablissements.filter(
+      (e) => !normalizeText(e.etat_sirene) && isTrue(e.preuve_activite_corporate)
+    ).length;
+    const totalStatutsFermes = state.allEtablissements.filter((e) => isSireneClosedStatus(normalizeText(e.etat_sirene))).length;
 
     console.info('[BITD][DATA_CHECK]', {
       entreprises: state.allRows.length,
       etablissements_total: state.allEtablissements.length,
       etablissements_actifs: totalActifs,
       etablissements_inactifs: totalInactifs,
+      etablissements_statut_ferme: totalStatutsFermes,
+      etablissements_sans_statut_sirene: totalSansStatutSirene,
+      etablissements_sans_statut_sirene_avec_preuve_corporate: totalSansStatutSireneAvecPreuveCorporate,
       entreprises_sans_etablissement: noSites,
       lignes_sans_coordonnees: missingCoords,
       lignes_sans_entreprise_id: missingCompanyId,
@@ -411,9 +471,14 @@
     getVisibleEstablishments,
     getMapNationalCompanies,
     getState,
+    setExplorerMode,
+    setProgramme,
+    switchToEntreprise,
     constants: { sectorColors },
     helpers: {
       normalizeText,
+      isTrue,
+      isActiveEstablishment,
       numberOrNull,
       splitValues,
       formatMillions,

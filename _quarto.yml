@@ -53,6 +53,7 @@ format:
           <script src="scripts/glossary.js" defer></script>
           <script src="scripts/dashboard.js" defer></script>
           <script src="scripts/filters.js" defer></script>
+          <script src="scripts/programme.js" defer></script>
           <script src="scripts/map.js" defer></script>
           <script src="scripts/table.js" defer></script>
           <script src="scripts/comprendre.js" defer></script>
