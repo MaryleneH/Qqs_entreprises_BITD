@@ -1,0 +1,131 @@
+---
+title: "Méthodologie"
+format:
+  html:
+    page-layout: article
+    toc: true
+    toc-title: "Sommaire"
+    toc-depth: 2
+---
+
+```{=html}
+<div class="page-container">
+  <div class="methodo-container">
+    <h1 class="page-title">Méthodologie <span class="annotation">& sources</span></h1>
+    <p class="page-subtitle">Périmètre, critères de sélection et définitions analytiques</p>
+
+    <div class="disclaimer-box">
+      ℹ Cette page présente la méthodologie et les sources documentaires du dashboard BITD France.
+      Les données sont issues <strong>exclusivement de sources publiques</strong> disponibles au 12 août 2026.
+      Cette analyse ne représente pas une position officielle de la DGA, du Ministère des Armées ou de toute autre autorité publique.
+    </div>
+```
+
+## Définition de la BITD
+
+La **Base Industrielle et Technologique de Défense (BITD)** française désigne l'ensemble des entreprises et organismes qui concourent à la conception, la production, le maintien en condition opérationnelle et l'exportation des systèmes d'armes et équipements militaires destinés aux forces armées françaises et à l'export.
+
+La DGA décrit la BITD comme un écosystème de plusieurs milliers d'entreprises, allant des grands maîtres d'œuvre systémiers jusqu'aux PME et ETI spécialisées dans des technologies de niche.
+
+## Périmètre de ce dashboard
+
+Ce dashboard référence les **30 principaux acteurs** de la BITD française sélectionnés selon les critères décrits ci-dessous. Il ne constitue pas un annuaire exhaustif de la BITD, qui comprend plusieurs milliers d'entreprises.
+
+## Critères de sélection
+
+Il n'existe pas de classement officiel public homogène des 30 premières entreprises françaises de défense par chiffre d'affaires défense. Le présent référentiel combine :
+
+- **Taille économique** : chiffre d'affaires total ou défense publié
+- **Volume militaire publié** : part de l'activité défense documentée
+- **Fonction de maître d'œuvre** : rôle dans la chaîne de production des systèmes d'armes
+- **Criticité technologique** : unicité des compétences et technologies
+- **Implication dans les programmes de la LPM 2024–2030**
+
+## Sources documentaires
+
+Les données financières sont prioritairement issues des **résultats annuels 2025**, rapports intégrés, communiqués officiels et sites corporate.
+
+### Sources transversales
+
+- Ministère des Armées / DGA — [armement.defense.gouv.fr](https://armement.defense.gouv.fr/)
+- L'Annuaire des Entreprises — [annuaire-entreprises.data.gouv.fr](https://annuaire-entreprises.data.gouv.fr/)
+- INSEE — nomenclature NAF/APE
+
+### Sources d'entreprise
+
+Les données de chaque entreprise sont issues de leurs publications officielles : rapports annuels, communiqués de presse, sites corporate et documents réglementaires publics.
+
+## Date des données
+
+**Situation arrêtée au 12 août 2026.**
+
+Les données financières reflètent en priorité les exercices 2024 et 2025 selon les publications disponibles à cette date.
+
+## Donnée publiée vs estimation
+
+::: {.disclaimer-box}
+**Convention importante :** lorsqu'un indicateur n'est pas publié sur un périmètre suffisamment comparable, la mention **n.c.** (non communiqué) est utilisée. Aucune supposition ni extrapolation non documentée n'est intégrée dans ce dashboard.
+:::
+
+Un chiffre de division mixte — par exemple « Équipements & Défense » ou « Defence and Space » — est explicitement présenté comme tel et ne doit pas être assimilé à un chiffre d'affaires défense pur.
+
+## Définitions analytiques
+
+### Risque fournisseur
+
+Le **risque fournisseur** estime la probabilité et l'impact qu'un industriel ne puisse pas fournir au rythme, au coût, au niveau de qualité ou dans le délai attendus. L'évaluation combine notamment :
+
+- solidité financière, marge, génération de trésorerie
+- dette et levier
+- profondeur du carnet et vitesse de montée en cadence
+- concentration client/programme, mono-sources
+- dépendances matières et composants
+- rareté des compétences et durée de qualification
+- transformation actionnariale ou restructuration en cours
+
+**Échelle : FAIBLE / MODÉRÉ / SIGNIFICATIF / ÉLEVÉ**
+
+> Un carnet très élevé n'est pas toujours un facteur de baisse du risque : il peut également révéler un risque de saturation, de BFR ou d'exécution.
+
+### Criticité souveraine
+
+La **criticité souveraine** mesure la difficulté pour la France de remplacer une capacité industrielle ou technologique dans un délai compatible avec les besoins des armées. Elle tient compte notamment de :
+
+- l'unicité de la technologie ou du moyen industriel
+- la présence sur la dissuasion nucléaire
+- la maîtrise des missiles, du combat aérien, du naval de combat
+- les délais de requalification d'une seconde source
+- la maîtrise nationale ou européenne du capital
+
+**Échelle : IMPORTANTE / TRÈS ÉLEVÉE / CRITIQUE**
+
+### Book-to-bill
+
+**Book-to-bill = prises de commandes / chiffre d'affaires.**
+
+Un ratio supérieur à 1 indique que le carnet tend à croître.
+
+### Carnet / CA
+
+**Carnet / CA = carnet de commandes / chiffre d'affaires annuel.** Il donne une approximation de la visibilité en années de chiffre d'affaires, sans préjuger du profil exact de livraison.
+
+### Marge EBITDA / EBIT / ROC
+
+Elle renseigne sur la capacité de l'entreprise à absorber l'inflation, les retards, les aléas industriels et les investissements nécessaires à la montée en cadence. La définition précise varie selon les groupes.
+
+### Free Cash Flow / CA
+
+Il renseigne sur la conversion du chiffre d'affaires en trésorerie, particulièrement critique pour les fournisseurs engagés dans une phase de forte montée en cadence.
+
+## Limites méthodologiques
+
+- Les données financières ne sont **pas homogènes** entre groupes : certains publient un CA défense isolé, d'autres une division mixte, d'autres ne ventilent pas publiquement.
+- Un **code APE n'est pas un critère de capacité** et ne doit pas servir à exclure un candidat d'un marché public.
+- Les montants défense d'un groupe dual doivent être **comparés avec prudence**.
+- Pour une analyse financière fournisseur approfondie, il convient de compléter ce guide par les **comptes sociaux** de l'entité française, le carnet, les investissements capacitaires et les approvisionnements critiques.
+- Les évaluations de risque et de criticité sont des **analyses analytiques sur sources publiques**, sans accès aux informations classifiées ou aux contrats DGA.
+
+```{=html}
+  </div>
+</div>
+```
