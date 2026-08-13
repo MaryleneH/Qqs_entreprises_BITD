@@ -126,7 +126,14 @@
   async function loadCoreRows() {
     const url = new URL('data/entreprises.csv', document.baseURI);
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`Impossible de charger ${url}`);
+    if (!res.ok) {
+      console.error(
+        'Impossible de charger data/entreprises.csv',
+        res.status,
+        res.url
+      );
+      throw new Error(`Impossible de charger ${res.url} (HTTP ${res.status})`);
+    }
     const rows = parseCSV(await res.text());
     return rows.map((row, index) => {
       const sectors = splitValues(row.secteurs);

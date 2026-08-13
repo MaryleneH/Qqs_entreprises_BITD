@@ -466,20 +466,32 @@
   async function loadEntreprises() {
     if (!state.dataPromise) {
       const url = new URL('data/entreprises.csv', document.baseURI);
-      state.dataPromise = Promise.all([
-        fetch(url).then((response) => {
-          if (!response.ok) throw new Error(`Impossible de charger ${url}`);
+      state.dataPromise = fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            console.error(
+              'Impossible de charger data/entreprises.csv',
+              response.status,
+              response.url
+            );
+            throw new Error(`Impossible de charger ${url} (HTTP ${response.status})`);
+          }
           return response.text();
-        }).then((text) => parseCSV(text).map((row, index) => hydrateRow(row, index))),
-        loadEtablissements()
-      ]).then(([rows]) => {
-        state.allRows = rows;
-        enrichRows();
-        runDataAudit();
-        notify();
-        document.dispatchEvent(new CustomEvent('bitd:data-ready', { detail: getState() }));
-        return state.allRows;
-      });
+        })
+        .then((text) => parseCSV(text).map((row, index) => hydrateRow(row, index)))
+        .then((rows) => {
+          state.allRows = rows;
+          // Établissements are optional enrichment — failure must not block the core load.
+          return loadEtablissements().catch((err) => {
+            console.warn('[BITDData] Établissements indisponibles (fail-soft) :', err);
+          }).then(() => {
+            enrichRows();
+            runDataAudit();
+            notify();
+            document.dispatchEvent(new CustomEvent('bitd:data-ready', { detail: getState() }));
+            return state.allRows;
+          });
+        });
     }
     return state.dataPromise;
   }

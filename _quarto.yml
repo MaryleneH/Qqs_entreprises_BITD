@@ -12,6 +12,7 @@ project:
     - scripts/**
     - styles/**
     - sources/**
+    - assets/**
 
 website:
   title: "BITD France"
