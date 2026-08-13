@@ -12,6 +12,37 @@
 
   const FRANCE_VIEW = { center: [46.603354, 1.888334], zoom: 5.6 };
 
+  // Metropolitan France + Corsica bounding box (lat 41–52, lon -6–10).
+  // Used to build fitBounds using metropolitan sites first.
+  const METRO_BBOX = { latMin: 41, latMax: 52, lngMin: -6, lngMax: 10 };
+
+  function isMetroBound(lat, lng) {
+    return (
+      Number.isFinite(lat) && Number.isFinite(lng) &&
+      lat >= METRO_BBOX.latMin && lat <= METRO_BBOX.latMax &&
+      lng >= METRO_BBOX.lngMin && lng <= METRO_BBOX.lngMax
+    );
+  }
+
+  // Build bounds array preferring metropolitan France sites.
+  // Always includes all valid coords as markers; only the returned bounds
+  // array is restricted to metropolitan range (or all if none qualify).
+  // Logs any coordinates outside metropolitan range.
+  function buildBoundsPreferMetro(coordsWithLabel) {
+    const metro = [];
+    const all = [];
+    coordsWithLabel.forEach(({ lat, lng, label }) => {
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+      all.push([lat, lng]);
+      if (isMetroBound(lat, lng)) {
+        metro.push([lat, lng]);
+      } else {
+        console.warn('[BITD][map] coordonnée hors France métropolitaine — exclue du cadrage :', label, lat, lng);
+      }
+    });
+    return metro.length > 0 ? metro : all;
+  }
+
   function escapeHtml(value) {
     return String(value ?? '')
       .replace(/&/g, '&amp;')
@@ -538,9 +569,9 @@
     }
 
     refreshAndFitMap(bounds, {
-      maxZoom: 8,
+      maxZoom: 7,
       singleZoom: 7,
-      paddingDesktop: [60, 60]
+      paddingDesktop: [65, 65]
     });
   }
 
@@ -1006,7 +1037,7 @@
       marker.addTo(focusLayer);
       markerIndex.set(etab.site_id, marker);
       markerData.set(etab.site_id, etab);
-      bounds.push([etab.latitude, etab.longitude]);
+      bounds.push({ lat: etab.latitude, lng: etab.longitude, label: `${company.entreprise} — ${etab.ville || etab.nom_site || etab.site_id}` });
     });
 
     renderCompanyPanel(company, visibleEtabs, allEtabs, snapshot.statutEtablissements);
@@ -1017,9 +1048,17 @@
       window.BITDPanel.injectIntoPanelContent(String(company.id), panelEl);
     }
 
-    refreshAndFitMap(bounds.length ? bounds : (company.latitude != null && company.longitude != null ? [[company.latitude, company.longitude]] : null), {
-      maxZoom: 10,
-      singleZoom: 9
+    const fitBounds = buildBoundsPreferMetro(
+      bounds.length ? bounds : (
+        company.latitude != null && company.longitude != null
+          ? [{ lat: company.latitude, lng: company.longitude, label: company.entreprise }]
+          : []
+      )
+    );
+    refreshAndFitMap(fitBounds, {
+      maxZoom: 9,
+      singleZoom: 8,
+      paddingDesktop: [55, 55]
     });
   }
 
