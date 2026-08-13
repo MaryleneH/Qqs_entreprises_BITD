@@ -55,27 +55,8 @@ body {
   padding: 0;
 }
 
-// --- Override Quarto defaults ---
-.quarto-container,
-#quarto-content,
-.page-columns,
-.page-full {
-  padding: 0 !important;
-  max-width: none !important;
-}
-main.content { padding: 0 !important; }
-
-// --- Suppression des conteneurs Bootstrap sur les pages full-width (toutes tailles) ---
-.page-layout-full .container,
-.page-layout-full .container-sm,
-.page-layout-full .container-md,
-.page-layout-full .container-lg,
-.page-layout-full .container-xl,
-.page-layout-full .container-xxl,
-.page-layout-full .container-fluid {
-  max-width: none !important;
-  padding-inline: 0 !important;
-}
+// --- Quarto full-width: laisser Quarto gérer son propre layout ---
+// (les overrides globaux ont été supprimés — page-layout: full suffit)
 
 // =============================================================================
 // NAVBAR
@@ -1556,11 +1537,18 @@ main.content { padding: 0 !important; }
 // =============================================================================
 // MAIN EXPLORER REFACTOR
 // =============================================================================
-.explorer-shell {
-  width: calc(100vw - 24px);
+// --- Shells canoniques : width 100%, pas de vw ---
+.explorer-shell,
+.entreprises-shell {
+  width: 100%;
   max-width: none;
-  margin-inline: auto;
-  padding: 0.8rem 0 1.5rem;
+  min-width: 0;
+  margin: 0;
+  padding: 12px 18px 24px;
+}
+
+.explorer-shell {
+  padding: 0.8rem 18px 1.5rem;
 }
 
 .explorer-header h1 {
@@ -1685,22 +1673,34 @@ main.content { padding: 0 !important; }
   font-size: 0.9rem;
 }
 
+.explorer-controls,
+.explorer-controls > *,
+.control-group {
+  min-width: 0;
+}
+
 .explorer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(400px, 29vw, 560px);
-  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns:
+    minmax(0, 1fr)
+    clamp(360px, 28vw, 520px);
+  gap: 16px;
   align-items: start;
 }
 
-.explorer-map-wrap {
-  overflow: hidden;
+.explorer-map-wrap,
+.company-panel {
+  min-width: 0;
+  max-width: 100%;
 }
 
 #bitd-map {
   width: 100%;
-  height: calc(100vh - 210px);
-  min-height: 620px;
-  max-height: 960px;
+  height: calc(100vh - 220px);
+  min-height: 520px;
+  max-height: 900px;
 }
 
 .company-panel {
@@ -2115,16 +2115,25 @@ main.content { padding: 0 !important; }
 }
 
 @media (min-width: 1600px) {
-  // .explorer-grid column widths are already handled by clamp(400px, 29vw, 560px) — no override needed
+  .explorer-shell,
+  .entreprises-shell {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
 
-@media (max-width: 1200px) {
-  // .explorer-grid handled by clamp — column widths adapt automatically below 1200px
+@media (max-width: 1199px) and (min-width: 901px) {
+  .explorer-grid {
+    grid-template-columns:
+      minmax(0, 1fr)
+      340px;
+  }
 }
+
 
 @media (max-width: 900px) {
   .explorer-shell {
-    padding: 0.8rem 1rem 1.25rem;
+    padding: 10px 12px 18px;
   }
 
   .explorer-header h1 {
@@ -2147,8 +2156,9 @@ main.content { padding: 0 !important; }
   }
 
   #bitd-map {
-    height: 60vh;
-    min-height: 400px;
+    height: 58vh;
+    min-height: 380px;
+    max-height: 620px;
   }
 
   .company-panel {
@@ -2176,6 +2186,10 @@ main.content { padding: 0 !important; }
 @media (max-width: 430px) {
   .explorer-shell {
     padding: 0.7rem 0.75rem 1.1rem;
+  }
+
+  #bitd-map {
+    min-height: 360px;
   }
 
   .explorer-intro,
@@ -3681,10 +3695,6 @@ body {
 }
 
 .entreprises-shell {
-  width: 100%;
-  max-width: none;
-  min-width: 0;
-  margin: 0;
   padding: 1rem 1.25rem 1.5rem;
 }
 
@@ -3940,6 +3950,8 @@ body {
 
 .detail-section {
   margin-top: 0.95rem;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .detail-section h3 {
@@ -4068,11 +4080,6 @@ body.mobile-detail-open {
   overflow: hidden;
 }
 
-@media (max-width: 1200px) {
-  .entreprises-explorer {
-    grid-template-columns: minmax(0, 46%) minmax(0, 54%);
-  }
-}
 
 @media (max-width: 1100px) {
   .entreprises-filters {
@@ -4090,8 +4097,6 @@ body.mobile-detail-open {
 
 @media (max-width: 700px) {
   .entreprises-shell {
-    width: 100%;
-    max-width: 100%;
     padding: 0.8rem 0.8rem 1.1rem;
   }
 
