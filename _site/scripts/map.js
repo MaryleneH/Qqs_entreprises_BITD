@@ -3,6 +3,7 @@
   let nationalLayer;
   let focusLayer;
   let programmeLayer;
+  let regionSitesLayer;
   let currentLegend = null;
   let activeSiteId = null;
   const markerIndex = new Map();
@@ -79,6 +80,7 @@
     nationalLayer = L.layerGroup().addTo(map);
     focusLayer = L.layerGroup().addTo(map);
     programmeLayer = L.layerGroup().addTo(map);
+    regionSitesLayer = L.layerGroup().addTo(map);
     addLegend('entreprise');
     return map;
   }
@@ -198,6 +200,7 @@
         <div class="site-popup__meta">${escapeHtml(sireneLine)}</div>
         ${bitdLine ? `<div class="site-popup__meta">${escapeHtml(bitdLine)}</div>` : ''}
         ${precisionLine ? `<div class="site-popup__meta">${escapeHtml(precisionLine)}</div>` : ''}
+        ${window.BITDProvenance ? `<div class="site-popup__sources">${window.BITDProvenance.siteSourceButton(etab.site_id, etab.ville || etab.nom_site || 'Établissement')}</div>` : ''}
       </article>
     `;
   }
@@ -433,10 +436,18 @@
     if (snapshot.explorerMode === 'programme') {
       url.searchParams.delete('entreprise');
       url.searchParams.delete('etablissements');
+      url.searchParams.delete('region');
       if (snapshot.selectedProgrammeId) url.searchParams.set('programme', snapshot.selectedProgrammeId);
       else url.searchParams.delete('programme');
+    } else if (snapshot.explorerMode === 'region') {
+      url.searchParams.delete('programme');
+      url.searchParams.delete('entreprise');
+      if (snapshot.selectedRegion) url.searchParams.set('region', snapshot.selectedRegion);
+      else url.searchParams.delete('region');
+      if (snapshot.statutEtablissements === 'tous') url.searchParams.set('etablissements', 'tous');
     } else {
       url.searchParams.delete('programme');
+      url.searchParams.delete('region');
       if (snapshot.entrepriseId) url.searchParams.set('entreprise', snapshot.entrepriseId);
       else url.searchParams.delete('entreprise');
       if (snapshot.statutEtablissements === 'tous') url.searchParams.set('etablissements', 'tous');
@@ -461,15 +472,32 @@
     const modeButtons = document.querySelectorAll('.explorer-mode-btn');
     const entrepriseControls = document.getElementById('entreprise-controls');
     const programmeControls = document.getElementById('programme-controls');
+    const regionControls = document.getElementById('region-controls');
+    const etabFilterControl = document.getElementById('etab-filter-control');
 
     if (snapshot.explorerMode === 'programme') {
       if (entrepriseControls) entrepriseControls.hidden = true;
       if (programmeControls) programmeControls.hidden = false;
+      if (regionControls) regionControls.hidden = true;
+      if (etabFilterControl) etabFilterControl.hidden = true;
       const progSelect = document.getElementById('programme-select');
       if (progSelect) progSelect.value = snapshot.selectedProgrammeId || '';
+    } else if (snapshot.explorerMode === 'region') {
+      if (entrepriseControls) entrepriseControls.hidden = true;
+      if (programmeControls) programmeControls.hidden = true;
+      if (regionControls) regionControls.hidden = false;
+      if (etabFilterControl) etabFilterControl.hidden = false;
+      fillRegionSelect(snapshot);
+      buttons.forEach((button) => {
+        const isActive = button.getAttribute('data-etab-filter') === snapshot.statutEtablissements;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
     } else {
       if (entrepriseControls) entrepriseControls.hidden = false;
       if (programmeControls) programmeControls.hidden = true;
+      if (regionControls) regionControls.hidden = true;
+      if (etabFilterControl) etabFilterControl.hidden = false;
       if (select) select.value = snapshot.entrepriseId || '';
       buttons.forEach((button) => {
         const isActive = button.getAttribute('data-etab-filter') === snapshot.statutEtablissements;
@@ -504,6 +532,181 @@
     panel.querySelectorAll('.site-list-item').forEach((item) => {
       item.classList.toggle('is-active', item.getAttribute('data-site-id') === activeSiteId);
     });
+  }
+
+  function normalizeActivityType(typeSite) {
+    const t = (typeSite || '').toLowerCase().trim();
+    if (!t) return 'Autre / non précisé';
+    if (t.includes('siège') || t.includes('siege')) return 'Siège';
+    if (t.includes('production') || t.includes('fabrication') || t.includes('usine') || t.includes('assemblage')) return 'Production';
+    if (t.includes('r&d') || t.includes('recherche') || t.includes('développement') || t.includes('bureau d\'études') || t.includes('labo')) return 'R&D';
+    if (t.includes('mco') || t.includes('maintenance') || t.includes('entretien') || t.includes('soutien') || t.includes('réparation')) return 'MCO';
+    if (t.includes('essai') || t.includes('test')) return 'Essais';
+    if (t.includes('service') || t.includes('quartier')) return 'Services';
+    if (t.includes('mixte') || t.includes('multi')) return 'Mixte';
+    return typeSite ? typeSite : 'Autre / non précisé';
+  }
+
+  function fillRegionSelect(snapshot) {
+    const select = document.getElementById('region-select');
+    if (!select || !window.BITDData) return;
+    const current = snapshot.selectedRegion || '';
+    const regions = window.BITDData.getUniqueRegions();
+    if (select.options.length !== regions.length + 1) {
+      const options = ['<option value="">Sélectionner une région</option>']
+        .concat(regions.map((r) => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`));
+      select.innerHTML = options.join('');
+    }
+    select.value = current;
+  }
+
+  function setContextRegion(snapshot, regionSites) {
+    const title = document.getElementById('map-context-title');
+    const subtitle = document.getElementById('map-context-subtitle');
+    const note = document.getElementById('map-context-note');
+    const counter = document.getElementById('site-count');
+
+    if (!snapshot.selectedRegion) {
+      if (title) title.textContent = 'Explorer par région';
+      if (subtitle) subtitle.textContent = 'Sélectionnez une région dans le menu pour découvrir les implantations BITD.';
+      if (note) note.textContent = '';
+      if (counter) counter.textContent = 'Mode Région · Vue nationale';
+      return;
+    }
+
+    const nCompanies = new Set(regionSites.map((s) => s.entreprise_id)).size;
+    const label = snapshot.statutEtablissements === 'tous' ? 'établissements au total' : 'établissements actifs';
+    if (title) title.textContent = snapshot.selectedRegion;
+    if (subtitle) subtitle.textContent = `${regionSites.length} ${label} · ${nCompanies} entreprise${nCompanies > 1 ? 's' : ''} représentée${nCompanies > 1 ? 's' : ''}`;
+    if (note) note.textContent = '';
+    if (counter) counter.textContent = `${snapshot.selectedRegion} · ${regionSites.length} ${label} · ${nCompanies} entreprise${nCompanies > 1 ? 's' : ''}`;
+  }
+
+  function renderRegionPanel(snapshot, regionSites) {
+    const panel = document.getElementById('company-panel-content');
+    if (!panel) return;
+
+    if (!snapshot.selectedRegion) {
+      panel.innerHTML = `
+        <div class="region-panel-empty">
+          <h3>Explorer une région</h3>
+          <p class="small-note">Sélectionnez une région dans le menu pour découvrir les implantations BITD sur ce territoire.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const companyCounts = new Map();
+    regionSites.forEach((site) => {
+      const id = String(site.entreprise_id);
+      const name = site.entreprise || '';
+      if (!companyCounts.has(id)) companyCounts.set(id, { id, name, count: 0 });
+      companyCounts.get(id).count += 1;
+    });
+    const sortedCompanies = [...companyCounts.values()].sort((a, b) => b.count - a.count);
+
+    const activityCounts = new Map();
+    regionSites.forEach((site) => {
+      const key = normalizeActivityType(String(site.type_site || '').trim());
+      activityCounts.set(key, (activityCounts.get(key) || 0) + 1);
+    });
+    const sortedActivities = [...activityCounts.entries()].sort((a, b) => b[1] - a[1]);
+    const maxActivity = sortedActivities.length ? sortedActivities[0][1] : 1;
+
+    const etabsLabel = snapshot.statutEtablissements === 'tous' ? 'établissements au total' : 'établissements actifs';
+
+    const companiesHtml = sortedCompanies.map((c) => `
+      <button type="button" class="region-company-item" data-entreprise-id="${escapeHtml(c.id)}">
+        <span class="region-company-name">${escapeHtml(c.name)}</span>
+        <span class="region-company-count">${c.count} site${c.count > 1 ? 's' : ''}</span>
+      </button>
+    `).join('');
+
+    const activitiesHtml = sortedActivities.slice(0, 8).map(([label, count]) => {
+      const pct = Math.max(8, Math.round((count / maxActivity) * 100));
+      return `
+        <div class="activity-bar-row">
+          <span class="activity-bar-label">${escapeHtml(label)}</span>
+          <div class="activity-bar-track"><div class="activity-bar-fill" style="width:${pct}%"></div></div>
+          <span class="activity-bar-count">${count}</span>
+        </div>
+      `;
+    }).join('');
+
+    panel.innerHTML = `
+      <div class="region-panel">
+        <div class="region-panel-header">
+          <p class="region-panel-tag">Empreinte BITD référencée</p>
+          <h3 class="region-panel-title">${escapeHtml(snapshot.selectedRegion.toUpperCase())}</h3>
+          <div class="region-kpis">
+            <div class="region-kpi"><strong>${regionSites.length}</strong><span>${etabsLabel}</span></div>
+            <div class="region-kpi"><strong>${sortedCompanies.length}</strong><span>entreprise${sortedCompanies.length > 1 ? 's' : ''} présente${sortedCompanies.length > 1 ? 's' : ''}</span></div>
+            <div class="region-kpi"><strong>${sortedActivities.length}</strong><span>type${sortedActivities.length > 1 ? 's' : ''} d'activité</span></div>
+          </div>
+        </div>
+        <h4 class="region-section-title">Entreprises présentes</h4>
+        <div class="region-companies-list">${companiesHtml || '<p class="small-note">Aucune entreprise pour ce filtre.</p>'}</div>
+        ${activitiesHtml ? `<h4 class="region-section-title">Activités présentes</h4><div class="region-activities">${activitiesHtml}</div>` : ''}
+        <p class="region-methodological-note"><span class="region-info-icon">ⓘ</span> Les résultats portent sur les 30 groupes du référentiel et leurs établissements identifiés. Ils ne constituent pas un recensement exhaustif de la BITD régionale.</p>
+      </div>
+    `;
+
+    panel.querySelectorAll('.region-company-item').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const eid = btn.getAttribute('data-entreprise-id');
+        if (eid && window.BITDData) window.BITDData.switchToEntreprise(String(eid));
+      });
+    });
+  }
+
+  function renderRegion(snapshot) {
+    ensureMap();
+    if (!map) return;
+
+    nationalLayer.clearLayers();
+    focusLayer.clearLayers();
+    programmeLayer.clearLayers();
+    regionSitesLayer.clearLayers();
+    markerIndex.clear();
+    markerData.clear();
+    activeSiteId = null;
+    currentFocusColor = null;
+
+    if (!snapshot.selectedRegion) {
+      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+      renderRegionPanel(snapshot, []);
+      return;
+    }
+
+    const regionSites = window.BITDData.getVisibleRegionEstablishments(snapshot.selectedRegion, snapshot.statutEtablissements);
+    const sectorColors = window.BITDData.constants.sectorColors;
+    const allCompanies = snapshot.allRows;
+    const bounds = [];
+
+    regionSites.forEach((etab) => {
+      if (etab.latitude == null || etab.longitude == null) return;
+      const company = allCompanies.find((c) => String(c.id) === String(etab.entreprise_id));
+      const color = company ? (sectorColors[company.primarySector] || '#5F7F82') : '#5F7F82';
+      const icon = etab.est_siege ? siegeIcon(color, false) : etabIcon(color, etab, false);
+      const marker = L.marker([etab.latitude, etab.longitude], { icon, zIndexOffset: etab.est_siege ? 1000 : 0 });
+      marker.bindPopup(getPopupHtml(etab, company), { className: 'bitd-popup', maxWidth: 360, autoPanPadding: [16, 16] });
+      marker.on('click', () => { setActiveSite(etab.site_id); });
+      marker.addTo(regionSitesLayer);
+      markerIndex.set(etab.site_id, marker);
+      markerData.set(etab.site_id, etab);
+      bounds.push([etab.latitude, etab.longitude]);
+    });
+
+    if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: isMobileViewport() ? [32, 32] : [46, 46], maxZoom: 10, animate: true });
+    } else if (bounds.length === 1) {
+      map.setView(bounds[0], 9, { animate: true });
+    } else {
+      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+    }
+
+    renderRegionPanel(snapshot, regionSites);
+    setContextRegion(snapshot, regionSites);
   }
 
   function renderNational(snapshot) {
@@ -559,10 +762,15 @@
     const regions = new Set(visibleEtabs.map((e) => e.region).filter(Boolean));
     const secteurs = (company.sectors || []).slice(0, 3).join(' · ');
 
+    function cpSrcBtn(champ, label) {
+      if (!window.BITDProvenance) return '';
+      return window.BITDProvenance.sourceButton({ entrepriseId: company.id, entrepriseName: company.entreprise, champ, label, value: '' });
+    }
+
     const companyInfos = [
       company.specialite ? `<li><strong>Spécialité :</strong> ${escapeHtml(company.specialite)}</li>` : '',
       company.siege_ville ? `<li><strong>Siège :</strong> ${escapeHtml(company.siege_ville)}${company.siege_region ? `, ${escapeHtml(company.siege_region)}` : ''}</li>` : '',
-      company.effectif_label ? `<li><strong>Effectif :</strong> ${escapeHtml(company.effectif_label)}</li>` : '',
+      company.effectif_label ? `<li><strong>Effectif :</strong> ${escapeHtml(company.effectif_label)} ${cpSrcBtn('effectif_label', 'Effectifs')}</li>` : '',
       company.programmes ? `<li><strong>Programmes :</strong> ${escapeHtml(company.programmes)}</li>` : '',
       company.site_web ? `<li><strong>Site :</strong> <a href="${escapeHtml(company.site_web)}" target="_blank" rel="noreferrer">${escapeHtml(company.site_web.replace(/^https?:\/\//, ''))}</a></li>` : ''
     ].filter(Boolean).join('');
@@ -702,12 +910,19 @@
   function applyUrlStateWhenReady(snapshot) {
     if (!snapshot.allRows.length) return;
     const params = new URLSearchParams(window.location.search);
+    const fromUrlRegion = params.get('region');
     const fromUrlEntreprise = params.get('entreprise');
     const fromUrlEtabs = params.get('etablissements');
     const fromUrlProgramme = params.get('programme');
 
     if (fromUrlProgramme && window.BITDData) {
       window.BITDData.setProgramme(fromUrlProgramme);
+      return;
+    }
+
+    if (fromUrlRegion && window.BITDData) {
+      if (fromUrlEtabs === 'tous') window.BITDData.setStatutEtablissements('tous');
+      window.BITDData.setRegion(fromUrlRegion);
       return;
     }
 
@@ -726,10 +941,16 @@
     if (snapshot.explorerMode === 'programme') {
       nationalLayer.clearLayers();
       focusLayer.clearLayers();
+      regionSitesLayer.clearLayers();
       setContextProgramme(snapshot);
       renderProgramme(snapshot);
+    } else if (snapshot.explorerMode === 'region') {
+      addLegend('entreprise');
+      fillEntrepriseSelect(snapshot);
+      renderRegion(snapshot);
     } else {
       programmeLayer.clearLayers();
+      regionSitesLayer.clearLayers();
       addLegend('entreprise');
 
       fillEntrepriseSelect(snapshot);
@@ -797,6 +1018,13 @@
     if (progSelect) {
       progSelect.addEventListener('change', () => {
         if (window.BITDData) window.BITDData.setProgramme(progSelect.value || null);
+      });
+    }
+
+    const regionSelect = document.getElementById('region-select');
+    if (regionSelect) {
+      regionSelect.addEventListener('change', () => {
+        if (window.BITDData) window.BITDData.setRegion(regionSelect.value || null);
       });
     }
   }

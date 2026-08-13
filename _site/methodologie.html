@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Méthodologie – BITD France</title>
+<title>Méthodologie &amp; sources – BITD France</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,15 +30,16 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e594d860e33f13fe14b5e8c27f171a6c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -74,17 +75,19 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="scripts/glossary.js" defer=""></script>
+<script src="scripts/provenance.js" defer=""></script>
 <script src="scripts/dashboard.js" defer=""></script>
 <script src="scripts/filters.js" defer=""></script>
 <script src="scripts/programme.js" defer=""></script>
 <script src="scripts/map.js" defer=""></script>
 <script src="scripts/table.js" defer=""></script>
 <script src="scripts/comprendre.js" defer=""></script>
+<script src="scripts/methodologie.js" defer=""></script>
 
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -115,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./methodologie.html" aria-current="page"> 
-<span class="menu-text">Méthodologie</span></a>
+<span class="menu-text">Méthodologie &amp; sources</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -140,14 +143,16 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Sommaire</h2>
    
   <ul class="collapse">
-  <li><a href="#périmètre-du-dashboard" id="toc-périmètre-du-dashboard" class="nav-link active" data-scroll-target="#périmètre-du-dashboard">Périmètre du dashboard</a></li>
-  <li><a href="#critères-de-sélection" id="toc-critères-de-sélection" class="nav-link" data-scroll-target="#critères-de-sélection">Critères de sélection</a></li>
-  <li><a href="#sources-documentaires" id="toc-sources-documentaires" class="nav-link" data-scroll-target="#sources-documentaires">Sources documentaires</a></li>
-  <li><a href="#millésime-et-comparabilité" id="toc-millésime-et-comparabilité" class="nav-link" data-scroll-target="#millésime-et-comparabilité">Millésime et comparabilité</a></li>
-  <li><a href="#donnée-publiée-vs-donnée-calculée" id="toc-donnée-publiée-vs-donnée-calculée" class="nav-link" data-scroll-target="#donnée-publiée-vs-donnée-calculée">Donnée publiée vs donnée calculée</a></li>
-  <li><a href="#localisation-des-établissements" id="toc-localisation-des-établissements" class="nav-link" data-scroll-target="#localisation-des-établissements">Localisation des établissements</a></li>
-  <li><a href="#indicateurs-économiques-et-ratios" id="toc-indicateurs-économiques-et-ratios" class="nav-link" data-scroll-target="#indicateurs-économiques-et-ratios">Indicateurs économiques et ratios</a></li>
-  <li><a href="#limites-du-dashboard" id="toc-limites-du-dashboard" class="nav-link" data-scroll-target="#limites-du-dashboard">Limites du dashboard</a></li>
+  <li><a href="#principe-de-traçabilité" id="toc-principe-de-traçabilité" class="nav-link active" data-scroll-target="#principe-de-traçabilité">Principe de traçabilité</a></li>
+  <li><a href="#à-quel-niveau-sont-présentés-les-chiffres-financiers" id="toc-à-quel-niveau-sont-présentés-les-chiffres-financiers" class="nav-link" data-scroll-target="#à-quel-niveau-sont-présentés-les-chiffres-financiers">À quel niveau sont présentés les chiffres financiers ?</a></li>
+  <li><a href="#comment-une-donnée-est-elle-obtenue" id="toc-comment-une-donnée-est-elle-obtenue" class="nav-link" data-scroll-target="#comment-une-donnée-est-elle-obtenue">Comment une donnée est-elle obtenue ?</a></li>
+  <li><a href="#exemple-de-donnée-calculée-book-to-bill-airbus" id="toc-exemple-de-donnée-calculée-book-to-bill-airbus" class="nav-link" data-scroll-target="#exemple-de-donnée-calculée-book-to-bill-airbus">Exemple de donnée calculée — Book-to-bill Airbus</a></li>
+  <li><a href="#sources-utilisées" id="toc-sources-utilisées" class="nav-link" data-scroll-target="#sources-utilisées">Sources utilisées</a></li>
+  <li><a href="#sources-par-entreprise" id="toc-sources-par-entreprise" class="nav-link" data-scroll-target="#sources-par-entreprise">Sources par entreprise</a></li>
+  <li><a href="#rechercher-une-source" id="toc-rechercher-une-source" class="nav-link" data-scroll-target="#rechercher-une-source">Rechercher une source</a></li>
+  <li><a href="#limites-des-données" id="toc-limites-des-données" class="nav-link" data-scroll-target="#limites-des-données">Limites des données</a></li>
+  <li><a href="#qualité-des-sources" id="toc-qualité-des-sources" class="nav-link" data-scroll-target="#qualité-des-sources">Qualité des sources</a></li>
+  <li><a href="#périmètre-du-dashboard" id="toc-périmètre-du-dashboard" class="nav-link" data-scroll-target="#périmètre-du-dashboard">Périmètre du dashboard</a></li>
   </ul>
 </nav>
     </div>
@@ -156,7 +161,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Méthodologie</h1>
+<h1 class="title">Méthodologie &amp; sources</h1>
 </div>
 
 
@@ -173,348 +178,442 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="page-container">
+<div id="methodo-page" class="page-container">
   <div class="methodo-container">
     <h1 class="page-title">Méthodologie <span class="annotation">&amp; sources</span></h1>
-    <p class="page-subtitle">Périmètre documentaire, millésime des données et règles de lecture du dashboard</p>
+    <p class="page-subtitle">Comment sont construites, vérifiées et documentées les données du dashboard BITD France</p>
 
-    <div class="disclaimer-box">
-      ℹ Cette page présente la méthodologie et les sources documentaires du dashboard BITD France.
-      Les données sont issues <strong>exclusivement de sources publiques</strong> disponibles au 12 août 2026.
-      Ce site constitue un outil documentaire d'analyse économique, industrielle et territoriale de la BITD française. Il ne constitue pas une publication officielle de la <span class="term-definition" data-term="dga">DGA</span>.
+    <p class="methodo-lead">
+      Le dashboard repose sur des sources publiques : publications officielles des entreprises, rapports financiers,
+      données Insee / SIRENE, sources institutionnelles et référentiels géographiques.
+      Les données sont conservées au niveau auquel elles sont effectivement publiées.
+    </p>
+<section id="principe-de-traçabilité" class="level2">
+<h2 class="anchored" data-anchor-id="principe-de-traçabilité">Principe de traçabilité</h2>
+    <div class="tracabilite-box">
+      <h2 class="anchored">Principe de traçabilité</h2>
+      <p><strong>Pas de source identifiable = pas de chiffre présenté comme établi.</strong></p>
+      <p>
+        Lorsqu'une donnée est calculée, le dashboard conserve la formule ainsi que la provenance
+        des données utilisées dans le calcul.
+      </p>
     </div>
+</section>
+<section id="à-quel-niveau-sont-présentés-les-chiffres-financiers" class="level2">
+<h2 class="anchored" data-anchor-id="à-quel-niveau-sont-présentés-les-chiffres-financiers">À quel niveau sont présentés les chiffres financiers ?</h2>
+    <div class="granularite-box">
+      <p>Les indicateurs financiers sont présentés uniquement au niveau auquel ils sont publiés :
+        <strong>groupe, société ou segment d'activité.</strong>
+      </p>
+      <p>
+        <strong>Aucun chiffre d'affaires n'est calculé ou estimé au niveau d'un établissement
+        lorsque cette information n'est pas publiée.</strong>
+      </p>
+      <p>
+        <em>Par exemple :</em> si Airbus publie un chiffre pour Airbus Defence and Space,
+        ce chiffre décrit ce périmètre. Il ne devient pas automatiquement le chiffre d'affaires
+        du site de Toulouse, Marignane ou d'un autre établissement.
+      </p>
+    </div>
+
+    <span class="annotation-hand">Toujours vérifier le périmètre avant de comparer deux chiffres.</span>
+</section>
+<section id="comment-une-donnée-est-elle-obtenue" class="level2">
+<h2 class="anchored" data-anchor-id="comment-une-donnée-est-elle-obtenue">Comment une donnée est-elle obtenue ?</h2>
+<p>Les données du dashboard appartiennent à l’un de ces sept types. Un petit badge discret indique le type dans les fiches de provenance.</p>
+    <div class="data-types-grid">
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--publie">Publié</span>
+        <p class="data-type-card__desc">Donnée reprise directement d'un document ou d'une publication officielle.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge" style="background:#E8F0F8;color:#1A3A5C;border:1px solid #A9C4DE;">Registre public</span>
+        <p class="data-type-card__desc">Donnée provenant d'un registre ou référentiel public, par exemple SIRENE / Insee.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--calcule">Calculé</span>
+        <p class="data-type-card__desc">Donnée calculée à partir de plusieurs valeurs publiées. La formule est conservée.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--proxy">Proxy</span>
+        <p class="data-type-card__desc">Donnée réelle utilisée comme approximation d'un concept plus précis, faute de ventilation publique suffisante.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--geocode">Géocodé</span>
+        <p class="data-type-card__desc">Coordonnée géographique produite à partir d'un référentiel territorial.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--autre">Synthèse documentaire</span>
+        <p class="data-type-card__desc">Information résumée à partir de plusieurs sources documentaires.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge" style="background:#F5EEF8;color:#6C3483;border:1px solid #C39BD3;">Rapproché</span>
+        <p class="data-type-card__desc">Information obtenue en rapprochant plusieurs référentiels ou en qualifiant des données brutes.</p>
+      </div>
+    </div>
+</section>
+<section id="exemple-de-donnée-calculée-book-to-bill-airbus" class="level2">
+<h2 class="anchored" data-anchor-id="exemple-de-donnée-calculée-book-to-bill-airbus">Exemple de donnée calculée — Book-to-bill Airbus</h2>
+    <div id="btb-example-container">
+      <!-- rempli dynamiquement par methodologie.js depuis provenance_entreprises.csv -->
+      <div class="btb-example">
+        <div class="btb-example__header">
+          <span class="btb-example__label">Book-to-bill</span>
+          <span class="btb-example__value">—</span>
+          <span class="mode-badge mode-badge--calcule">Calculé</span>
+        </div>
+        <div class="btb-example__formula">
+          <div class="btb-formula-row">Prises de commandes</div>
+          <div class="btb-formula-divider">÷</div>
+          <div class="btb-formula-row">Chiffre d'affaires</div>
+        </div>
+        <p class="methodo-empty">Chargement…</p>
+      </div>
+    </div>
+</section>
+<section id="sources-utilisées" class="level2">
+<h2 class="anchored" data-anchor-id="sources-utilisées">Sources utilisées</h2>
+    <div class="disclaimer-box">
+      Les grandes familles de sources utilisées dans le dashboard.
+    </div>
+<dl>
+<dt><strong>Entreprises</strong></dt>
+<dd>
+Rapports annuels, communiqués financiers, pages corporate, documents investisseurs, Universal Registration Documents.
+</dd>
+<dt><strong>Défense</strong></dt>
+<dd>
+Ministère des Armées, DGA, publications institutionnelles.
+</dd>
+<dt><strong>Établissements</strong></dt>
+<dd>
+Sources corporate, career pages, référentiel SIRENE / Api.
+</dd>
+<dt><strong>Géographie</strong></dt>
+<dd>
+Référentiels territoriaux publics (communes, coordonnées centre-commune).
+</dd>
+</dl>
+</section>
+<section id="sources-par-entreprise" class="level2">
+<h2 class="anchored" data-anchor-id="sources-par-entreprise">Sources par entreprise</h2>
+    <select id="sources-entreprise-select" class="sources-entreprise-select" aria-label="Sélectionner une entreprise">
+      <option value="">— Choisir une entreprise —</option>
+    </select>
+    <div id="sources-entreprise-list"></div>
+</section>
+<section id="rechercher-une-source" class="level2">
+<h2 class="anchored" data-anchor-id="rechercher-une-source">Rechercher une source</h2>
+    <form id="source-search-form" class="source-search-form" role="search" aria-label="Recherche de sources">
+      <select id="source-search-entreprise" aria-label="Filtrer par entreprise">
+        <option value="all">Toutes les entreprises</option>
+      </select>
+      <select id="source-search-type" aria-label="Filtrer par type">
+        <option value="all">Tous les types</option>
+      </select>
+      <input id="source-search-query" type="search" placeholder="Rechercher… (airbus, book-to-bill, SIRENE…)" aria-label="Recherche libre">
+      <button type="submit" class="source-search-submit">Rechercher</button>
+    </form>
+    <div id="source-search-results" aria-live="polite"></div>
+</section>
+<section id="limites-des-données" class="level2">
+<h2 class="anchored" data-anchor-id="limites-des-données">Limites des données</h2>
+    <ul class="limits-list">
+      <li>
+        <strong>Périmètres financiers</strong>
+        Les entreprises ne publient pas toutes les mêmes indicateurs ni selon les mêmes périmètres.
+        Un chiffre ne peut être comparé sans s'assurer d'abord que les deux périmètres sont comparables.
+      </li>
+      <li>
+        <strong>Granularité établissement</strong>
+        Les données financières ne sont pas attribuées aux établissements lorsqu'elles ne sont pas publiées à ce niveau.
+        La fiche d'un site n'affiche jamais le CA ou le carnet du groupe comme indicateur propre au site.
+      </li>
+      <li>
+        <strong>SIRENE</strong>
+        Un établissement administrativement actif dans SIRENE n'implique pas nécessairement qu'une activité BITD locale soit documentée.
+      </li>
+      <li>
+        <strong>Coordonnées</strong>
+        Certaines coordonnées représentent le centre de la commune, et non l'entrée précise d'un site industriel.
+      </li>
+      <li>
+        <strong>Programmes</strong>
+        Une entreprise associée à un programme ne signifie pas que tous ses établissements travaillent sur ce programme.
+      </li>
+    </ul>
+</section>
+<section id="qualité-des-sources" class="level2">
+<h2 class="anchored" data-anchor-id="qualité-des-sources">Qualité des sources</h2>
+    <div class="quality-levels">
+      <div class="quality-level">
+        <div class="quality-level__name">Source primaire</div>
+        <p class="quality-level__desc">Rapport annuel, communiqué officiel, site institutionnel, SIRENE. À privilégier.</p>
+      </div>
+      <div class="quality-level">
+        <div class="quality-level__name">Source secondaire</div>
+        <p class="quality-level__desc">Utilisée lorsqu'une source primaire suffisamment précise n'est pas disponible.</p>
+      </div>
+      <div class="quality-level">
+        <div class="quality-level__name">Synthèse</div>
+        <p class="quality-level__desc">Produite par le dashboard à partir de plusieurs sources documentaires.</p>
+      </div>
+    </div>
+</section>
 <section id="périmètre-du-dashboard" class="level2">
 <h2 class="anchored" data-anchor-id="périmètre-du-dashboard">Périmètre du dashboard</h2>
-<p>Le dashboard suit <strong>30 entreprises</strong> retenues pour représenter une partie structurante de la <span class="term-definition" data-term="bitd">BITD</span> française. Il ne s’agit ni d’un classement officiel, ni d’un annuaire exhaustif : la BITD française comprend plusieurs milliers d’entreprises de profils très différents.</p>
-<p>Le site a désormais une vocation <strong>factuelle, descriptive et pédagogique</strong>. Il cherche à répondre à trois questions :</p>
+<p>Le dashboard suit <strong>30 entreprises</strong> retenues pour représenter une partie structurante de la <span class="term-definition" data-term="bitd">BITD</span> française. Ce n’est ni un classement officiel, ni un annuaire exhaustif.</p>
+<p>Le site a vocation <strong>factuelle, descriptive et pédagogique</strong>. Il cherche à répondre à trois questions :</p>
 <ul>
 <li><strong>Où ?</strong> où sont situés les sièges et les établissements industriels ;</li>
-<li><strong>Quoi ?</strong> quels produits, services, sous-systèmes ou programmes sont associés à chaque acteur ;</li>
-<li><strong>Quelle dimension économique ?</strong> quels indicateurs publics permettent d’apprécier la taille, la charge et la dynamique d’activité.</li>
+<li><strong>Quoi ?</strong> quels produits, services ou programmes sont associés à chaque acteur ;</li>
+<li><strong>Quelle dimension économique ?</strong> quels indicateurs publics permettent d’apprécier la taille, la charge et la dynamique.</li>
 </ul>
-</section>
-<section id="critères-de-sélection" class="level2">
-<h2 class="anchored" data-anchor-id="critères-de-sélection">Critères de sélection</h2>
-<p>Le périmètre combine plusieurs éléments publics :</p>
-<ul>
-<li>taille économique globale ou défense lorsqu’elle est publiée ;</li>
-<li>rôle de <span class="term-definition" data-term="maitre_oeuvre_industriel">maître d’œuvre industriel</span>, de <span class="term-definition" data-term="systemier">systémier</span> ou d’<span class="term-definition" data-term="equipementier">équipementier</span> ;</li>
-<li>implication visible dans les grands programmes de la <span class="term-definition" data-term="lpm">LPM</span> 2024–2030 ;</li>
-<li>présence industrielle en France ;</li>
-<li>disponibilité d’une documentation publique suffisamment robuste.</li>
-</ul>
-</section>
-<section id="sources-documentaires" class="level2">
-<h2 class="anchored" data-anchor-id="sources-documentaires">Sources documentaires</h2>
-<p>Les données sont prioritairement issues :</p>
-<ul>
-<li>des rapports annuels, documents d’enregistrement universel et communiqués publiés par les groupes ;</li>
-<li>des sites institutionnels et corporate ;</li>
-<li>des éléments publics diffusés par le ministère des Armées et la <span class="term-definition" data-term="dga">DGA</span> ;</li>
-<li>de l’Annuaire des Entreprises et de référentiels publics complémentaires.</li>
-</ul>
-<p>Les fichiers du dossier <code>sources/</code> constituent le référentiel documentaire historique utilisé pour consolider les fiches. Ils ne sont pas modifiés par cette évolution.</p>
-</section>
-<section id="millésime-et-comparabilité" class="level2">
-<h2 class="anchored" data-anchor-id="millésime-et-comparabilité">Millésime et comparabilité</h2>
-<p><strong>Situation arrêtée au 12 août 2026.</strong></p>
-<p>Les données financières reflètent prioritairement les exercices 2024 et 2025 selon les publications disponibles. Les périmètres publiés ne sont pas homogènes :</p>
-<ul>
-<li>certains groupes publient un <span class="term-definition" data-term="ca_defense">chiffre d’affaires Défense</span> identifiable ;</li>
-<li>d’autres ne publient qu’un périmètre mixte du type « Defence and Space » ou « Équipements &amp; Défense » ;</li>
-<li>d’autres enfin ne ventilent pas publiquement leur activité militaire.</li>
-</ul>
-<p>Le dashboard signale ces différences directement dans les libellés et les notes d’indicateurs.</p>
-</section>
-<section id="donnée-publiée-vs-donnée-calculée" class="level2">
-<h2 class="anchored" data-anchor-id="donnée-publiée-vs-donnée-calculée">Donnée publiée vs donnée calculée</h2>
-<div class="disclaimer-box">
-<p><strong>Convention de lecture :</strong> lorsqu’une donnée n’est pas publiée sur un périmètre suffisamment clair, la mention <strong>n.c.</strong> (non communiqué) est conservée. Le dashboard n’invente pas de valeur absente.</p>
-</div>
-<p>Deux cas coexistent :</p>
-<ul>
-<li><strong>Publié</strong> : la valeur est reprise telle qu’elle apparaît dans une source publique, dans son périmètre annoncé ;</li>
-<li><strong>Calculé</strong> : le ratio est reconstitué à partir de deux données publiées. C’est notamment le cas de <span class="term-definition" data-term="carnet_ca">Carnet / CA</span>.</li>
-</ul>
-</section>
-<section id="localisation-des-établissements" class="level2">
-<h2 class="anchored" data-anchor-id="localisation-des-établissements">Localisation des établissements</h2>
-<p>La carte distingue :</p>
-<ul>
-<li>la <strong>vue nationale</strong>, centrée sur les sièges des 30 entreprises ;</li>
-<li>le <strong>focus entreprise</strong>, qui affiche le siège et les implantations industrielles françaises connues.</li>
-</ul>
-<p>Les établissements proviennent d’informations publiques consolidées. Le niveau de précision géographique dépend des sources disponibles :</p>
-<ul>
-<li>certaines implantations sont localisées à la ville ;</li>
-<li>d’autres à un site industriel ou à une aire urbaine ;</li>
-<li>l’absence d’un site sur la carte ne signifie pas nécessairement l’absence de présence industrielle.</li>
-</ul>
-</section>
-<section id="indicateurs-économiques-et-ratios" class="level2">
-<h2 class="anchored" data-anchor-id="indicateurs-économiques-et-ratios">Indicateurs économiques et ratios</h2>
-<p>Le dashboard mobilise quelques indicateurs simples pour aider à lire la dimension économique :</p>
-<ul>
-<li><span class="term-definition" data-term="chiffre_affaires">chiffre d’affaires</span> ;</li>
-<li><span class="term-definition" data-term="ca_defense">chiffre d’affaires Défense</span> lorsqu’il est réellement publié ;</li>
-<li><span class="term-definition" data-term="carnet_commandes">carnet de commandes</span> ;</li>
-<li><span class="term-definition" data-term="book_to_bill">Book-to-bill</span> ;</li>
-<li><span class="term-definition" data-term="carnet_ca">Carnet / CA</span> ;</li>
-<li><span class="term-definition" data-term="ebitda">EBITDA</span>, <span class="term-definition" data-term="ebit">EBIT</span> ou <span class="term-definition" data-term="marge_ebitda">marge EBITDA</span> selon ce que publie l’entreprise ;</li>
-<li><span class="term-definition" data-term="free_cash_flow">Free Cash Flow</span> ou <span class="term-definition" data-term="dette_nette">dette nette</span> lorsque l’information est utile et disponible.</li>
-</ul>
-<p>Pour les définitions détaillées, les formules et les principaux acronymes industriels, voir la page <a href="comprendre.html">Comprendre les données</a>.</p>
-</section>
-<section id="limites-du-dashboard" class="level2">
-<h2 class="anchored" data-anchor-id="limites-du-dashboard">Limites du dashboard</h2>
-<ul>
-<li>les périmètres financiers restent <strong>hétérogènes</strong> d’un groupe à l’autre ;</li>
-<li>une donnée publiée au niveau d’une division mixte ne doit pas être lue comme un pur indicateur militaire sans précaution ;</li>
-<li>la cartographie n’a pas vocation à documenter l’intégralité des micro-sites, ateliers ou sous-traitants ;</li>
-<li>l’absence de publication signifie parfois seulement que le groupe ne diffuse pas le détail demandé ;</li>
-<li>ce site documente des réalités industrielles publiques, il ne produit pas de notation des entreprises.</li>
-</ul>
-  </section></div>
-</div>
+<p>Pour les définitions des indicateurs financiers et des acronymes industriels, voir <a href="comprendre.html">Comprendre les données</a>.</p>
+  </section></div><!-- .methodo-container -->
+</div><!-- #methodo-page -->
 
 
 
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
+      return false;
     }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
         }
-        return container.innerHTML
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      // TODO in 1.5, we should make sure this works without a callout special case
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -522,185 +621,161 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

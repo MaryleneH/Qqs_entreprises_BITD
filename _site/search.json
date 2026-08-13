@@ -2,65 +2,79 @@
   {
     "objectID": "methodologie.html",
     "href": "methodologie.html",
-    "title": "Méthodologie",
+    "title": "Méthodologie & sources",
     "section": "",
-    "text": "Périmètre documentaire, millésime des données et règles de lecture du dashboard\n\n    \n      ℹ Cette page présente la méthodologie et les sources documentaires du dashboard BITD France.\n      Les données sont issues exclusivement de sources publiques disponibles au 12 août 2026.\n      Ce site constitue un outil documentaire d'analyse économique, industrielle et territoriale de la BITD française. Il ne constitue pas une publication officielle de la DGA.\n    \n\n\nLe dashboard suit 30 entreprises retenues pour représenter une partie structurante de la BITD française. Il ne s’agit ni d’un classement officiel, ni d’un annuaire exhaustif : la BITD française comprend plusieurs milliers d’entreprises de profils très différents.\nLe site a désormais une vocation factuelle, descriptive et pédagogique. Il cherche à répondre à trois questions :\n\nOù ? où sont situés les sièges et les établissements industriels ;\nQuoi ? quels produits, services, sous-systèmes ou programmes sont associés à chaque acteur ;\nQuelle dimension économique ? quels indicateurs publics permettent d’apprécier la taille, la charge et la dynamique d’activité.\n\n\n\n\nLe périmètre combine plusieurs éléments publics :\n\ntaille économique globale ou défense lorsqu’elle est publiée ;\nrôle de maître d’œuvre industriel, de systémier ou d’équipementier ;\nimplication visible dans les grands programmes de la LPM 2024–2030 ;\nprésence industrielle en France ;\ndisponibilité d’une documentation publique suffisamment robuste.\n\n\n\n\nLes données sont prioritairement issues :\n\ndes rapports annuels, documents d’enregistrement universel et communiqués publiés par les groupes ;\ndes sites institutionnels et corporate ;\ndes éléments publics diffusés par le ministère des Armées et la DGA ;\nde l’Annuaire des Entreprises et de référentiels publics complémentaires.\n\nLes fichiers du dossier sources/ constituent le référentiel documentaire historique utilisé pour consolider les fiches. Ils ne sont pas modifiés par cette évolution.\n\n\n\nSituation arrêtée au 12 août 2026.\nLes données financières reflètent prioritairement les exercices 2024 et 2025 selon les publications disponibles. Les périmètres publiés ne sont pas homogènes :\n\ncertains groupes publient un chiffre d’affaires Défense identifiable ;\nd’autres ne publient qu’un périmètre mixte du type « Defence and Space » ou « Équipements & Défense » ;\nd’autres enfin ne ventilent pas publiquement leur activité militaire.\n\nLe dashboard signale ces différences directement dans les libellés et les notes d’indicateurs.\n\n\n\n\nConvention de lecture : lorsqu’une donnée n’est pas publiée sur un périmètre suffisamment clair, la mention n.c. (non communiqué) est conservée. Le dashboard n’invente pas de valeur absente.\n\nDeux cas coexistent :\n\nPublié : la valeur est reprise telle qu’elle apparaît dans une source publique, dans son périmètre annoncé ;\nCalculé : le ratio est reconstitué à partir de deux données publiées. C’est notamment le cas de Carnet / CA.\n\n\n\n\nLa carte distingue :\n\nla vue nationale, centrée sur les sièges des 30 entreprises ;\nle focus entreprise, qui affiche le siège et les implantations industrielles françaises connues.\n\nLes établissements proviennent d’informations publiques consolidées. Le niveau de précision géographique dépend des sources disponibles :\n\ncertaines implantations sont localisées à la ville ;\nd’autres à un site industriel ou à une aire urbaine ;\nl’absence d’un site sur la carte ne signifie pas nécessairement l’absence de présence industrielle.\n\n\n\n\nLe dashboard mobilise quelques indicateurs simples pour aider à lire la dimension économique :\n\nchiffre d’affaires ;\nchiffre d’affaires Défense lorsqu’il est réellement publié ;\ncarnet de commandes ;\nBook-to-bill ;\nCarnet / CA ;\nEBITDA, EBIT ou marge EBITDA selon ce que publie l’entreprise ;\nFree Cash Flow ou dette nette lorsque l’information est utile et disponible.\n\nPour les définitions détaillées, les formules et les principaux acronymes industriels, voir la page Comprendre les données.\n\n\n\n\nles périmètres financiers restent hétérogènes d’un groupe à l’autre ;\nune donnée publiée au niveau d’une division mixte ne doit pas être lue comme un pur indicateur militaire sans précaution ;\nla cartographie n’a pas vocation à documenter l’intégralité des micro-sites, ateliers ou sous-traitants ;\nl’absence de publication signifie parfois seulement que le groupe ne diffuse pas le détail demandé ;\nce site documente des réalités industrielles publiques, il ne produit pas de notation des entreprises."
+    "text": "Comment sont construites, vérifiées et documentées les données du dashboard BITD France\n\n    \n      Le dashboard repose sur des sources publiques : publications officielles des entreprises, rapports financiers,\n      données Insee / SIRENE, sources institutionnelles et référentiels géographiques.\n      Les données sont conservées au niveau auquel elles sont effectivement publiées.\n    \n\n\n    \n      \n      Pas de source identifiable = pas de chiffre présenté comme établi.\n      \n        Lorsqu'une donnée est calculée, le dashboard conserve la formule ainsi que la provenance\n        des données utilisées dans le calcul.\n      \n    \n\n\n\n    \n      Les indicateurs financiers sont présentés uniquement au niveau auquel ils sont publiés :\n        groupe, société ou segment d'activité.\n      \n      \n        Aucun chiffre d'affaires n'est calculé ou estimé au niveau d'un établissement\n        lorsque cette information n'est pas publiée.\n      \n      \n        Par exemple : si Airbus publie un chiffre pour Airbus Defence and Space,\n        ce chiffre décrit ce périmètre. Il ne devient pas automatiquement le chiffre d'affaires\n        du site de Toulouse, Marignane ou d'un autre établissement.\n      \n    \n\n    Toujours vérifier le périmètre avant de comparer deux chiffres.\n\n\n\nLes données du dashboard appartiennent à l’un de ces sept types. Un petit badge discret indique le type dans les fiches de provenance.\n    \n      \n        Publié\n        Donnée reprise directement d'un document ou d'une publication officielle.\n      \n      \n        Registre public\n        Donnée provenant d'un registre ou référentiel public, par exemple SIRENE / Insee.\n      \n      \n        Calculé\n        Donnée calculée à partir de plusieurs valeurs publiées. La formule est conservée.\n      \n      \n        Proxy\n        Donnée réelle utilisée comme approximation d'un concept plus précis, faute de ventilation publique suffisante.\n      \n      \n        Géocodé\n        Coordonnée géographique produite à partir d'un référentiel territorial.\n      \n      \n        Synthèse documentaire\n        Information résumée à partir de plusieurs sources documentaires.\n      \n      \n        Rapproché\n        Information obtenue en rapprochant plusieurs référentiels ou en qualifiant des données brutes.\n      \n    \n\n\n\n    \n      \n      \n        \n          Book-to-bill\n          —\n          Calculé\n        \n        \n          Prises de commandes\n          ÷\n          Chiffre d'affaires\n        \n        Chargement…\n      \n    \n\n\n\n    \n      Les grandes familles de sources utilisées dans le dashboard.\n    \n\nEntreprises\n\nRapports annuels, communiqués financiers, pages corporate, documents investisseurs, Universal Registration Documents.\n\nDéfense\n\nMinistère des Armées, DGA, publications institutionnelles.\n\nÉtablissements\n\nSources corporate, career pages, référentiel SIRENE / Api.\n\nGéographie\n\nRéférentiels territoriaux publics (communes, coordonnées centre-commune).\n\n\n\n\n\n    \n      — Choisir une entreprise —\n    \n    \n\n\n\n    \n      \n        Toutes les entreprises\n      \n      \n        Tous les types\n      \n      \n      Rechercher\n    \n    \n\n\n\n    \n      \n        Périmètres financiers\n        Les entreprises ne publient pas toutes les mêmes indicateurs ni selon les mêmes périmètres.\n        Un chiffre ne peut être comparé sans s'assurer d'abord que les deux périmètres sont comparables.\n      \n      \n        Granularité établissement\n        Les données financières ne sont pas attribuées aux établissements lorsqu'elles ne sont pas publiées à ce niveau.\n        La fiche d'un site n'affiche jamais le CA ou le carnet du groupe comme indicateur propre au site.\n      \n      \n        SIRENE\n        Un établissement administrativement actif dans SIRENE n'implique pas nécessairement qu'une activité BITD locale soit documentée.\n      \n      \n        Coordonnées\n        Certaines coordonnées représentent le centre de la commune, et non l'entrée précise d'un site industriel.\n      \n      \n        Programmes\n        Une entreprise associée à un programme ne signifie pas que tous ses établissements travaillent sur ce programme.\n      \n    \n\n\n\n    \n      \n        Source primaire\n        Rapport annuel, communiqué officiel, site institutionnel, SIRENE. À privilégier.\n      \n      \n        Source secondaire\n        Utilisée lorsqu'une source primaire suffisamment précise n'est pas disponible.\n      \n      \n        Synthèse\n        Produite par le dashboard à partir de plusieurs sources documentaires.\n      \n    \n\n\n\nLe dashboard suit 30 entreprises retenues pour représenter une partie structurante de la BITD française. Ce n’est ni un classement officiel, ni un annuaire exhaustif.\nLe site a vocation factuelle, descriptive et pédagogique. Il cherche à répondre à trois questions :\n\nOù ? où sont situés les sièges et les établissements industriels ;\nQuoi ? quels produits, services ou programmes sont associés à chaque acteur ;\nQuelle dimension économique ? quels indicateurs publics permettent d’apprécier la taille, la charge et la dynamique.\n\nPour les définitions des indicateurs financiers et des acronymes industriels, voir Comprendre les données."
+  },
+  {
+    "objectID": "methodologie.html#principe-de-traçabilité",
+    "href": "methodologie.html#principe-de-traçabilité",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Pas de source identifiable = pas de chiffre présenté comme établi.\n      \n        Lorsqu'une donnée est calculée, le dashboard conserve la formule ainsi que la provenance\n        des données utilisées dans le calcul."
+  },
+  {
+    "objectID": "methodologie.html#à-quel-niveau-sont-présentés-les-chiffres-financiers",
+    "href": "methodologie.html#à-quel-niveau-sont-présentés-les-chiffres-financiers",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Les indicateurs financiers sont présentés uniquement au niveau auquel ils sont publiés :\n        groupe, société ou segment d'activité.\n      \n      \n        Aucun chiffre d'affaires n'est calculé ou estimé au niveau d'un établissement\n        lorsque cette information n'est pas publiée.\n      \n      \n        Par exemple : si Airbus publie un chiffre pour Airbus Defence and Space,\n        ce chiffre décrit ce périmètre. Il ne devient pas automatiquement le chiffre d'affaires\n        du site de Toulouse, Marignane ou d'un autre établissement.\n      \n    \n\n    Toujours vérifier le périmètre avant de comparer deux chiffres."
+  },
+  {
+    "objectID": "methodologie.html#comment-une-donnée-est-elle-obtenue",
+    "href": "methodologie.html#comment-une-donnée-est-elle-obtenue",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Les données du dashboard appartiennent à l’un de ces sept types. Un petit badge discret indique le type dans les fiches de provenance.\n    \n      \n        Publié\n        Donnée reprise directement d'un document ou d'une publication officielle.\n      \n      \n        Registre public\n        Donnée provenant d'un registre ou référentiel public, par exemple SIRENE / Insee.\n      \n      \n        Calculé\n        Donnée calculée à partir de plusieurs valeurs publiées. La formule est conservée.\n      \n      \n        Proxy\n        Donnée réelle utilisée comme approximation d'un concept plus précis, faute de ventilation publique suffisante.\n      \n      \n        Géocodé\n        Coordonnée géographique produite à partir d'un référentiel territorial.\n      \n      \n        Synthèse documentaire\n        Information résumée à partir de plusieurs sources documentaires.\n      \n      \n        Rapproché\n        Information obtenue en rapprochant plusieurs référentiels ou en qualifiant des données brutes."
+  },
+  {
+    "objectID": "methodologie.html#exemple-de-donnée-calculée-book-to-bill-airbus",
+    "href": "methodologie.html#exemple-de-donnée-calculée-book-to-bill-airbus",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Book-to-bill\n          —\n          Calculé\n        \n        \n          Prises de commandes\n          ÷\n          Chiffre d'affaires\n        \n        Chargement…"
+  },
+  {
+    "objectID": "methodologie.html#sources-utilisées",
+    "href": "methodologie.html#sources-utilisées",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Les grandes familles de sources utilisées dans le dashboard.\n    \n\nEntreprises\n\nRapports annuels, communiqués financiers, pages corporate, documents investisseurs, Universal Registration Documents.\n\nDéfense\n\nMinistère des Armées, DGA, publications institutionnelles.\n\nÉtablissements\n\nSources corporate, career pages, référentiel SIRENE / Api.\n\nGéographie\n\nRéférentiels territoriaux publics (communes, coordonnées centre-commune)."
+  },
+  {
+    "objectID": "methodologie.html#sources-par-entreprise",
+    "href": "methodologie.html#sources-par-entreprise",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "— Choisir une entreprise —"
+  },
+  {
+    "objectID": "methodologie.html#rechercher-une-source",
+    "href": "methodologie.html#rechercher-une-source",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Toutes les entreprises\n      \n      \n        Tous les types\n      \n      \n      Rechercher"
+  },
+  {
+    "objectID": "methodologie.html#limites-des-données",
+    "href": "methodologie.html#limites-des-données",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Périmètres financiers\n        Les entreprises ne publient pas toutes les mêmes indicateurs ni selon les mêmes périmètres.\n        Un chiffre ne peut être comparé sans s'assurer d'abord que les deux périmètres sont comparables.\n      \n      \n        Granularité établissement\n        Les données financières ne sont pas attribuées aux établissements lorsqu'elles ne sont pas publiées à ce niveau.\n        La fiche d'un site n'affiche jamais le CA ou le carnet du groupe comme indicateur propre au site.\n      \n      \n        SIRENE\n        Un établissement administrativement actif dans SIRENE n'implique pas nécessairement qu'une activité BITD locale soit documentée.\n      \n      \n        Coordonnées\n        Certaines coordonnées représentent le centre de la commune, et non l'entrée précise d'un site industriel.\n      \n      \n        Programmes\n        Une entreprise associée à un programme ne signifie pas que tous ses établissements travaillent sur ce programme."
+  },
+  {
+    "objectID": "methodologie.html#qualité-des-sources",
+    "href": "methodologie.html#qualité-des-sources",
+    "title": "Méthodologie & sources",
+    "section": "",
+    "text": "Source primaire\n        Rapport annuel, communiqué officiel, site institutionnel, SIRENE. À privilégier.\n      \n      \n        Source secondaire\n        Utilisée lorsqu'une source primaire suffisamment précise n'est pas disponible.\n      \n      \n        Synthèse\n        Produite par le dashboard à partir de plusieurs sources documentaires."
   },
   {
     "objectID": "methodologie.html#périmètre-du-dashboard",
     "href": "methodologie.html#périmètre-du-dashboard",
-    "title": "Méthodologie",
+    "title": "Méthodologie & sources",
     "section": "",
-    "text": "Le dashboard suit 30 entreprises retenues pour représenter une partie structurante de la BITD française. Il ne s’agit ni d’un classement officiel, ni d’un annuaire exhaustif : la BITD française comprend plusieurs milliers d’entreprises de profils très différents.\nLe site a désormais une vocation factuelle, descriptive et pédagogique. Il cherche à répondre à trois questions :\n\nOù ? où sont situés les sièges et les établissements industriels ;\nQuoi ? quels produits, services, sous-systèmes ou programmes sont associés à chaque acteur ;\nQuelle dimension économique ? quels indicateurs publics permettent d’apprécier la taille, la charge et la dynamique d’activité."
-  },
-  {
-    "objectID": "methodologie.html#critères-de-sélection",
-    "href": "methodologie.html#critères-de-sélection",
-    "title": "Méthodologie",
-    "section": "",
-    "text": "Le périmètre combine plusieurs éléments publics :\n\ntaille économique globale ou défense lorsqu’elle est publiée ;\nrôle de maître d’œuvre industriel, de systémier ou d’équipementier ;\nimplication visible dans les grands programmes de la LPM 2024–2030 ;\nprésence industrielle en France ;\ndisponibilité d’une documentation publique suffisamment robuste."
-  },
-  {
-    "objectID": "methodologie.html#sources-documentaires",
-    "href": "methodologie.html#sources-documentaires",
-    "title": "Méthodologie",
-    "section": "",
-    "text": "Les données sont prioritairement issues :\n\ndes rapports annuels, documents d’enregistrement universel et communiqués publiés par les groupes ;\ndes sites institutionnels et corporate ;\ndes éléments publics diffusés par le ministère des Armées et la DGA ;\nde l’Annuaire des Entreprises et de référentiels publics complémentaires.\n\nLes fichiers du dossier sources/ constituent le référentiel documentaire historique utilisé pour consolider les fiches. Ils ne sont pas modifiés par cette évolution."
-  },
-  {
-    "objectID": "methodologie.html#millésime-et-comparabilité",
-    "href": "methodologie.html#millésime-et-comparabilité",
-    "title": "Méthodologie",
-    "section": "",
-    "text": "Situation arrêtée au 12 août 2026.\nLes données financières reflètent prioritairement les exercices 2024 et 2025 selon les publications disponibles. Les périmètres publiés ne sont pas homogènes :\n\ncertains groupes publient un chiffre d’affaires Défense identifiable ;\nd’autres ne publient qu’un périmètre mixte du type « Defence and Space » ou « Équipements & Défense » ;\nd’autres enfin ne ventilent pas publiquement leur activité militaire.\n\nLe dashboard signale ces différences directement dans les libellés et les notes d’indicateurs."
-  },
-  {
-    "objectID": "methodologie.html#donnée-publiée-vs-donnée-calculée",
-    "href": "methodologie.html#donnée-publiée-vs-donnée-calculée",
-    "title": "Méthodologie",
-    "section": "",
-    "text": "Convention de lecture : lorsqu’une donnée n’est pas publiée sur un périmètre suffisamment clair, la mention n.c. (non communiqué) est conservée. Le dashboard n’invente pas de valeur absente.\n\nDeux cas coexistent :\n\nPublié : la valeur est reprise telle qu’elle apparaît dans une source publique, dans son périmètre annoncé ;\nCalculé : le ratio est reconstitué à partir de deux données publiées. C’est notamment le cas de Carnet / CA."
-  },
-  {
-    "objectID": "methodologie.html#localisation-des-établissements",
-    "href": "methodologie.html#localisation-des-établissements",
-    "title": "Méthodologie",
-    "section": "",
-    "text": "La carte distingue :\n\nla vue nationale, centrée sur les sièges des 30 entreprises ;\nle focus entreprise, qui affiche le siège et les implantations industrielles françaises connues.\n\nLes établissements proviennent d’informations publiques consolidées. Le niveau de précision géographique dépend des sources disponibles :\n\ncertaines implantations sont localisées à la ville ;\nd’autres à un site industriel ou à une aire urbaine ;\nl’absence d’un site sur la carte ne signifie pas nécessairement l’absence de présence industrielle."
-  },
-  {
-    "objectID": "methodologie.html#indicateurs-économiques-et-ratios",
-    "href": "methodologie.html#indicateurs-économiques-et-ratios",
-    "title": "Méthodologie",
-    "section": "",
-    "text": "Le dashboard mobilise quelques indicateurs simples pour aider à lire la dimension économique :\n\nchiffre d’affaires ;\nchiffre d’affaires Défense lorsqu’il est réellement publié ;\ncarnet de commandes ;\nBook-to-bill ;\nCarnet / CA ;\nEBITDA, EBIT ou marge EBITDA selon ce que publie l’entreprise ;\nFree Cash Flow ou dette nette lorsque l’information est utile et disponible.\n\nPour les définitions détaillées, les formules et les principaux acronymes industriels, voir la page Comprendre les données."
-  },
-  {
-    "objectID": "methodologie.html#limites-du-dashboard",
-    "href": "methodologie.html#limites-du-dashboard",
-    "title": "Méthodologie",
-    "section": "",
-    "text": "les périmètres financiers restent hétérogènes d’un groupe à l’autre ;\nune donnée publiée au niveau d’une division mixte ne doit pas être lue comme un pur indicateur militaire sans précaution ;\nla cartographie n’a pas vocation à documenter l’intégralité des micro-sites, ateliers ou sous-traitants ;\nl’absence de publication signifie parfois seulement que le groupe ne diffuse pas le détail demandé ;\nce site documente des réalités industrielles publiques, il ne produit pas de notation des entreprises."
+    "text": "Le dashboard suit 30 entreprises retenues pour représenter une partie structurante de la BITD française. Ce n’est ni un classement officiel, ni un annuaire exhaustif.\nLe site a vocation factuelle, descriptive et pédagogique. Il cherche à répondre à trois questions :\n\nOù ? où sont situés les sièges et les établissements industriels ;\nQuoi ? quels produits, services ou programmes sont associés à chaque acteur ;\nQuelle dimension économique ? quels indicateurs publics permettent d’apprécier la taille, la charge et la dynamique.\n\nPour les définitions des indicateurs financiers et des acronymes industriels, voir Comprendre les données."
   },
   {
     "objectID": "comprendre.html",
@@ -74,7 +88,7 @@
     "href": "index.html",
     "title": "BITD France",
     "section": "",
-    "text": "BITD France\n    Entreprises & implantations industrielles\n    Explorez les établissements français des 30 principaux acteurs de la Base industrielle et technologique de défense.\n  \n\n  \n\n    \n      Explorer par\n      \n        Entreprise\n        Programme\n      \n    \n\n    \n      \n        Entreprise\n        \n          Toutes les entreprises\n        \n      \n\n      \n        Établissements\n        \n          Actifs uniquement\n          Tous\n        \n      \n    \n\n    \n      \n        Programme\n        \n          Sélectionner un programme\n        \n      \n    \n\n    30 entreprises · Vue nationale\n  \n\n  \n    30 entreprises de la BITD\n    Sélectionnez une entreprise pour explorer ses établissements.\n    \n  \n\n  \n    \n      \n    \n\n    \n      \n        Vue nationale\n        Les 30 sièges des entreprises sont affichés. Sélectionnez une entreprise dans le menu ou cliquez sur un siège pour passer en focus."
+    "text": "BITD France\n    Entreprises & implantations industrielles\n    Explorez les établissements français des 30 principaux acteurs de la Base industrielle et technologique de défense.\n  \n\n  \n\n    \n      Explorer par\n      \n        Entreprise\n        Programme\n        Région\n      \n    \n\n    \n      \n        Entreprise\n        \n          Toutes les entreprises\n        \n      \n    \n\n    \n      \n        Programme\n        \n          Sélectionner un programme\n        \n      \n    \n\n    \n      \n        Région\n        \n          Sélectionner une région\n        \n      \n    \n\n    \n      Établissements\n      \n        Actifs uniquement\n        Tous\n      \n    \n\n    30 entreprises · Vue nationale\n  \n\n  \n    30 entreprises de la BITD\n    Sélectionnez une entreprise pour explorer ses établissements.\n    \n  \n\n  \n    \n      \n    \n\n    \n      \n        Vue nationale\n        Les 30 sièges des entreprises sont affichés. Sélectionnez une entreprise dans le menu ou cliquez sur un siège pour passer en focus."
   },
   {
     "objectID": "entreprises.html",

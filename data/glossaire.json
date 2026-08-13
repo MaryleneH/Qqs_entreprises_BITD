@@ -255,5 +255,47 @@
   "region_implantation": {
     "terme": "Région d'implantation",
     "definition": "Région dans laquelle se situe un établissement, indépendamment de la localisation du siège social de l'entreprise."
+  },
+  "source_primaire": {
+    "label": "Source primaire",
+    "definition": "Publication originale produite par l'organisme ou l'entreprise concernée : rapport annuel, communiqué officiel, registre public, site institutionnel. À privilégier pour garantir la fidélité de la donnée.",
+    "exemples": [
+      "Rapport annuel Airbus FY 2025",
+      "Base SIRENE (INSEE)",
+      "Communiqué de résultats Dassault Aviation"
+    ]
+  },
+  "source_secondaire": {
+    "label": "Source secondaire",
+    "definition": "Source qui reprend, analyse ou restructure une information provenant d'une autre source. Utilisée lorsqu'une source primaire suffisamment précise n'est pas disponible.",
+    "exemples": [
+      "Article de presse financière",
+      "Base de données agrégateur"
+    ]
+  },
+  "donnee_calculee": {
+    "label": "Donnée calculée",
+    "definition": "Valeur obtenue à partir d'autres données selon une formule explicite. Le dashboard conserve la formule et les sources des données de base. Exemple : le Book-to-bill est calculé en divisant les prises de commandes par le chiffre d'affaires.",
+    "exemples": [
+      "Book-to-bill = prises de commandes ÷ CA",
+      "Carnet / CA = carnet ÷ CA annuel"
+    ]
+  },
+  "proxy": {
+    "label": "Proxy",
+    "definition": "Indicateur utilisé pour approcher un concept lorsqu'aucune mesure exactement comparable n'est publiée. Un proxy est toujours explicitement signalé et accompagné de l'indication du périmètre réellement couvert.",
+    "exemples": [
+      "CA mixte 'Défense & Sécurité' utilisé comme approximation du CA Défense pur"
+    ]
+  },
+  "perimetre": {
+    "label": "Périmètre",
+    "definition": "Population, activité, segment ou entité auxquels une donnée se rapporte. Indispensable à préciser pour toute comparaison : un même indicateur peut couvrir le groupe, un segment ou un sous-ensemble géographique.",
+    "exemples": [
+      "Périmètre Groupe",
+      "Périmètre Défense & Sécurité",
+      "Périmètre France uniquement",
+      "Airbus Defence and Space"
+    ]
   }
 }

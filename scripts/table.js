@@ -16,15 +16,30 @@
     return window.BITDGlossary ? window.BITDGlossary.termHTML(termKey, label) : label;
   }
 
+  function srcBtn(row, champ, label, value) {
+    if (!window.BITDProvenance) return '';
+    return window.BITDProvenance.sourceButton({
+      entrepriseId: row.id,
+      entrepriseName: row.entreprise,
+      champ,
+      label,
+      value: value || ''
+    });
+  }
+
   function renderFinancialIndicator(row) {
     const indicator = row.financial_indicator;
     if (!indicator || indicator.value === 'n.c.') return '<span class="small-note">n.c.</span>';
     const title = indicator.term ? termHtml(indicator.term, indicator.label) : indicator.label;
+    // Determine the champ for provenance lookup
+    const champ = indicator.label === 'Book-to-bill' ? 'book_to_bill' : 'ratio_carnet_ca';
+    const btn = srcBtn(row, champ, indicator.label, indicator.value);
     return `
       <div class="financial-indicator-cell">
         <div class="financial-indicator-cell__title">${title}</div>
         <div class="financial-indicator-cell__value">${indicator.value}</div>
         <div class="financial-indicator-cell__meta">${indicator.type}</div>
+        ${btn}
       </div>
     `;
   }
@@ -46,9 +61,12 @@
       const caCell = row.ca_defense_num == null
         ? `<span class="small-note">${row.ca_defense_label}</span>`
         : `${formatMillions(row.ca_defense_num)}<br><span class="small-note">${row.ca_defense_label}</span>`;
+      const caSrcBtn = srcBtn(row, 'ca_defense_label', 'CA / CA Défense', '');
       const carnetCell = row.carnet_num == null
         ? '<span class="small-note">n.c.</span>'
         : `${formatMillions(row.carnet_num)}${row.ratio_carnet_ca_num == null ? '' : `<br><span class="small-note">ratio <span class="term-definition" data-term="carnet_ca">Carnet / CA</span> calculé</span>`}`;
+      const carnetSrcBtn = srcBtn(row, 'carnet_commandes_label', 'Carnet de commandes', '');
+      const effectifSrcBtn = srcBtn(row, 'effectif_label', 'Effectifs', '');
 
       return `
         <tr>
@@ -57,9 +75,9 @@
           <td>${row.sectors.map(makeSectorBadge).join(' ')}</td>
           <td>${row.siege_ville}<br><span class="small-note">${row.siege_region}</span></td>
           <td>${etabCell}</td>
-          <td>${row.effectif_num == null ? row.effectif_label : formatInteger(row.effectif_num)}</td>
-          <td>${caCell}</td>
-          <td>${carnetCell}</td>
+          <td>${row.effectif_num == null ? row.effectif_label : formatInteger(row.effectif_num)}${effectifSrcBtn}</td>
+          <td>${caCell}${caSrcBtn}</td>
+          <td>${carnetCell}${carnetSrcBtn}</td>
           <td>${renderFinancialIndicator(row)}</td>
           <td>${splitValues(row.programmes).slice(0, 4).join(' · ') || '<span class="small-note">n.c.</span>'}</td>
           <td><a href="${row.site_web}" target="_blank" rel="noreferrer">${row.site_web.replace(/^https?:\/\//, '')}</a></td>
