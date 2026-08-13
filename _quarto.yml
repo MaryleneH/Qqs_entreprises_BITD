@@ -51,14 +51,14 @@ format:
           <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
           <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
       - text: |
-          <script src="scripts/glossary.js" defer></script>
-          <script src="scripts/provenance.js" defer></script>
-          <script src="scripts/dashboard.js" defer></script>
-          <script src="scripts/identite.js" defer></script>
-          <script src="scripts/panel-methodology.js" defer></script>
-          <script src="scripts/filters.js" defer></script>
-          <script src="scripts/programme.js" defer></script>
-          <script src="scripts/map.js" defer></script>
-          <script src="scripts/table.js" defer></script>
-          <script src="scripts/comprendre.js" defer></script>
-          <script src="scripts/methodologie.js" defer></script>
+          <script src="scripts/glossary.js?v=20260813b" defer></script>
+          <script src="scripts/provenance.js?v=20260813b" defer></script>
+          <script src="scripts/dashboard.js?v=20260813b" defer></script>
+          <script src="scripts/identite.js?v=20260813b" defer></script>
+          <script src="scripts/panel-methodology.js?v=20260813b" defer></script>
+          <script src="scripts/filters.js?v=20260813b" defer></script>
+          <script src="scripts/programme.js?v=20260813b" defer></script>
+          <script src="scripts/map.js?v=20260813b" defer></script>
+          <script src="scripts/table.js?v=20260813b" defer></script>
+          <script src="scripts/comprendre.js?v=20260813b" defer></script>
+          <script src="scripts/methodologie.js?v=20260813b" defer></script>
