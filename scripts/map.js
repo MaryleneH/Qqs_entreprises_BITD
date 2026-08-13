@@ -326,15 +326,22 @@
     }
   }
 
-  function addLegend(mode) {
+  function addLegend(mode, sectors) {
     if (!map) return;
     if (currentLegend) { currentLegend.remove(); currentLegend = null; }
     const legend = L.control({ position: 'bottomleft' });
     if (mode === 'programme') {
+      const sectorRows = (sectors || [])
+        .map(([name, color]) => `
+          <div class="legend-item">
+            <span class="legend-symbol" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};"></span>
+            <span>${name}</span>
+          </div>`)
+        .join('');
       legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'map-legend map-legend--programme');
         div.innerHTML = `
-          <div class="legend-title">Légende</div>
+          <div class="legend-title">Rôles</div>
           <div class="legend-item">
             <span class="legend-symbol legend-symbol--prog-moe">
               <svg viewBox="0 0 14 14" width="13" height="13" fill="var(--gold)"><path d="M7 1l1.6 4.4H14l-3.7 2.7 1.4 4.4L7 9.8 2.3 12.5l1.4-4.4L0 5.4h5.4z"/></svg>
@@ -342,13 +349,14 @@
             <span>Maître d'œuvre</span>
           </div>
           <div class="legend-item">
-            <span class="legend-symbol legend-symbol--prog-company">◆</span>
+            <span class="legend-symbol legend-symbol--prog-company" style="color:rgba(245,246,242,0.85);">◆</span>
             <span>Entreprise participante</span>
           </div>
           <div class="legend-item">
             <span class="legend-symbol legend-symbol--prog-site">●</span>
-            <span>Site documenté</span>
+            <span>Site industriel</span>
           </div>
+          ${sectorRows ? `<div class="legend-title" style="margin-top:8px;">Couleur = secteur</div>${sectorRows}` : ''}
           <div class="legend-note">Les traits indiquent l'appartenance au programme,<br>non des flux contractuels détaillés.</div>
         `;
         return div;
@@ -554,7 +562,6 @@
     markerIndex.clear();
     markerData.clear();
     activeSiteId = null;
-    addLegend('programme');
 
     const programmeId = snapshot.selectedProgrammeId;
     if (!programmeId) {
@@ -587,6 +594,13 @@
     const siteLinks = window.BITDProgramme.getSitesProgramme(programmeId);
     const allCompanies = snapshot.allRows;
     const sectorColors = window.BITDData.constants.sectorColors;
+    const legendSectors = [...new Map(
+      relations
+        .map((rel) => allCompanies.find((c) => String(c.id) === String(rel.entreprise_id)))
+        .filter(Boolean)
+        .map((c) => { const k = c.sectorKey || 'services/MCO'; return [k.charAt(0).toUpperCase() + k.slice(1), sectorColors[k] || '#5F7F82']; })
+    ).entries()];
+    addLegend('programme', legendSectors);
 
     const bounds = [];
     const companyPositions = new Map(); // entreprise_id → {lat, lng}
@@ -634,7 +648,7 @@
       });
       if (!coords) return;
 
-      const color = sectorColors[company.primarySector] || '#5F7F82';
+      const color = sectorColors[company.sectorKey] || '#5F7F82';
       const icon = progSiteIcon(color);
       const marker = L.marker(coords, { icon, zIndexOffset: 200 });
       const acronyme = programme.acronyme || programme.nom;
@@ -655,7 +669,7 @@
       if (!pos) return;
 
       const isMoe = rel.role && /ma[iî]tr/i.test(rel.role);
-      const color = sectorColors[company.primarySector] || '#5F7F82';
+      const color = sectorColors[company.sectorKey] || '#5F7F82';
       const icon = isMoe ? progMoeIcon() : progCompanyIcon(color);
       const marker = L.marker([pos.lat, pos.lng], { icon, zIndexOffset: isMoe ? 2000 : 500 });
       const acronyme = programme.acronyme || programme.nom;
@@ -945,7 +959,7 @@
         site_id: etab.site_id
       });
       if (!coords) return;
-      const color = company ? (sectorColors[company.primarySector] || '#5F7F82') : '#5F7F82';
+      const color = company ? (sectorColors[company.sectorKey] || '#5F7F82') : '#5F7F82';
       const icon = etab.est_siege ? siegeIcon(color, false) : etabIcon(color, etab, false);
       const marker = L.marker(coords, { icon, zIndexOffset: etab.est_siege ? 1000 : 0 });
       marker.bindPopup(getPopupHtml(etab, company), { className: 'bitd-popup', maxWidth: 360, autoPanPadding: [16, 16] });
@@ -986,7 +1000,7 @@
         site_id: 'siege'
       });
       if (!coords) return;
-      const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
+      const color = window.BITDData.constants.sectorColors[company.sectorKey] || '#5F7F82';
       const marker = L.marker(coords, { icon: siegeIcon(color, false), zIndexOffset: 1000 });
       const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
       const activeEtabs = window.BITDData.getVisibleEstablishments(company.id, 'actifs');
@@ -1025,7 +1039,7 @@
             : [];
           totalActifs += actifs.length;
           actifs.forEach((e) => { if (e.region) regionSet.add(e.region); });
-          const color = sectorColors[company.primarySector] || '#5F7F82';
+          const color = sectorColors[company.sectorKey] || '#5F7F82';
           return `
             <button type="button" class="national-item" data-company-id="${escapeHtml(String(company.id))}">
               <span class="national-item-dot" style="background:${color}" aria-hidden="true"></span>
@@ -1155,7 +1169,7 @@
     const company = snapshot.selectedCompany;
     const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
     const visibleEtabs = window.BITDData.getVisibleEstablishments(company.id, snapshot.statutEtablissements);
-    const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
+    const color = window.BITDData.constants.sectorColors[company.sectorKey] || '#5F7F82';
     currentFocusColor = color;
     const bounds = [];
 
