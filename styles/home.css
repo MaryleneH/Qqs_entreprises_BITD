@@ -612,3 +612,22 @@
   #home-v2 .hv-intro,
   #home-v2 .hv-context p { font-size: 0.82rem; }
 }
+
+/* ---------------------------------------------------------------------------
+   Correctif : panneau programme — un libellé de statut long (ex. composantes
+   du MGCS) ne doit jamais écraser le nom en colonne de lettres.
+--------------------------------------------------------------------------- */
+#home-v2 .prog-composante-header {
+  flex-wrap: wrap;
+}
+
+#home-v2 .prog-composante-nom {
+  flex: 1 1 12ch;
+}
+
+#home-v2 .prog-composante-header .prog-statut-badge {
+  white-space: normal;
+  line-height: 1.35;
+  text-align: left;
+  max-width: 100%;
+}
