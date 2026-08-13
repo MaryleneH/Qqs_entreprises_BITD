@@ -307,19 +307,19 @@ main.content { padding: 0 !important; }
 .btn-reset:hover { border-color: var(--teal); color: var(--teal); background: rgba(95,127,130,0.06); }
 
 // =============================================================================
-// DASHBOARD LAYOUT
+// DASHBOARD LAYOUT (obsolète — remplacé par .explorer-shell / .explorer-grid)
 // =============================================================================
-.dashboard-layout {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 1.25rem;
-  padding: 0 2rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-@media (max-width: 1200px) { .dashboard-layout { grid-template-columns: 1fr 300px; } }
-@media (max-width: 900px)  { .dashboard-layout { grid-template-columns: 1fr; } }
-@media (max-width: 768px)  { .dashboard-layout { padding: 0 1rem 1.5rem; } }
+// .dashboard-layout {
+//   display: grid;
+//   grid-template-columns: 1fr 360px;
+//   gap: 1.25rem;
+//   padding: 0 2rem 2rem;
+//   max-width: 1400px;
+//   margin: 0 auto;
+// }
+// @media (max-width: 1200px) { .dashboard-layout { grid-template-columns: 1fr 300px; } }
+// @media (max-width: 900px)  { .dashboard-layout { grid-template-columns: 1fr; } }
+// @media (max-width: 768px)  { .dashboard-layout { padding: 0 1rem 1.5rem; } }
 
 .map-wrapper {
   background: var(--card);
@@ -1071,19 +1071,19 @@ main.content { padding: 0 !important; }
 }
 
 // =============================================================================
-// DASHBOARD GRID
+// DASHBOARD GRID (obsolète — remplacé par .explorer-shell / .explorer-grid)
 // =============================================================================
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 1.25rem;
-  padding: 0 2rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-@media (max-width: 1200px) { .dashboard-grid { grid-template-columns: 1fr 300px; } }
-@media (max-width: 900px)  { .dashboard-grid { grid-template-columns: 1fr; } }
-@media (max-width: 768px)  { .dashboard-grid { padding: 0 1rem 1.5rem; } }
+// .dashboard-grid {
+//   display: grid;
+//   grid-template-columns: 1fr 340px;
+//   gap: 1.25rem;
+//   padding: 0 2rem 2rem;
+//   max-width: 1400px;
+//   margin: 0 auto;
+// }
+// @media (max-width: 1200px) { .dashboard-grid { grid-template-columns: 1fr 300px; } }
+// @media (max-width: 900px)  { .dashboard-grid { grid-template-columns: 1fr; } }
+// @media (max-width: 768px)  { .dashboard-grid { padding: 0 1rem 1.5rem; } }
 
 // =============================================================================
 // ANALYSIS PANEL (right column)
@@ -1557,10 +1557,10 @@ main.content { padding: 0 !important; }
 // MAIN EXPLORER REFACTOR
 // =============================================================================
 .explorer-shell {
-  width: min(97vw, 1900px);
+  width: calc(100vw - 24px);
   max-width: none;
   margin-inline: auto;
-  padding: 0.8rem 1.5rem 1.5rem;
+  padding: 0.8rem 0 1.5rem;
 }
 
 .explorer-header h1 {
@@ -1687,7 +1687,7 @@ main.content { padding: 0 !important; }
 
 .explorer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2.3fr) minmax(340px, 1fr);
+  grid-template-columns: minmax(0, 1fr) clamp(400px, 29vw, 560px);
   gap: 14px;
   align-items: start;
 }
@@ -2115,15 +2115,11 @@ main.content { padding: 0 !important; }
 }
 
 @media (min-width: 1600px) {
-  .explorer-grid {
-    grid-template-columns: minmax(0, 2.5fr) minmax(380px, 1fr);
-  }
+  // .explorer-grid column widths are already handled by clamp(400px, 29vw, 560px) — no override needed
 }
 
 @media (max-width: 1200px) {
-  .explorer-grid {
-    grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
-  }
+  // .explorer-grid handled by clamp — column widths adapt automatically below 1200px
 }
 
 @media (max-width: 900px) {
@@ -3679,7 +3675,8 @@ main.content { padding: 0 !important; }
 // ENTREPRISES EXPLORER PAGE
 // =============================================================================
 .entreprises-shell {
-  max-width: min(97vw, 1900px);
+  width: calc(100vw - 40px);
+  max-width: none;
   margin: 0 auto;
   padding: 1rem 1.5rem 1.5rem;
 }
