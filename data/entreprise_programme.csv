@@ -1,34 +1,29 @@
-programme_id,entreprise_id,entreprise,role,sous_systeme,description_role,niveau_confirmation,source
-rafale,2,DASSAULT AVIATION,Maître d'œuvre,,"Conception, production et soutien de l'avion de combat Rafale. Autorité de conception et maître d'œuvre central des contrats français.",confirme,"Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md ; entreprises.csv col. programmes"
-rafale,1,THALES,Électronique / Radar,RBE2 AESA,"Radar RBE2 AESA, avionique et capteurs embarqués sur le Rafale.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-rafale,3,SAFRAN,Motorisation,M88,"Moteur M88 propulsant le Rafale. Safran est le motoriste du Rafale.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-rafale,6,MBDA,Armements,,"Missiles embarqués sur le Rafale, dont le SCALP et le Meteor.",confirme,"entreprises.csv col. programmes (SCALP ; Meteor) ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-rafale,16,AUBERT & DUVAL,Matériaux / Supply chain,,"Matériaux et pièces pour les chaînes d'approvisionnement Rafale et M88.",documente_partiellement,"entreprises.csv col. programmes"
-rafale,17,DAHER,Équipements / Logistique,,"Contribution aux chaînes Rafale et logistique de sites industriels défense.",documente_partiellement,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-rafale,19,LATECOERE,Structures / Câblage,,"Fourniture de structures et d'interconnexions pour le Rafale.",confirme,"entreprises.csv col. programmes ; etablissements.csv col. programmes_associes (site 19-001)"
-rafale,20,MECACHROME,Supply chain motorisation,M88,"Pièces pour le moteur M88 du Rafale.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-rafale,21,FIGEAC AERO,Supply chain aérostructures,,"Pièces usinées et aérostructures pour le Rafale.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-rafale,23,ARESIA,Équipements,,"Équipements et sous-ensembles pour le Rafale.",confirme,"entreprises.csv col. programmes"
-rafale,30,SOGECLAIR,Ingénierie,,"Contribution à l'ingénierie et l'industrialisation de la chaîne Rafale.",documente_partiellement,"entreprises.csv col. programmes"
-scorpion,7,KNDS FRANCE,Maître d'œuvre,Griffon · Jaguar · Serval,"Maître d'œuvre des véhicules Griffon, Jaguar et Serval du programme SCORPION.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-scorpion,1,THALES,Électronique / Vétronique,,"Systèmes de vétronique et d'électronique de combat pour les véhicules SCORPION.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-scorpion,3,SAFRAN,Optronique,,"Viseurs et systèmes optroniques pour les plateformes SCORPION.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-scorpion,9,ARQUUS – JOHN COCKERILL DEFENSE,Mobilité,,"Contribution à la mobilité et au soutien des véhicules Griffon et Jaguar.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-barracuda,4,NAVAL GROUP,Maître d'œuvre,,"Maître d'œuvre des sous-marins nucléaires d'attaque de la classe Suffren/Barracuda.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-barracuda,11,TECHNICATOME,Propulsion nucléaire,,"Chaufferies nucléaires navales pour les sous-marins Barracuda.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-barracuda,1,THALES,Sonar / Systèmes de combat,,"Systèmes sonars et de combat embarqués sur les Barracuda.",documente_partiellement,"Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md (sonars CAPTAS ; systèmes navals)"
-fdi,4,NAVAL GROUP,Maître d'œuvre,,"Maître d'œuvre des frégates de Défense et d'Intervention.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-fdi,1,THALES,Radar / Systèmes de combat,Sea Fire,"Radar de surveillance multifonctions Sea Fire, équipant les FDI.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-snle-3g,4,NAVAL GROUP,Maître d'œuvre,,"Maître d'œuvre des sous-marins nucléaires lanceurs d'engins de 3e génération.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-snle-3g,11,TECHNICATOME,Propulsion nucléaire,,"Chaufferies nucléaires pour les SNLE 3G.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-snle-3g,1,THALES,Sonar / Systèmes de combat,,"Suite sonar et nouvelles tranches de systèmes de combat pour le SNLE 3G.",confirme,"Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md (SNLE 3G – suite sonar)"
-a400m,5,AIRBUS,Maître d'œuvre,,"Maître d'œuvre de l'avion de transport militaire A400M Atlas.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-a400m,17,DAHER,Équipements,,"Contribution aux chaînes et logistique de l'A400M.",documente_partiellement,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-a400m,19,LATECOERE,Structures,,"Fourniture de structures pour l'A400M.",confirme,"entreprises.csv col. programmes ; etablissements.csv col. programmes_associes (site 19-004)"
-a400m,18,HUTCHINSON,Équipements,,"Présence dans les chaînes d'équipements de l'A400M.",documente_partiellement,"entreprises.csv col. programmes"
-a400m,30,SOGECLAIR,Ingénierie,,"Contribution à l'ingénierie et l'industrialisation de la chaîne A400M.",documente_partiellement,"entreprises.csv col. programmes"
-m51,8,ARIANEGROUP,Maître d'œuvre,,"Maître d'œuvre industriel du missile balistique stratégique M51 et de ses évolutions.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-aster,6,MBDA,Maître d'œuvre,Aster 30 B1NT,"Maître d'œuvre de la famille Aster. Système SAMP/T NG basé sur l'Aster 30 B1NT.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-aster,15,ROXEL,Propulsion,,"Propulseurs pour la famille de missiles Aster.",confirme,"entreprises.csv col. programmes"
-aster,1,THALES,Radar / Conduite de tir,Ground Fire,"Radar de conduite de tir Ground Fire du système SAMP/T NG équipé d'Aster.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
-mrtt,5,AIRBUS,Maître d'œuvre,,"Maître d'œuvre du A330 MRTT Phénix.",confirme,"entreprises.csv col. programmes ; Guide_30_grands_acteurs_BITD_francaise_ENRICHI_2026.md"
+﻿programme_id;entreprise_id;entreprise;role;description_role;niveau_confirmation;source_id;relation_actuelle
+rafale;2;DASSAULT AVIATION;maitre_oeuvre_avion;Développement et intégration du Rafale et du standard F5.;confirme;SRC_RAF_F5_DGA_2024;true
+rafale;1;THALES;radar_capteurs_guerre_electronique;Contrats F5 mentionnant Thales pour les nouvelles capacités du système.;confirme;SRC_RAF_F5_DGA_2024;true
+rafale;3;SAFRAN;motorisation_capteurs;Safran est cité parmi les industriels des développements F5 et du drone associé.;confirme;SRC_RAF_F5_DGA_2024;true
+rafale;6;MBDA;armements_asn4g;MBDA reçoit le développement de l'ASN4G destiné au Rafale F5.;confirme;SRC_RAF_ASN4G_DGA_2026;true
+scorpion;7;KNDS FRANCE;vehicules_blindes;Développement et production notamment des Griffon, Jaguar et Serval.;confirme;SRC_SCORPION_ADT_2024;true
+scorpion;9;ARQUUS – JOHN COCKERILL DEFENSE;mobilite_soutien_vehicules;Arquus est explicitement cité dans le groupement Griffon/Jaguar.;confirme;SRC_SCORPION_ADT_2024;true
+scorpion;1;THALES;electronique_systemes;Thales est explicitement cité dans le groupement Griffon/Jaguar.;confirme;SRC_SCORPION_ADT_2024;true
+fdi;4;NAVAL GROUP;maitre_oeuvre_industriel;La DGA commande les FDI à Naval Group.;confirme;SRC_FDI_DGA_2026;true
+barracuda;4;NAVAL GROUP;construction_integration;Naval Group est partenaire industriel explicitement cité par la DGA.;confirme;SRC_BARRACUDA_DGA_2026;true
+barracuda;11;TECHNICATOME;propulsion_nucleaire;TechnicAtome est explicitement cité comme partenaire du programme.;confirme;SRC_BARRACUDA_DGA_2026;true
+snle3g;4;NAVAL GROUP;maitrise_oeuvre_fabrication;Naval Group assure la maîtrise d'œuvre d'ensemble de la fabrication.;confirme;SRC_SNLE3G_DGA_2024;true
+snle3g;11;TECHNICATOME;chaufferies_nucleaires;TechnicAtome intervient en cotraitance pour les chaufferies nucléaires.;confirme;SRC_SNLE3G_DGA_2024;true
+pang;4;NAVAL GROUP;systeme_combat_integration;Naval Group est cité parmi les principaux acteurs industriels.;confirme;SRC_PANG_COLSBLEUS_2026;true
+pang;10;CHANTIERS DE L’ATLANTIQUE;plateforme_coque_integration;Chantiers de l'Atlantique est cité parmi les principaux acteurs industriels.;confirme;SRC_PANG_COLSBLEUS_2026;true
+pang;11;TECHNICATOME;chaufferies_nucleaires;TechnicAtome intervient sur les chaufferies nucléaires via le CEA.;confirme;SRC_PANG_COLSBLEUS_2026;true
+m51;8;ARIANEGROUP;maitre_oeuvre_missile;La DGA a notifié à ArianeGroup le développement et la production du M51.4.;confirme;SRC_M51_DGA_2025;true
+aster;6;MBDA;missiles_systeme;MBDA est maison mère d'Eurosam et explicitement impliquée dans le développement multi-couches.;confirme;SRC_ASTER_MICA_DGA_2026;true
+aster;1;THALES;radar_systeme;Thales est maison mère d'Eurosam et explicitement impliquée dans le développement multi-couches.;confirme;SRC_ASTER_MICA_DGA_2026;true
+vl_mica;6;MBDA;missile_integration;MBDA est explicitement impliquée dans le développement multi-couches.;confirme;SRC_VLMICA_DGA_2026;true
+vl_mica;1;THALES;systeme_radar_integration;Thales est explicitement impliquée dans le développement multi-couches.;confirme;SRC_VLMICA_DGA_2026;true
+a400m;5;AIRBUS;maitre_oeuvre_plateforme;Le contrat de développement PMS est notifié à Airbus Defence & Space.;confirme;SRC_A400M_DGA_2026;true
+mrtt;5;AIRBUS;plateforme_mrtt;Le programme français repose sur l'Airbus A330 MRTT Enhanced.;confirme;SRC_MRTT_AAE;true
+h160m;5;AIRBUS;maitre_oeuvre_helicoptere;La campagne d'essais est conduite avec Airbus Helicopters.;confirme;SRC_H160M_DGA_2026;true
+tiger_mk3;5;AIRBUS;maitre_oeuvre_modernisation;Airbus Helicopters porte l'intégration de la modernisation MkIII.;confirme;SRC_TIGER_OCCAR_2026;true
+tiger_mk3;6;MBDA;integration_armement;MBDA intervient sur l'intégration des armements MkIII.;confirme;SRC_TIGER_OCCAR_2026;true
+tiger_mk3;3;SAFRAN;optronique;Safran fournit l'Euroflir 510 associé au MkIII.;confirme;SRC_TIGER_OCCAR_2026;true
+nh90;5;AIRBUS;industriel_consortium;Airbus Helicopters est membre du consortium NHI et assemble les appareils français à Marignane.;confirme;SRC_NH90_DGA_2025;true
+nh90;3;SAFRAN;optronique_standard2;Le standard 2 utilise l'Euroflir 410 de Safran.;confirme;SRC_NH90_DGA_2025;true

@@ -1,0 +1,24 @@
+﻿programme_id;composante_id;composante;statut_code;statut_libelle;resume_court;date_statut;source_id
+rafale;f5;Standard F5;ACTIF_DEVELOPPEMENT;En développement;Rénovation à mi-vie avec nouveaux radar, guerre électronique, capteurs, armements et intégration renforcée au combat collaboratif.;2024-10-14;SRC_RAF_F5_DGA_2024
+rafale;asn4g;Intégration ASN4G;ACTIF_DEVELOPPEMENT;En développement;"Le développement de l'ASN4G a été commandé en juin 2026 ; le missile doit être emporté par le Rafale F5 à l'horizon 2035.";2026-06-11;SRC_RAF_ASN4G_DGA_2026
+scaf;avion_unique;Projet d’avion de combat unique;ARRETE;Arrêté;Le projet d'avion unique franco-allemand a été arrêté en 2026.;2026-07-17;SRC_SCAF_ELYSEE_2026
+scaf;moteurs_associes;Moteurs associés à l’avion unique;ARRETE;Arrêtés;La Présidence française indique que l'arrêt de l'avion unique entraîne par voie de conséquence l'arrêt des moteurs associés.;2026-07-17;SRC_SCAF_ELYSEE_2026
+scaf;combat_cloud;Combat Cloud;ACTIF;Poursuivi;La coopération sur le cloud de combat est explicitement annoncée comme poursuivie.;2026-07-17;SRC_SCAF_ELYSEE_2026
+scaf;systemes;Autres systèmes / système de systèmes;ACTIF;Poursuivi;La coopération sur les autres systèmes du système de systèmes est maintenue selon la déclaration franco-allemande de juillet 2026.;2026-07-17;SRC_SCAF_ELYSEE_2026
+mgcs;rd_technologies;R&D de technologies de combat futur;ACTIF;Poursuivie;Le cœur du programme est recentré sur la recherche et le développement de technologies de combat futur.;2026-06-15;SRC_MGCS_BREG_2026
+mgcs;demonstrateurs;Démonstrateurs;ACTIF;Poursuivis;La nouvelle orientation prévoit des démonstrations de technologies pour véhicules blindés habités et non habités.;2026-06-15;SRC_MGCS_BREG_2026
+mgcs;plateforme_unique;Approche centrée sur une plateforme unique;REFORMULE;Abandonnée comme cadre central;Le gouvernement allemand décrit désormais MGCS comme une approche indépendante d'une plateforme unique.;2026-06-15;SRC_MGCS_BREG_2026
+mgcs;architectures_ouvertes;Interfaces et architectures ouvertes;ACTIF;Axe prioritaire;Les interfaces et architectures doivent être conçues de manière ouverte afin de permettre l'emploi des technologies sur plusieurs véhicules.;2026-06-15;SRC_MGCS_BREG_2026
+m51;m51_3;M51.3;EN_SERVICE;En service;La version M51.3 est entrée en service opérationnel en 2025.;2025-10-28;SRC_M51_2025_BILAN
+m51;m51_4;M51.4;ACTIF_DEVELOPPEMENT_PRODUCTION;Développement / production;Le développement et la production de la quatrième version ont été commandés à ArianeGroup en 2025.;2025-08-28;SRC_M51_DGA_2025
+aster;multicouche;SAMP/T NG multi-couches Aster/Mica VL;ACTIF_DEVELOPPEMENT;En développement;"Le développement a été commandé en avril 2026 ; les premières sections au standard multi-couches sont annoncées à partir de 2030.";2026-04-30;SRC_ASTER_MICA_DGA_2026
+vl_mica;service_courte_portee;VL Mica courte portée;EN_SERVICE;En service;Le VL Mica assure déjà des missions de défense sol-air courte portée.;2026-06-10;SRC_VLMICA_DGA_2026
+vl_mica;integration_samptng;Intégration SAMP/T NG;ACTIF_DEVELOPPEMENT;En développement;L'intégration de la chaîne d'engagement VL Mica dans le SAMP/T NG fait l'objet du développement multi-couches commandé en 2026.;2026-04-30;SRC_VLMICA_DGA_2026
+nh90;standard1;NH90 Standard 1;EN_SERVICE;En service;Le standard 1 est en service dans les forces conventionnelles françaises.;2025-04-01;SRC_NH90_DGA_2025
+nh90;standard2_fs;NH90 Standard 2 Forces spéciales;ACTIF_LIVRAISONS;Livraisons 2026–2029;"Dix-huit appareils ont été commandés ; les livraisons sont prévues entre l'été 2026 et le printemps 2029.";2025-04-01;SRC_NH90_DGA_2025
+tiger_mk3;retrofit_france_espagne;Modernisation MkIII France / Espagne;ACTIF_MODERNISATION;Modernisation;"Le contrat MkIII concerne la modernisation des flottes française et espagnole ; OCCAR confirme la poursuite du programme et des rétrofits.";2026-06-01;SRC_TIGER_OCCAR_2026
+h160m;prototype_essais;Prototype et essais armements;ACTIF_ESSAIS;Essais en cours;Après le premier vol en 2025, une première campagne de tirs a été menée avec succès en juillet 2026.;2026-07-15;SRC_H160M_DGA_2026
+barracuda;de_grasse;SNA De Grasse;LIVRE;Livré;Quatrième SNA de la classe Suffren, livré à la Marine nationale le 24 juin 2026.;2026-06-24;SRC_BARRACUDA_DGA_2026
+barracuda;rubis_casabianca;Rubis et Casabianca;ACTIF_CONSTRUCTION;En construction;Les deux derniers SNA du programme sont en construction et doivent être livrés d'ici 2030.;2026-06-26;SRC_BARRACUDA_DGA_2026
+fdi;amiral_ronarch;Amiral Ronarc’h;LIVRE;Livrée;Première FDI française livrée le 17 octobre 2025.;2025-10-17;SRC_FDI_DGA_2026
+fdi;fdi5;Cinquième FDI française;COMMANDE;Commandée;La cinquième FDI destinée à la Marine nationale a été commandée le 31 mars 2026.;2026-03-31;SRC_FDI_DGA_2026
