@@ -1,6 +1,6 @@
 ---
 title: "BITD France"
-page-layout: custom
+page-layout: full
 title-block: false
 ---
 
