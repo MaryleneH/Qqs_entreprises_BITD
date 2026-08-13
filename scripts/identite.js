@@ -123,9 +123,12 @@
         if (key) state.industrialIdentityByCompanyId[key] = row;
       });
 
-      // valueChainById
+      // valueChainById — chaine_valeur_id is canonical, row.id kept as fallback
       chainValues.forEach((row) => {
-        if (row.id) state.valueChainById[row.id.trim()] = row;
+        const id = String(
+          row.chaine_valeur_id || row.id || ''
+        ).trim();
+        if (id) state.valueChainById[id] = row;
       });
 
       // capabilitiesByCompanyId
@@ -143,7 +146,7 @@
         const key = String(row.entreprise_id || '').trim();
         if (!key || !row.capacite) return;
         if (!tempByKey[key]) tempByKey[key] = [];
-        tempByKey[key].push({ cap: row.capacite, ordre: parseInt(row.ordre, 10) || 999 });
+        tempByKey[key].push({ cap: row.capacite, ordre: parseInt(row.ordre_affichage || row.ordre, 10) || 999 });
       });
       Object.entries(tempByKey).forEach(([key, arr]) => {
         arr.sort((a, b) => a.ordre - b.ordre);
@@ -159,7 +162,7 @@
 
       // Data validation checks (console only)
       const uniqueIds = new Set(identites.filter((r) => r.afficher_dashboard === 'true').map((r) => r.entreprise_id));
-      const uniqueChainIds = new Set(chainValues.map((r) => r.id));
+      const uniqueChainIds = new Set(chainValues.map((r) => String(r.chaine_valeur_id || r.id || '').trim()).filter(Boolean));
       const knownCompanyIds = new Set(identites.map((r) => String(r.entreprise_id || '').trim()));
       const orphanCaps = capacites.filter((r) => !knownCompanyIds.has(String(r.entreprise_id || '').trim()));
       const missingSource = identites.filter((r) => !r.source_industrielle_id);
@@ -248,6 +251,12 @@
   // ---------------------------------------------------------------------------
   // Methodology page: render CV grid
   // ---------------------------------------------------------------------------
+  function getChainValueId(cv) {
+    return String(
+      cv?.chaine_valeur_id || cv?.id || ''
+    ).trim();
+  }
+
   function renderMethodologieCVGrid() {
     const grid = document.getElementById('cv-methodo-grid');
     if (!grid) return;
@@ -258,7 +267,7 @@
     }
     grid.innerHTML = cvs.map((cv) => `
       <div class="cv-referentiel-card">
-        <span class="cv-referentiel-code">${escHtml(cv.id)}</span>
+        <span class="cv-referentiel-code">${escHtml(getChainValueId(cv))}</span>
         <p class="cv-referentiel-libelle">${escHtml(cv.libelle)}</p>
         <p class="cv-referentiel-definition">${escHtml(cv.definition || '')}</p>
         ${cv.exemples ? `<p class="cv-referentiel-exemples">Ex.&nbsp;: ${escHtml(cv.exemples)}</p>` : ''}

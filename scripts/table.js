@@ -13,6 +13,13 @@
     identiteLoaded: false
   };
 
+
+  function getChainValueId(cv) {
+    return String(
+      cv?.chaine_valeur_id || cv?.id || ''
+    ).trim();
+  }
+
   const dom = {
     loading: document.getElementById('entreprises-loading'),
     error: document.getElementById('entreprises-error'),
@@ -475,7 +482,7 @@
 
     // Add identity source if available
     if (identite && identite.source_industrielle_id && window.BITDProvenance && state.provenanceLoaded) {
-      const src = window.BITDProvenance.getSourceById(identite.source_industrielle_id);
+      const src = window.BITDProvenance.getSource(identite.source_industrielle_id);
       if (src && src.url) {
         items.push({ key: src.url, title: src.libelle || 'Source industrielle', url: src.url, priority: 0 });
       }
@@ -544,7 +551,7 @@
 
   function renderChainValueViz(row, mobile = false) {
     const primaryId = row.primaryChainValueId || '';
-    const secondaryIds = (row.secondaryChainValues || []).map((cv) => cv.id);
+    const secondaryIds = (row.secondaryChainValues || []).map(getChainValueId);
 
     if (!primaryId) return '';
 
@@ -907,10 +914,27 @@
     dom.explorer.hidden = true;
     dom.tableau.hidden = true;
 
+    // 1. CORE — only here do we show "référentiel impossible à charger"
     try {
       state.rows = await loadCoreRows();
-      await enrichOptionalData();
+    } catch (err) {
+      console.error('[BITD][Entreprises][CORE] entreprises.csv impossible à charger', err);
+      dom.loading.hidden = true;
+      dom.error.hidden = false;
+      dom.explorer.hidden = true;
+      dom.tableau.hidden = true;
+      return;
+    }
 
+    // 2. ENRICHISSEMENTS — fail-soft
+    try {
+      await enrichOptionalData();
+    } catch (err) {
+      console.warn('[BITD][Entreprises][ENRICHISSEMENT]', err);
+    }
+
+    // 3. RENDU
+    try {
       fillFilterSelect(dom.filterDomain, uniqueSorted(state.rows.map((row) => row.secteurPrincipal)), 'Tous');
 
       // Chain of value filter: prefer identity data, fall back to row.role
@@ -940,11 +964,16 @@
       dom.explorer.hidden = false;
       dom.tableau.hidden = true;
     } catch (err) {
-      console.error('[BITD][Entreprises] Chargement impossible :', err);
+      console.error('[BITD][Entreprises][RENDER]', err);
+      // state.rows is loaded — show explorer with whatever data we have
       dom.loading.hidden = true;
-      dom.error.hidden = false;
-      dom.explorer.hidden = true;
-      dom.tableau.hidden = true;
+      if (state.rows.length) {
+        applyFilters();
+        dom.explorer.hidden = false;
+        dom.tableau.hidden = true;
+      } else {
+        dom.error.hidden = false;
+      }
     }
   }
 
