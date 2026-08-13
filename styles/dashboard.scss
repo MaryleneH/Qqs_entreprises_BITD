@@ -2165,7 +2165,8 @@ main.content { padding: 0 !important; }
 }
 
 #programme-controls,
-#entreprise-controls {
+#entreprise-controls,
+#region-controls {
   display: contents;
 }
 
@@ -2609,5 +2610,209 @@ main.content { padding: 0 !important; }
       padding: 0;
       li { margin-bottom: 0.2rem; }
     }
+  }
+}
+
+// =============================================================================
+// MODE RÉGION — Panneau territorial
+// =============================================================================
+
+.region-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.region-panel-empty {
+  padding: 1rem 0;
+  h3 { font-size: 1rem; color: var(--navy); margin: 0 0 0.4rem; }
+  p { font-size: 0.82rem; color: var(--text-secondary); }
+}
+
+.region-panel-header {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.region-panel-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin: 0 0 0.25rem;
+}
+
+.region-panel-title {
+  font-family: 'Kalam', cursive;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.7rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.region-kpis {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.region-kpi {
+  flex: 1 1 80px;
+  min-width: 70px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+
+  strong {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  span {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+  }
+}
+
+.region-section-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 1rem 0 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.region-companies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.region-company-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition);
+  gap: 0.5rem;
+
+  &:hover {
+    background: var(--background);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+}
+
+.region-company-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.region-company-count {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.region-activities {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.activity-bar-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+}
+
+.activity-bar-label {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.activity-bar-track {
+  width: 60px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.activity-bar-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.activity-bar-count {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  width: 1.8em;
+  flex-shrink: 0;
+}
+
+.region-methodological-note {
+  margin-top: 1rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding: 0.5rem 0.6rem;
+  background: var(--background);
+  border-radius: 8px;
+  border-left: 2px solid var(--border);
+}
+
+.region-info-icon {
+  color: var(--teal);
+  margin-right: 0.3em;
+}
+
+// Segmented mode — 3 buttons compact on mobile
+@media (max-width: 480px) {
+  .segmented--mode .segmented-btn {
+    min-width: 0;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.8rem;
   }
 }
