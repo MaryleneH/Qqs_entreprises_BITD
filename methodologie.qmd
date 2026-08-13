@@ -1,4 +1,4 @@
-﻿---
+---
 pagetitle: "Méthodologie & sources"
 format:
   html:
