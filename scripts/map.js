@@ -21,6 +21,26 @@
       .replace(/'/g, '&#39;');
   }
 
+  function getNationalHeadquarters(snapshot) {
+    const companies = window.BITDData.getMapNationalCompanies();
+    const byCompany = new Map();
+    (snapshot.allEtablissements || []).forEach((etab) => {
+      const companyId = String(etab.entreprise_id || '');
+      if (!companyId || !etab.est_siege || etab.latitude == null || etab.longitude == null) return;
+      if (!byCompany.has(companyId)) byCompany.set(companyId, etab);
+    });
+
+    return companies.map((company) => {
+      const companyId = String(company.id);
+      const hq = byCompany.get(companyId) || null;
+      return {
+        company,
+        lat: hq ? hq.latitude : company.latitude,
+        lng: hq ? hq.longitude : company.longitude
+      };
+    }).filter((item) => item.lat != null && item.lng != null);
+  }
+
   function isMobileViewport() {
     return window.innerWidth <= 900;
   }
@@ -516,7 +536,12 @@
     } else {
       url.searchParams.delete('programme');
       url.searchParams.delete('region');
-      if (snapshot.entrepriseId) url.searchParams.set('entreprise', snapshot.entrepriseId);
+      if (snapshot.entrepriseId) {
+        const companySlug = snapshot.selectedCompany && snapshot.selectedCompany.slug
+          ? snapshot.selectedCompany.slug
+          : snapshot.entrepriseId;
+        url.searchParams.set('entreprise', companySlug);
+      }
       else url.searchParams.delete('entreprise');
       if (snapshot.statutEtablissements === 'tous') url.searchParams.set('etablissements', 'tous');
       else url.searchParams.delete('etablissements');
@@ -621,7 +646,7 @@
     const current = snapshot.selectedRegion || '';
     const regions = window.BITDData.getUniqueRegions();
     if (select.options.length !== regions.length + 1) {
-      const options = ['<option value="">Sélectionner une région</option>']
+      const options = ['<option value="">Toutes les régions</option>']
         .concat(regions.map((r) => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`));
       select.innerHTML = options.join('');
     }
@@ -789,13 +814,12 @@
     programmeLayer.clearLayers();
     regionSitesLayer.clearLayers();
 
-    const companies = window.BITDData.getMapNationalCompanies();
+    const headquarters = getNationalHeadquarters(snapshot);
     const bounds = [];
 
-    companies.forEach((company) => {
-      if (company.latitude == null || company.longitude == null) return;
+    headquarters.forEach(({ company, lat, lng }) => {
       const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
-      const marker = L.marker([company.latitude, company.longitude], { icon: siegeIcon(color, false), zIndexOffset: 1000 });
+      const marker = L.marker([lat, lng], { icon: siegeIcon(color, false), zIndexOffset: 1000 });
       const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
       const activeEtabs = window.BITDData.getVisibleEstablishments(company.id, 'actifs');
       marker.bindPopup(getNationalPopupHtml(company, activeEtabs.length, allEtabs.length), {
@@ -803,11 +827,15 @@
         maxWidth: 320
       });
       marker.on('click', () => {
-        selectEntreprise(company.id);
+        if (window.BITDData) window.BITDData.switchToEntreprise(String(company.id));
       });
       marker.addTo(nationalLayer);
-      bounds.push([company.latitude, company.longitude]);
+      bounds.push([lat, lng]);
     });
+
+    if (map) {
+      requestAnimationFrame(() => map.invalidateSize());
+    }
 
     if (bounds.length) {
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 6, animate: true });
@@ -876,6 +904,7 @@
     panel.innerHTML = `
       <div class="panel-top-actions">
         <button type="button" id="back-to-national" class="back-to-national">← Vue des 30 entreprises</button>
+        <a href="entreprises.html?entreprise=${escapeHtml(company.slug || String(company.id))}" class="panel-full-profile-link">Voir la fiche complète →</a>
       </div>
       <h3>${escapeHtml(company.entreprise)}</h3>
       <p class="small-note">${escapeHtml(secteurs || company.specialite || '')}</p>
@@ -1019,8 +1048,10 @@
       window.BITDData.setStatutEtablissements('tous');
     }
 
-    if (fromUrlEntreprise && snapshot.allRows.some((row) => row.id === fromUrlEntreprise)) {
-      window.BITDData.setEntreprise(fromUrlEntreprise);
+    if (fromUrlEntreprise) {
+      const normalized = String(fromUrlEntreprise).trim().toLowerCase();
+      const match = snapshot.allRows.find((row) => String(row.id) === fromUrlEntreprise || String(row.slug || '').toLowerCase() === normalized);
+      if (match) window.BITDData.setEntreprise(String(match.id));
     }
   }
 

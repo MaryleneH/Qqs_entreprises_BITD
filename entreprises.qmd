@@ -4,38 +4,86 @@ page-layout: full
 ---
 
 ```{=html}
-<div class="page-intro">
-  <p>Tableau filtrable des 30 entreprises suivies dans le panorama <span class="term-definition" data-term="bitd">BITD</span>. Les valeurs <code>n.c.</code> restent affichées lorsque la source publique ne publie pas un indicateur comparable. Cliquez sur <strong>N sites →</strong> pour ouvrir le focus cartographique d'une entreprise, ou consultez <a href="comprendre.html">Comprendre les données</a> pour les définitions financières et industrielles.</p>
-</div>
+<section class="entreprises-shell" aria-labelledby="entreprises-title">
+  <header class="entreprises-header">
+    <h1 id="entreprises-title">Les entreprises du panel</h1>
+    <p class="entreprises-subtitle">Explorez les 30 acteurs industriels du panel par domaine, position dans la chaîne de valeur, programmes et implantation territoriale.</p>
+    <p class="entreprises-meta" id="entreprises-meta">Chargement…</p>
+  </header>
 
-<div class="table-shell">
-  <div class="table-toolbar" id="table-toolbar">
-    <input id="table-search" type="search" placeholder="Rechercher une entreprise, un site, un programme…" aria-label="Recherche tableau" />
-    <select id="table-sector"><option value="all">Tous les secteurs</option></select>
+  <section class="entreprises-controls surface-card" aria-label="Recherche et filtres">
+    <input id="entreprises-search" type="search" placeholder="Rechercher une entreprise, un domaine, un programme…" aria-label="Recherche entreprises" />
+    <div class="entreprises-filters">
+      <label>Cercle
+        <select id="entreprises-filter-circle">
+          <option value="all">Tous</option>
+          <option value="1">Cercle 1</option>
+          <option value="2">Cercle 2</option>
+        </select>
+      </label>
+      <label>Domaine
+        <select id="entreprises-filter-domain"><option value="all">Tous</option></select>
+      </label>
+      <label>Rôle / chaîne de valeur
+        <select id="entreprises-filter-role"><option value="all">Tous</option></select>
+      </label>
+      <label>Programme
+        <select id="entreprises-filter-programme"><option value="all">Tous</option></select>
+      </label>
+    </div>
+    <div class="entreprises-controls-meta">
+      <span id="entreprises-count">0 entreprise</span>
+      <button type="button" id="entreprises-reset" hidden>Effacer les filtres</button>
+    </div>
+  </section>
+
+  <section class="entreprises-view-toggle" aria-label="Mode d'affichage">
+    <button type="button" class="is-active" data-view="explorer" aria-pressed="true">Explorer</button>
+    <button type="button" data-view="tableau" aria-pressed="false">Tableau</button>
+  </section>
+
+  <div id="entreprises-error" class="entreprises-error" hidden>
+    <p>Impossible de charger le référentiel des entreprises.</p>
+    <button type="button" id="entreprises-retry">Réessayer</button>
   </div>
-  <div class="table-meta">
-    <span id="table-count">Chargement…</span>
-    <span class="small-note">Cliquez sur un en-tête pour trier.</span>
-  </div>
-  <div class="table-scroll">
-    <table id="entreprises-table">
-      <thead>
-        <tr>
-          <th data-sort="entreprise">Entreprise</th>
-          <th data-sort="specialite">Spécialité</th>
-          <th data-sort="secteurs">Secteur</th>
-          <th data-sort="siege_region">Siège</th>
-          <th data-sort="implantations_count">Implantations</th>
-          <th data-sort="effectif">Effectifs</th>
-          <th data-sort="ca_defense">CA / <span class="term-definition" data-term="ca_defense">CA Défense</span></th>
-          <th data-sort="carnet_commandes"><span class="term-definition" data-term="carnet_commandes">Carnet de commandes</span></th>
-          <th data-sort="financial_indicator_sort">Indicateur financier</th>
-          <th>Programmes phares</th>
-          <th>Site officiel</th>
-        </tr>
-      </thead>
-      <tbody id="entreprises-table-body"></tbody>
-    </table>
-  </div>
-</div>
+
+  <div id="entreprises-loading" class="entreprises-loading" aria-live="polite">Chargement des entreprises…</div>
+
+  <section id="entreprises-explorer" class="entreprises-explorer" hidden>
+    <div class="entreprises-master surface-card">
+      <div id="entreprises-list" class="entreprises-list"></div>
+      <div id="entreprises-empty" class="entreprises-empty" hidden>
+        <p>Aucune entreprise ne correspond à ces critères.</p>
+        <button type="button" id="entreprises-empty-reset">Effacer les filtres</button>
+      </div>
+    </div>
+    <article id="entreprises-detail" class="entreprises-detail surface-card" aria-live="polite"></article>
+  </section>
+
+  <section id="entreprises-tableau" class="entreprises-tableau surface-card" hidden>
+    <div class="table-scroll">
+      <table id="entreprises-compact-table">
+        <thead>
+          <tr>
+            <th>Entreprise</th>
+            <th>Cercle</th>
+            <th>Domaine</th>
+            <th>CA</th>
+            <th>Effectif</th>
+            <th>Implantations</th>
+          </tr>
+        </thead>
+        <tbody id="entreprises-compact-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="entreprises-mobile-detail" class="entreprises-mobile-detail" hidden>
+    <div class="entreprises-mobile-detail__backdrop" data-close-mobile-detail></div>
+    <div class="entreprises-mobile-detail__panel">
+      <button type="button" class="entreprises-mobile-detail__back" data-close-mobile-detail>← Retour aux entreprises</button>
+      <div id="entreprises-mobile-detail-content"></div>
+    </div>
+  </section>
+</section>
 ```
