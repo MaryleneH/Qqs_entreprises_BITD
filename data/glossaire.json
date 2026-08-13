@@ -247,5 +247,13 @@
     "short": "Établissement enregistré comme administrativement actif dans SIRENE à la date de référence.",
     "long": "Établissement enregistré comme administrativement actif dans le répertoire SIRENE à la date de référence des données. Ce statut ne signifie pas nécessairement que le site exerce une activité industrielle de Défense.",
     "category": "Données territoriales"
+  },
+  "implantation": {
+    "terme": "Implantation",
+    "definition": "Site ou établissement localisé d'une entreprise. Dans ce dashboard, une implantation peut être issue d'une source corporate ou du répertoire SIRENE."
+  },
+  "region_implantation": {
+    "terme": "Région d'implantation",
+    "definition": "Région dans laquelle se situe un établissement, indépendamment de la localisation du siège social de l'entreprise."
   }
 }
