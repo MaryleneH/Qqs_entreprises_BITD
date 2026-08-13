@@ -45,6 +45,38 @@
     return window.innerWidth <= 900;
   }
 
+  // Central map-stabilization helper.
+  // Double rAF ensures the DOM and panel have finished rendering before
+  // Leaflet learns its real container size and frames the bounds.
+  function refreshAndFitMap(bounds, options) {
+    if (!map) return;
+    const opts = Object.assign({
+      maxZoom: 10,
+      singleZoom: 9,
+      fallbackCenter: FRANCE_VIEW.center,
+      fallbackZoom: FRANCE_VIEW.zoom,
+      paddingDesktop: [46, 46],
+      paddingMobile: [32, 32]
+    }, options || {});
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        map.invalidateSize({ animate: false });
+        if (bounds && bounds.length > 1) {
+          map.fitBounds(bounds, {
+            padding: isMobileViewport() ? opts.paddingMobile : opts.paddingDesktop,
+            maxZoom: opts.maxZoom,
+            animate: false
+          });
+        } else if (bounds && bounds.length === 1) {
+          map.setView(bounds[0], opts.singleZoom, { animate: false });
+        } else {
+          map.setView(opts.fallbackCenter, opts.fallbackZoom, { animate: false });
+        }
+      });
+    });
+  }
+
   function normalizeStatusLabel(label) {
     const raw = (label || '').toString().trim();
     if (!raw) return 'actif';
@@ -150,21 +182,16 @@
     if (snap.explorerMode === 'entreprise' && snap.entrepriseId && snap.selectedCompany) {
       const etabs = window.BITDData.getVisibleEstablishments(snap.entrepriseId, snap.statutEtablissements);
       const bounds = etabs.filter((e) => e.latitude != null && e.longitude != null).map((e) => [e.latitude, e.longitude]);
-      if (bounds.length > 1) map.fitBounds(bounds, { padding: [46, 46], maxZoom: 10, animate: true });
-      else if (bounds.length === 1) map.setView(bounds[0], 9, { animate: true });
-      else map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+      refreshAndFitMap(bounds, { maxZoom: 10, singleZoom: 9 });
     } else if (snap.explorerMode === 'region' && snap.selectedRegion) {
       const etabs = window.BITDData.getVisibleRegionEstablishments(snap.selectedRegion, snap.statutEtablissements);
       const bounds = etabs.filter((e) => e.latitude != null && e.longitude != null).map((e) => [e.latitude, e.longitude]);
-      if (bounds.length > 1) map.fitBounds(bounds, { padding: [46, 46], maxZoom: 10, animate: true });
-      else if (bounds.length === 1) map.setView(bounds[0], 9, { animate: true });
-      else map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+      refreshAndFitMap(bounds, { maxZoom: 10, singleZoom: 9 });
     } else {
       // National: fit the 30 headquarters
       const companies = window.BITDData.getMapNationalCompanies();
       const bounds = companies.filter((c) => c.latitude != null && c.longitude != null).map((c) => [c.latitude, c.longitude]);
-      if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 6, animate: true });
-      else map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+      refreshAndFitMap(bounds, { maxZoom: 6, singleZoom: 6, paddingDesktop: [40, 40] });
     }
   }
 
@@ -505,18 +532,16 @@
       bounds.push([pos.lat, pos.lng]);
     });
 
-    if (bounds.length > 1) {
-      map.fitBounds(bounds, { padding: isMobileViewport() ? [32, 32] : [60, 60], maxZoom: 8, animate: true });
-    } else if (bounds.length === 1) {
-      map.setView(bounds[0], 7, { animate: true });
-    } else {
-      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
-    }
-
-    // Render programme panel
+    // Render programme panel first, then fit map
     if (window.BITDProgramme) {
       window.BITDProgramme.renderProgrammePanel(programme);
     }
+
+    refreshAndFitMap(bounds, {
+      maxZoom: 8,
+      singleZoom: 7,
+      paddingDesktop: [60, 60]
+    });
   }
 
   function updateUrl(snapshot) {
@@ -790,16 +815,9 @@
       bounds.push([etab.latitude, etab.longitude]);
     });
 
-    if (bounds.length > 1) {
-      map.fitBounds(bounds, { padding: isMobileViewport() ? [32, 32] : [46, 46], maxZoom: 10, animate: true });
-    } else if (bounds.length === 1) {
-      map.setView(bounds[0], 9, { animate: true });
-    } else {
-      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
-    }
-
     renderRegionPanel(snapshot, regionSites);
     setContextRegion(snapshot, regionSites);
+    refreshAndFitMap(bounds, { maxZoom: 10, singleZoom: 9 });
   }
 
   function renderNationalOverview(snapshot) {
@@ -833,16 +851,6 @@
       bounds.push([lat, lng]);
     });
 
-    if (map) {
-      requestAnimationFrame(() => map.invalidateSize());
-    }
-
-    if (bounds.length) {
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 6, animate: true });
-    } else {
-      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
-    }
-
     const panel = document.getElementById('company-panel-content');
     if (panel) {
       const circle1 = snapshot && snapshot.allRows.filter((r) => r.cercle === '1' || r.cercle === 1).length;
@@ -859,6 +867,12 @@
         <p class="small-note" style="margin-top:0.75rem">Sélectionnez un siège sur la carte ou utilisez les contrôles d'exploration.</p>
       `;
     }
+
+    refreshAndFitMap(bounds, {
+      maxZoom: 6,
+      singleZoom: 6,
+      paddingDesktop: [40, 40]
+    });
   }
 
   // Legacy alias kept for any remaining call-sites
@@ -995,14 +1009,6 @@
       bounds.push([etab.latitude, etab.longitude]);
     });
 
-    if (bounds.length > 1) {
-      map.fitBounds(bounds, { padding: isMobileViewport() ? [32, 32] : [46, 46], maxZoom: 10, animate: true });
-    } else if (bounds.length === 1) {
-      map.setView(bounds[0], 9, { animate: true });
-    } else if (company.latitude != null && company.longitude != null) {
-      map.setView([company.latitude, company.longitude], 7.5, { animate: true });
-    }
-
     renderCompanyPanel(company, visibleEtabs, allEtabs, snapshot.statutEtablissements);
 
     // Inject panel methodology info (cercle + "Pourquoi dans le panel ?")
@@ -1010,6 +1016,11 @@
       const panelEl = document.getElementById('company-panel-content');
       window.BITDPanel.injectIntoPanelContent(String(company.id), panelEl);
     }
+
+    refreshAndFitMap(bounds.length ? bounds : (company.latitude != null && company.longitude != null ? [[company.latitude, company.longitude]] : null), {
+      maxZoom: 10,
+      singleZoom: 9
+    });
   }
 
   function fillEntrepriseSelect(snapshot) {
@@ -1155,6 +1166,15 @@
     if (!window.BITDData || !document.getElementById('bitd-map')) return;
     ensureMap();
     bindControls();
+
+    // Single debounced resize listener to keep Leaflet aware of its real size
+    let _resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(() => {
+        if (map) map.invalidateSize({ animate: false });
+      }, 120);
+    });
 
     // Load programme data and fill select when ready
     if (window.BITDProgramme) {
