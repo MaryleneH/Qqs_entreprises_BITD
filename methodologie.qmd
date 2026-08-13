@@ -158,6 +158,84 @@ Les données du dashboard appartiennent à l'un de ces sept types. Un petit badg
     <div id="source-search-results" aria-live="polite"></div>
 ```
 
+## Statut des programmes
+
+```{=html}
+    <div class="methodo-programmes-section">
+      <p>
+        Le statut d'un programme est une donnée évolutive. Chaque statut présenté dans le dashboard
+        est associé à une date de dernière vérification et à une source primaire ou institutionnelle
+        permettant de le contrôler. Les statuts sont établis à partir de sources ouvertes et
+        correspondent à la situation documentée à la date indiquée.
+      </p>
+      <p>
+        Lorsqu'un programme comporte plusieurs composantes suivant des trajectoires différentes,
+        le dashboard distingue le statut global du statut de chaque composante.
+      </p>
+
+      <h3>Exemple — SCAF / FCAS</h3>
+      <div class="methodo-exemple-statuts">
+        <div class="methodo-exemple-row">
+          <span class="methodo-exemple-label">Statut global</span>
+          <span class="prog-statut-badge prog-statut-badge--reconfigure">Reconfiguré</span>
+        </div>
+        <p class="methodo-exemple-note">
+          Un statut global unique « abandonné » serait trompeur : seul le projet d'avion de combat
+          unique a été arrêté. Les autres composantes se poursuivent.
+        </p>
+        <div class="methodo-exemple-composantes">
+          <div class="methodo-exemple-composante">
+            <span class="methodo-exemple-composante-nom">Avion de combat unique</span>
+            <span class="prog-statut-badge prog-statut-badge--arrete">Arrêté</span>
+          </div>
+          <div class="methodo-exemple-composante">
+            <span class="methodo-exemple-composante-nom">Combat Cloud</span>
+            <span class="prog-statut-badge prog-statut-badge--actif">Poursuivi</span>
+          </div>
+          <div class="methodo-exemple-composante">
+            <span class="methodo-exemple-composante-nom">Autres systèmes</span>
+            <span class="prog-statut-badge prog-statut-badge--actif">Poursuivis</span>
+          </div>
+        </div>
+        <p class="methodo-exemple-source">
+          Source : Présidence de la République — Conseil franco-allemand du 17 juillet 2026
+        </p>
+      </div>
+
+      <h3>Catégories de statuts</h3>
+      <div class="methodo-statuts-grid">
+        <div class="methodo-statut-item">
+          <span class="prog-statut-badge prog-statut-badge--actif">En service / évolution</span>
+          <p>Programme actif en service ou en cours de modernisation.</p>
+        </div>
+        <div class="methodo-statut-item">
+          <span class="prog-statut-badge prog-statut-badge--actif">En développement</span>
+          <p>Programme ou composante en phase de développement.</p>
+        </div>
+        <div class="methodo-statut-item">
+          <span class="prog-statut-badge prog-statut-badge--actif">En réalisation</span>
+          <p>Construction ou réalisation en cours.</p>
+        </div>
+        <div class="methodo-statut-item">
+          <span class="prog-statut-badge prog-statut-badge--actif">Production / livraisons</span>
+          <p>Phase de production active avec livraisons en cours ou programmées.</p>
+        </div>
+        <div class="methodo-statut-item">
+          <span class="prog-statut-badge prog-statut-badge--actif">Modernisation</span>
+          <p>Programme d'upgrade ou de rétrofit sur une plateforme existante.</p>
+        </div>
+        <div class="methodo-statut-item">
+          <span class="prog-statut-badge prog-statut-badge--reconfigure">Reconfiguré</span>
+          <p>Programme dont le périmètre ou les objectifs ont été formellement modifiés.</p>
+        </div>
+        <div class="methodo-statut-item">
+          <span class="prog-statut-badge prog-statut-badge--arrete">Arrêté</span>
+          <p>Composante ou volet de programme formellement arrêté.</p>
+        </div>
+      </div>
+    </div>
+```
+
 ## Limites des données
 
 ```{=html}
