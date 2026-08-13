@@ -56,21 +56,25 @@ body {
 }
 
 // --- Override Quarto defaults ---
-.quarto-container, #quarto-content { padding: 0 !important; max-width: none !important; }
+.quarto-container,
+#quarto-content,
+.page-columns,
+.page-full {
+  padding: 0 !important;
+  max-width: none !important;
+}
 main.content { padding: 0 !important; }
 
-// --- Suppression des conteneurs Bootstrap sur les pages dashboard (full-width) ---
-@media (min-width: 1200px) {
-  .page-layout-full .container,
-  .page-layout-full .container-sm,
-  .page-layout-full .container-md,
-  .page-layout-full .container-lg,
-  .page-layout-full .container-xl,
-  .page-layout-full .container-xxl,
-  .page-layout-full .container-fluid {
-    max-width: none !important;
-    padding-inline: 0 !important;
-  }
+// --- Suppression des conteneurs Bootstrap sur les pages full-width (toutes tailles) ---
+.page-layout-full .container,
+.page-layout-full .container-sm,
+.page-layout-full .container-md,
+.page-layout-full .container-lg,
+.page-layout-full .container-xl,
+.page-layout-full .container-xxl,
+.page-layout-full .container-fluid {
+  max-width: none !important;
+  padding-inline: 0 !important;
 }
 
 // =============================================================================
@@ -1553,8 +1557,9 @@ main.content { padding: 0 !important; }
 // MAIN EXPLORER REFACTOR
 // =============================================================================
 .explorer-shell {
-  width: 100%;
+  width: min(97vw, 1900px);
   max-width: none;
+  margin-inline: auto;
   padding: 0.8rem 1.5rem 1.5rem;
 }
 
