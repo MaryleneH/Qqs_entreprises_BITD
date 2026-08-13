@@ -892,7 +892,12 @@
     }
 
     renderCompanyPanel(company, visibleEtabs, allEtabs, snapshot.statutEtablissements);
-  }
+
+    // Inject panel methodology info (cercle + "Pourquoi dans le panel ?")
+    if (window.BITDPanel) {
+      const panelEl = document.getElementById('company-panel-content');
+      window.BITDPanel.injectIntoPanelContent(String(company.id), panelEl);
+    }
 
   function fillEntrepriseSelect(snapshot) {
     const select = document.getElementById('entreprise-select');

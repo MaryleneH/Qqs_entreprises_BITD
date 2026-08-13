@@ -297,5 +297,20 @@
       "Périmètre France uniquement",
       "Airbus Defence and Space"
     ]
+  },
+  "panel": {
+    "label": "Panel",
+    "short": "Ensemble d'acteurs sélectionnés pour une analyse.",
+    "definition": "Ensemble d'acteurs sélectionnés pour une analyse. Dans ce dashboard, le panel ne constitue ni un classement ni une liste exhaustive de la BITD française."
+  },
+  "grand_maitre_oeuvre_industriel": {
+    "label": "Grand maître d'œuvre industriel",
+    "short": "Entreprise chargée de concevoir, intégrer et livrer un système complexe complet.",
+    "definition": "Entreprise chargée de concevoir, intégrer et souvent livrer un système complexe complet en coordonnant de nombreux équipementiers et sous-traitants."
+  },
+  "selection_editoriale": {
+    "label": "Sélection éditoriale",
+    "short": "Sélection construite selon des critères méthodologiques explicités par les auteurs.",
+    "definition": "Sélection construite selon des critères méthodologiques explicités par les auteurs du dashboard et non issue directement d'une nomenclature institutionnelle officielle."
   }
 }

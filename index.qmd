@@ -7,9 +7,25 @@ title-block: false
 ```{=html}
 <section class="explorer-shell" aria-labelledby="explorer-title">
   <header class="explorer-header">
-    <h1 id="explorer-title">BITD France</h1>
+    <h1 id="explorer-title">
+      Panel de 30 acteurs industriels majeurs de la BITD
+      <span class="panel-title-info-wrap">
+        <button type="button"
+                class="panel-title-info-btn"
+                id="panel-title-info-btn"
+                aria-label="À propos du panel"
+                aria-expanded="false"
+                aria-controls="panel-title-tooltip">ⓘ</button>
+        <div class="panel-title-tooltip"
+             id="panel-title-tooltip"
+             role="tooltip"
+             aria-hidden="true">
+          <!-- filled by panel-methodology.js -->
+        </div>
+      </span>
+    </h1>
     <p class="explorer-subtitle">Entreprises &amp; implantations industrielles</p>
-    <p class="explorer-intro">Explorez les établissements français des 30 principaux acteurs de la Base industrielle et technologique de défense.</p>
+    <p class="explorer-intro">Explorez un panel de 30 acteurs industriels majeurs de la Base industrielle et technologique de défense française, leurs établissements, leurs programmes et leur implantation territoriale.</p>
   </header>
 
   <section class="explorer-controls" aria-label="Contrôles d'exploration">
@@ -62,7 +78,7 @@ title-block: false
   </section>
 
   <section class="map-context" aria-live="polite">
-    <h2 id="map-context-title">30 entreprises de la BITD</h2>
+    <h2 id="map-context-title">Panel de 30 acteurs de la BITD</h2>
     <p id="map-context-subtitle">Sélectionnez une entreprise pour explorer ses établissements.</p>
     <p id="map-context-note" class="small-note"></p>
   </section>

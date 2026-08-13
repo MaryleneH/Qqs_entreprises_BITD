@@ -218,6 +218,40 @@ Le site a vocation **factuelle, descriptive et pédagogique**. Il cherche à ré
 
 Pour les définitions des indicateurs financiers et des acronymes industriels, voir <a href="comprendre.html">Comprendre les données</a>.
 
+## Constitution du panel {#constitution-du-panel}
+
+```{=html}
+    <div class="panel-methodo-toc">
+      <h4>Sur cette page</h4>
+      <ul>
+        <li><a href="#comment-lire">Comment lire les données</a></li>
+        <li><a href="#constitution-du-panel">Constitution du panel</a></li>
+        <li><a href="#pourquoi-cette-entreprise">Pourquoi cette entreprise ?</a></li>
+        <li><a href="#sources">Sources</a></li>
+        <li><a href="#limites-des-donnees">Limites des données</a></li>
+      </ul>
+    </div>
+
+    <h2 id="comment-les-entreprises-ont-elles-ete-selectionnees" class="panel-section-anchor">
+      Comment les 30 entreprises ont-elles été sélectionnées ?
+    </h2>
+    <!-- filled by panel-methodology.js buildMethodologieSection() -->
+    <div id="panel-methodo-section"></div>
+```
+
+## Pourquoi cette entreprise ? {#pourquoi-cette-entreprise}
+
+```{=html}
+    <p class="methodo-lead">Sélectionnez une entreprise pour afficher la justification exacte de son inclusion dans le panel, ses critères de sélection et ses sources documentaires.</p>
+    <div class="panel-company-select-wrap">
+      <label for="panel-company-select" class="sr-only">Entreprise</label>
+      <select id="panel-company-select" aria-label="Sélectionner une entreprise pour afficher la justification de son inclusion dans le panel">
+        <option value="">— Choisir une entreprise —</option>
+      </select>
+    </div>
+    <div id="panel-company-fiche" aria-live="polite"></div>
+```
+
 ```{=html}
   </div><!-- .methodo-container -->
 </div><!-- #methodo-page -->

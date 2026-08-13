@@ -29,7 +29,7 @@ website:
       - text: Situation au 12 août 2026
   page-footer:
     left: "<span class='footer-signature'>BITD France · Données issues de sources publiques</span>"
-    right: "<span class='footer-signature'>Outil documentaire d'analyse économique, industrielle et territoriale de la BITD française · Publication non officielle de la DGA</span>"
+    right: "<span class='footer-signature'>Le panel ne constitue ni un classement officiel, ni une liste exhaustive de la BITD française. La méthode de sélection est détaillée dans <a href='methodologie.html#constitution-du-panel'>Méthodologie &amp; sources</a>.</span>"
   reader-mode: false
   page-navigation: true
 
@@ -53,6 +53,7 @@ format:
           <script src="scripts/glossary.js" defer></script>
           <script src="scripts/provenance.js" defer></script>
           <script src="scripts/dashboard.js" defer></script>
+          <script src="scripts/panel-methodology.js" defer></script>
           <script src="scripts/filters.js" defer></script>
           <script src="scripts/programme.js" defer></script>
           <script src="scripts/map.js" defer></script>
