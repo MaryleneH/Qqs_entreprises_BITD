@@ -1,4 +1,4 @@
----
+﻿---
 pagetitle: "Méthodologie & sources"
 format:
   html:
@@ -378,7 +378,7 @@ Pour les définitions des indicateurs financiers et des acronymes industriels, v
     </p>
     <ul>
       <li>
-        <a href="https://www.defense.gouv.fr/dgris/recherche-et-prospective/observatoire-economique-de-la-defense/statistiques-et-etudes-oed" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.defense.gouv.fr/ssm/ecodef-statistiques/ecodef-statistiques" target="_blank" rel="noopener noreferrer">
           EcoDef Statistiques n°&nbsp;279 ↗
         </a> — DGA / Observatoire économique de la défense, travaux sur les fonctions industrielles.
       </li>
