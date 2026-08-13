@@ -29,10 +29,5 @@
     gap: 14px !important;
   }
 
-  body .entreprises-shell {
-    width: calc(100vw - 32px) !important;
-    max-width: none !important;
-    margin-left: 16px !important;
-    margin-right: 16px !important;
-  }
+  /* entreprises-shell: no override needed — width: 100% is set in dashboard.scss */
 }

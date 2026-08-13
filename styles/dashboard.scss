@@ -3674,11 +3674,18 @@ main.content { padding: 0 !important; }
 // =============================================================================
 // ENTREPRISES EXPLORER PAGE
 // =============================================================================
+
+html,
+body {
+  max-width: 100%;
+}
+
 .entreprises-shell {
-  width: calc(100vw - 40px);
+  width: 100%;
   max-width: none;
-  margin: 0 auto;
-  padding: 1rem 1.5rem 1.5rem;
+  min-width: 0;
+  margin: 0;
+  padding: 1rem 1.25rem 1.5rem;
 }
 
 .entreprises-header h1 {
@@ -3731,6 +3738,15 @@ main.content { padding: 0 !important; }
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.6rem;
+}
+
+.entreprises-filters > * {
+  min-width: 0;
+}
+
+.entreprises-controls select,
+.entreprises-controls input {
+  max-width: 100%;
 }
 
 .entreprises-filters label {
@@ -3799,10 +3815,22 @@ main.content { padding: 0 !important; }
 
 .entreprises-explorer {
   margin-top: 0.9rem;
+  width: 100%;
+  min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  grid-template-columns:
+    minmax(300px, 38%)
+    minmax(0, 62%);
   gap: 14px;
   align-items: start;
+}
+
+.entreprises-master,
+.entreprises-detail,
+.entreprises-controls,
+.entreprises-tableau {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .entreprises-master,
@@ -3810,7 +3838,19 @@ main.content { padding: 0 !important; }
   padding: 0.9rem;
 }
 
-.entreprises-list {
+.entreprises-detail {
+  width: 100%;
+  overflow: hidden;
+}
+
+.entreprises-detail p,
+.entreprises-detail li,
+.entreprises-detail a,
+.entreprises-detail span {
+  overflow-wrap: anywhere;
+}
+
+
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -3952,6 +3992,10 @@ main.content { padding: 0 !important; }
 .entreprises-tableau {
   margin-top: 0.9rem;
   padding: 0.7rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 #entreprises-compact-table {
@@ -4045,6 +4089,8 @@ body.mobile-detail-open {
 
 @media (max-width: 700px) {
   .entreprises-shell {
+    width: 100%;
+    max-width: 100%;
     padding: 0.8rem 0.8rem 1.1rem;
   }
 
@@ -4915,6 +4961,9 @@ body.mobile-detail-open {
 // Visualisation chaîne de valeur — Desktop
 // ---------------------------------------------------------------------------
 .cv-viz {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0.5rem 0 0.75rem;
   padding: 0.85rem 1rem;
   background: rgba(20,38,61,0.025);
@@ -4923,6 +4972,8 @@ body.mobile-detail-open {
 }
 
 .cv-zones {
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   gap: 0.5rem;
   flex-wrap: nowrap;
