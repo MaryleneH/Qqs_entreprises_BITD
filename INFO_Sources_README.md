@@ -88,7 +88,13 @@ Faits saillants confrontés à des sources primaires ou officielles :
 3. **Libellés financiers corrigés (2 fiches).** Thales : « 25,3 Md€ » était le montant des prises de
    commandes 2025, non le chiffre d'affaires (22,136 Md€) — libellé reformulé avec les deux
    valeurs. TechnicAtome : chiffre d'affaires harmonisé sur la valeur 2025 (683 M€).
-4. **Provenance re-routée (52 lignes).** Propagation des nouveaux `site_id` dans
+4. **Lien source réparé (audit des liens du 13/08/2026).** L'URL DGA de la livraison du SNA
+   *De Grasse* portait un suffixe `-0` étranger à l'URL canonique du ministère (vérifiée en
+   ligne, HTTP 200) ; suffixe retiré. Le sondage dirigé du même jour (liens officiels
+   defense.gouv.fr, elysee.fr) n'a révélé aucun autre lien mort parmi les URL testées — y
+   compris des slugs d'apparence suspecte (`marin-nucleaire`, `m514`) qui sont les slugs
+   authentiques du CMS ministériel.
+5. **Provenance re-routée (52 lignes).** Propagation des nouveaux `site_id` dans
    `provenance_etablissements.csv`, par jointure sur le nom de site puis sur la valeur du champ ;
    les lignes à valeur commune aux deux établissements ont été dupliquées pour préserver la
    traçabilité de chacun.
@@ -126,6 +132,14 @@ python3 controle_qualite.py
 À exécuter avant toute publication après modification des fichiers `data/`. Toute nouvelle collecte
 assistée par IA doit repasser ce contrôle **puis** une vérification externe des faits saillants
 contre sources primaires datées, selon la grille du §5.
+
+**Validité des liens externes.** Le workflow `.github/workflows/verification-liens.yml` vérifie
+automatiquement l'ensemble des URL présentes dans `data/` et les pages (233 URL uniques au
+13/08/2026) à chaque modification des données, chaque lundi, et à la demande (onglet *Actions* →
+*Vérification des liens externes* → *Run workflow*). En cas de lien mort, une issue GitHub est
+ouverte avec le rapport détaillé ; les URL de remplacement sont alors recherchées et corrigées
+dans les données, avec mention au journal du §6. Les motifs templatés (fiches Pappers construites
+sur le SIREN) sont couverts par le même contrôle.
 
 ---
 

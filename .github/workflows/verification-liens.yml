@@ -1,0 +1,47 @@
+name: Vérification des liens externes
+
+on:
+  push:
+    paths: ['data/**', '*.qmd']
+  schedule:
+    - cron: '0 6 * * 1'   # chaque lundi 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  liens:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extraire les URL des données et des pages
+        run: |
+          grep -rhoE 'https?://[^[:space:];,"'"'"'<>)]+' data/ *.qmd \
+            | sed 's/[.,)»\]]*$//' \
+            | grep -vE 'cartocdn\.com|localhost|example\.com' \
+            | sort -u > urls.txt
+          wc -l urls.txt
+
+      - name: Vérifier les liens (lychee)
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --max-concurrency 8
+            --timeout 20
+            --max-retries 2
+            --accept 200..=206,301,302,308,403,429
+            --exclude linkedin\.com --exclude twitter\.com --exclude facebook\.com
+            urls.txt
+          output: rapport-liens.md
+          fail: false
+
+      - name: Ouvrir ou mettre à jour une issue si liens morts
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "Liens externes cassés détectés"
+          content-filepath: rapport-liens.md
+          labels: qualite-donnees, liens
