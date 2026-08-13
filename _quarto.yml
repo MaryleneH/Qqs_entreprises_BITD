@@ -39,8 +39,6 @@ format:
     theme:
       - cosmo
       - styles/dashboard.scss
-    css:
-      - styles/dashboard-layout-20260813.css
     toc: false
     smooth-scroll: true
     anchor-sections: true

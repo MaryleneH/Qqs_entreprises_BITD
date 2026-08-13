@@ -6,42 +6,12 @@
   let regionSitesLayer;
   let currentLegend = null;
   let activeSiteId = null;
+  let mapResizeObserver = null;
   const markerIndex = new Map();
   const markerData = new Map();
   let currentFocusColor = null;
 
   const FRANCE_VIEW = { center: [46.603354, 1.888334], zoom: 5.6 };
-
-  // Metropolitan France + Corsica bounding box (lat 41–52, lon -6–10).
-  // Used to build fitBounds using metropolitan sites first.
-  const METRO_BBOX = { latMin: 41, latMax: 52, lngMin: -6, lngMax: 10 };
-
-  function isMetroBound(lat, lng) {
-    return (
-      Number.isFinite(lat) && Number.isFinite(lng) &&
-      lat >= METRO_BBOX.latMin && lat <= METRO_BBOX.latMax &&
-      lng >= METRO_BBOX.lngMin && lng <= METRO_BBOX.lngMax
-    );
-  }
-
-  // Build bounds array preferring metropolitan France sites.
-  // Always includes all valid coords as markers; only the returned bounds
-  // array is restricted to metropolitan range (or all if none qualify).
-  // Logs any coordinates outside metropolitan range.
-  function buildBoundsPreferMetro(coordsWithLabel) {
-    const metro = [];
-    const all = [];
-    coordsWithLabel.forEach(({ lat, lng, label }) => {
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-      all.push([lat, lng]);
-      if (isMetroBound(lat, lng)) {
-        metro.push([lat, lng]);
-      } else {
-        console.warn('[BITD][map] coordonnée hors France métropolitaine — exclue du cadrage :', label, lat, lng);
-      }
-    });
-    return metro.length > 0 ? metro : all;
-  }
 
   function escapeHtml(value) {
     return String(value ?? '')
@@ -76,33 +46,79 @@
     return window.innerWidth <= 900;
   }
 
-  // Central map-stabilization helper.
-  // Double rAF ensures the DOM and panel have finished rendering before
-  // Leaflet learns its real container size and frames the bounds.
-  function refreshAndFitMap(bounds, options) {
+  function toValidLatLng(lat, lng, { entreprise = null, site_id = null } = {}) {
+    const normalizedLat = Number(lat);
+    const normalizedLng = Number(lng);
+    const isValid = Number.isFinite(normalizedLat) &&
+      Number.isFinite(normalizedLng) &&
+      normalizedLat >= -90 && normalizedLat <= 90 &&
+      normalizedLng >= -180 && normalizedLng <= 180;
+
+    if (!isValid) {
+      console.warn('[BITD][map] coordonnée invalide ignorée', {
+        entreprise,
+        site_id,
+        latitude: lat,
+        longitude: lng
+      });
+      return null;
+    }
+
+    return [normalizedLat, normalizedLng];
+  }
+
+  function refreshAndFitMap(
+    bounds,
+    {
+      maxZoom = 9,
+      singleZoom = 8,
+      paddingDesktop = [52, 52],
+      paddingMobile = [30, 30],
+      fallbackZoom = FRANCE_VIEW.zoom
+    } = {}
+  ) {
     if (!map) return;
-    const opts = Object.assign({
-      maxZoom: 10,
-      singleZoom: 9,
-      fallbackCenter: FRANCE_VIEW.center,
-      fallbackZoom: FRANCE_VIEW.zoom,
-      paddingDesktop: [46, 46],
-      paddingMobile: [32, 32]
-    }, options || {});
+    const validBounds = (bounds || []).filter((coords) => {
+      if (!Array.isArray(coords) || coords.length < 2) return false;
+
+      const lat = Number(coords[0]);
+      const lng = Number(coords[1]);
+
+      return Number.isFinite(lat) &&
+             Number.isFinite(lng) &&
+             lat >= -90 &&
+             lat <= 90 &&
+             lng >= -180 &&
+             lng <= 180;
+    });
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        map.invalidateSize({ animate: false });
-        if (bounds && bounds.length > 1) {
-          map.fitBounds(bounds, {
-            padding: isMobileViewport() ? opts.paddingMobile : opts.paddingDesktop,
-            maxZoom: opts.maxZoom,
+        map.invalidateSize({
+          animate: false,
+          pan: false
+        });
+
+        if (validBounds.length > 1) {
+          map.fitBounds(validBounds, {
+            padding: isMobileViewport()
+              ? paddingMobile
+              : paddingDesktop,
+            maxZoom,
             animate: false
           });
-        } else if (bounds && bounds.length === 1) {
-          map.setView(bounds[0], opts.singleZoom, { animate: false });
+        } else if (validBounds.length === 1) {
+          map.setView(
+            validBounds[0],
+            singleZoom,
+            { animate: false }
+          );
         } else {
-          map.setView(opts.fallbackCenter, opts.fallbackZoom, { animate: false });
+          map.setView(
+            FRANCE_VIEW.center,
+            fallbackZoom,
+            { animate: false }
+          );
         }
       });
     });
@@ -167,6 +183,20 @@
     addLegend('entreprise');
     addRecenterControl();
     addScrollHintListener(mapEl);
+    if (window.ResizeObserver && !mapResizeObserver) {
+      mapResizeObserver = new ResizeObserver(() => {
+        if (!map) return;
+
+        requestAnimationFrame(() => {
+          map.invalidateSize({
+            animate: false,
+            pan: false
+          });
+        });
+      });
+
+      mapResizeObserver.observe(mapEl);
+    }
     return map;
   }
 
@@ -212,17 +242,87 @@
     if (!snap) return;
     if (snap.explorerMode === 'entreprise' && snap.entrepriseId && snap.selectedCompany) {
       const etabs = window.BITDData.getVisibleEstablishments(snap.entrepriseId, snap.statutEtablissements);
-      const bounds = etabs.filter((e) => e.latitude != null && e.longitude != null).map((e) => [e.latitude, e.longitude]);
-      refreshAndFitMap(bounds, { maxZoom: 10, singleZoom: 9 });
+      const bounds = etabs
+        .map((etab) => toValidLatLng(etab.latitude, etab.longitude, {
+          entreprise: snap.selectedCompany.entreprise,
+          site_id: etab.site_id
+        }))
+        .filter(Boolean);
+
+      if (!bounds.length && snap.selectedCompany) {
+        const fallbackCoords = toValidLatLng(snap.selectedCompany.latitude, snap.selectedCompany.longitude, {
+          entreprise: snap.selectedCompany.entreprise,
+          site_id: 'siege'
+        });
+        if (fallbackCoords) bounds.push(fallbackCoords);
+      }
+
+      refreshAndFitMap(bounds, {
+        maxZoom: 9,
+        singleZoom: 8,
+        paddingDesktop: [56, 56]
+      });
+    } else if (snap.explorerMode === 'programme' && snap.selectedProgrammeId && window.BITDProgramme) {
+      const relations = window.BITDProgramme.getEntreprisesProgramme(snap.selectedProgrammeId);
+      const siteLinks = window.BITDProgramme.getSitesProgramme(snap.selectedProgrammeId);
+      const allCompanies = snap.allRows || [];
+      const bounds = [];
+      const companyPositions = new Map();
+
+      relations.forEach((rel) => {
+        const company = allCompanies.find((c) => String(c.id) === String(rel.entreprise_id));
+        if (!company) return;
+        const coords = toValidLatLng(company.siege_latitude, company.siege_longitude, {
+          entreprise: company.entreprise,
+          site_id: 'siege'
+        });
+        if (coords) companyPositions.set(String(rel.entreprise_id), { lat: coords[0], lng: coords[1] });
+      });
+
+      siteLinks.forEach((sl) => {
+        const company = allCompanies.find((c) => String(c.id) === String(sl.entreprise_id));
+        const etabs = window.BITDData.getEtablissementsForCompany(String(sl.entreprise_id));
+        const etab = etabs.find((e) => e.site_id === sl.site_id);
+        if (!company || !etab) return;
+        const coords = toValidLatLng(etab.latitude, etab.longitude, {
+          entreprise: company.entreprise,
+          site_id: etab.site_id
+        });
+        if (coords) bounds.push(coords);
+      });
+
+      companyPositions.forEach((pos) => bounds.push([pos.lat, pos.lng]));
+
+      refreshAndFitMap(bounds, {
+        maxZoom: 7,
+        singleZoom: 7,
+        paddingDesktop: [64, 64]
+      });
     } else if (snap.explorerMode === 'region' && snap.selectedRegion) {
       const etabs = window.BITDData.getVisibleRegionEstablishments(snap.selectedRegion, snap.statutEtablissements);
-      const bounds = etabs.filter((e) => e.latitude != null && e.longitude != null).map((e) => [e.latitude, e.longitude]);
-      refreshAndFitMap(bounds, { maxZoom: 10, singleZoom: 9 });
+      const bounds = etabs
+        .map((etab) => toValidLatLng(etab.latitude, etab.longitude, {
+          entreprise: etab.entreprise,
+          site_id: etab.site_id
+        }))
+        .filter(Boolean);
+      refreshAndFitMap(bounds, {
+        maxZoom: 9,
+        singleZoom: 8,
+        paddingDesktop: [52, 52]
+      });
     } else {
-      // National: fit the 30 headquarters
-      const companies = window.BITDData.getMapNationalCompanies();
-      const bounds = companies.filter((c) => c.latitude != null && c.longitude != null).map((c) => [c.latitude, c.longitude]);
-      refreshAndFitMap(bounds, { maxZoom: 6, singleZoom: 6, paddingDesktop: [40, 40] });
+      const bounds = getNationalHeadquarters(snap)
+        .map(({ company, lat, lng }) => toValidLatLng(lat, lng, {
+          entreprise: company.entreprise,
+          site_id: 'siege'
+        }))
+        .filter(Boolean);
+      refreshAndFitMap(bounds, {
+        maxZoom: 6,
+        singleZoom: 6,
+        paddingDesktop: [44, 44]
+      });
     }
   }
 
@@ -465,7 +565,11 @@
       return;
     }
     if (!window.BITDProgramme.getAllProgrammes().length) {
-      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+      refreshAndFitMap([], {
+        maxZoom: 7,
+        singleZoom: 7,
+        paddingDesktop: [64, 64]
+      });
       if (window.BITDProgramme) window.BITDProgramme.renderProgrammeEmpty();
       // Programme data not loaded yet: load then re-render
       window.BITDProgramme.loadAll().then(() => {
@@ -491,11 +595,11 @@
     relations.forEach((rel) => {
       const company = allCompanies.find((c) => String(c.id) === String(rel.entreprise_id));
       if (!company) return;
-      const lat = parseFloat(company.siege_latitude) || null;
-      const lng = parseFloat(company.siege_longitude) || null;
-      if (lat != null && lng != null) {
-        companyPositions.set(String(rel.entreprise_id), { lat, lng });
-      }
+      const coords = toValidLatLng(company.siege_latitude, company.siege_longitude, {
+        entreprise: company.entreprise,
+        site_id: 'siege'
+      });
+      if (coords) companyPositions.set(String(rel.entreprise_id), { lat: coords[0], lng: coords[1] });
     });
 
     // Draw relation lines from MOE to participants (very subtle)
@@ -518,17 +622,21 @@
 
     // Draw documented sites
     siteLinks.forEach((sl) => {
-      const rel = relations.find((r) => String(r.entreprise_id) === String(sl.entreprise_id));
       const company = allCompanies.find((c) => String(c.id) === String(sl.entreprise_id));
       if (!company) return;
 
       const etabs = window.BITDData.getEtablissementsForCompany(String(sl.entreprise_id));
       const etab = etabs.find((e) => e.site_id === sl.site_id);
-      if (!etab || etab.latitude == null || etab.longitude == null) return;
+      if (!etab) return;
+      const coords = toValidLatLng(etab.latitude, etab.longitude, {
+        entreprise: company.entreprise,
+        site_id: etab.site_id
+      });
+      if (!coords) return;
 
       const color = sectorColors[company.primarySector] || '#5F7F82';
       const icon = progSiteIcon(color);
-      const marker = L.marker([etab.latitude, etab.longitude], { icon, zIndexOffset: 200 });
+      const marker = L.marker(coords, { icon, zIndexOffset: 200 });
       const acronyme = programme.acronyme || programme.nom;
       marker.bindPopup(getProgSitePopup(company.entreprise, etab.ville || etab.nom_site, acronyme, sl.activite_programme), {
         className: 'bitd-popup',
@@ -536,12 +644,10 @@
         autoPanPadding: [16, 16]
       });
       marker.addTo(programmeLayer);
-      bounds.push([etab.latitude, etab.longitude]);
+      bounds.push(coords);
     });
 
     // Draw company markers (companies without documented site, or as overlay)
-    const siteEntrepriseIds = new Set(siteLinks.map((s) => String(s.entreprise_id)));
-
     relations.forEach((rel) => {
       const company = allCompanies.find((c) => String(c.id) === String(rel.entreprise_id));
       if (!company) return;
@@ -571,7 +677,7 @@
     refreshAndFitMap(bounds, {
       maxZoom: 7,
       singleZoom: 7,
-      paddingDesktop: [65, 65]
+      paddingDesktop: [64, 64]
     });
   }
 
@@ -833,22 +939,30 @@
     const bounds = [];
 
     regionSites.forEach((etab) => {
-      if (etab.latitude == null || etab.longitude == null) return;
       const company = allCompanies.find((c) => String(c.id) === String(etab.entreprise_id));
+      const coords = toValidLatLng(etab.latitude, etab.longitude, {
+        entreprise: company ? company.entreprise : etab.entreprise,
+        site_id: etab.site_id
+      });
+      if (!coords) return;
       const color = company ? (sectorColors[company.primarySector] || '#5F7F82') : '#5F7F82';
       const icon = etab.est_siege ? siegeIcon(color, false) : etabIcon(color, etab, false);
-      const marker = L.marker([etab.latitude, etab.longitude], { icon, zIndexOffset: etab.est_siege ? 1000 : 0 });
+      const marker = L.marker(coords, { icon, zIndexOffset: etab.est_siege ? 1000 : 0 });
       marker.bindPopup(getPopupHtml(etab, company), { className: 'bitd-popup', maxWidth: 360, autoPanPadding: [16, 16] });
       marker.on('click', () => { setActiveSite(etab.site_id); });
       marker.addTo(regionSitesLayer);
       markerIndex.set(etab.site_id, marker);
       markerData.set(etab.site_id, etab);
-      bounds.push([etab.latitude, etab.longitude]);
+      bounds.push(coords);
     });
 
     renderRegionPanel(snapshot, regionSites);
     setContextRegion(snapshot, regionSites);
-    refreshAndFitMap(bounds, { maxZoom: 10, singleZoom: 9 });
+    refreshAndFitMap(bounds, {
+      maxZoom: 9,
+      singleZoom: 8,
+      paddingDesktop: [52, 52]
+    });
   }
 
   function renderNationalOverview(snapshot) {
@@ -867,8 +981,13 @@
     const bounds = [];
 
     headquarters.forEach(({ company, lat, lng }) => {
+      const coords = toValidLatLng(lat, lng, {
+        entreprise: company.entreprise,
+        site_id: 'siege'
+      });
+      if (!coords) return;
       const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
-      const marker = L.marker([lat, lng], { icon: siegeIcon(color, false), zIndexOffset: 1000 });
+      const marker = L.marker(coords, { icon: siegeIcon(color, false), zIndexOffset: 1000 });
       const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
       const activeEtabs = window.BITDData.getVisibleEstablishments(company.id, 'actifs');
       marker.bindPopup(getNationalPopupHtml(company, activeEtabs.length, allEtabs.length), {
@@ -879,7 +998,7 @@
         if (window.BITDData) window.BITDData.switchToEntreprise(String(company.id));
       });
       marker.addTo(nationalLayer);
-      bounds.push([lat, lng]);
+      bounds.push(coords);
     });
 
     const panel = document.getElementById('company-panel-content');
@@ -902,7 +1021,7 @@
     refreshAndFitMap(bounds, {
       maxZoom: 6,
       singleZoom: 6,
-      paddingDesktop: [40, 40]
+      paddingDesktop: [44, 44]
     });
   }
 
@@ -1002,14 +1121,25 @@
 
     // Find siege
     const siegeEtab = visibleEtabs.find((e) => e.est_siege);
+    const siegeCoords = siegeEtab
+      ? toValidLatLng(siegeEtab.latitude, siegeEtab.longitude, {
+        entreprise: company.entreprise,
+        site_id: siegeEtab.site_id
+      })
+      : null;
 
     // Draw constellation lines FIRST (so markers appear on top)
-    if (siegeEtab && siegeEtab.latitude != null && siegeEtab.longitude != null) {
+    if (siegeEtab && siegeCoords) {
       visibleEtabs.forEach((etab) => {
-        if (etab === siegeEtab || etab.latitude == null || etab.longitude == null) return;
+        if (etab === siegeEtab) return;
+        const coords = toValidLatLng(etab.latitude, etab.longitude, {
+          entreprise: company.entreprise,
+          site_id: etab.site_id
+        });
+        if (!coords) return;
         const lineOpacity = etab.sirene_is_active ? 0.28 : 0.13;
         L.polyline(
-          [[siegeEtab.latitude, siegeEtab.longitude], [etab.latitude, etab.longitude]],
+          [siegeCoords, coords],
           {
             color: color,
             weight: 1.2,
@@ -1023,9 +1153,13 @@
 
     // Draw establishment markers
     visibleEtabs.forEach((etab) => {
-      if (etab.latitude == null || etab.longitude == null) return;
+      const coords = toValidLatLng(etab.latitude, etab.longitude, {
+        entreprise: company.entreprise,
+        site_id: etab.site_id
+      });
+      if (!coords) return;
       const icon = etab.est_siege ? siegeIcon(color, false) : etabIcon(color, etab, false);
-      const marker = L.marker([etab.latitude, etab.longitude], { icon, zIndexOffset: etab.est_siege ? 1000 : 0 });
+      const marker = L.marker(coords, { icon, zIndexOffset: etab.est_siege ? 1000 : 0 });
       marker.bindPopup(getPopupHtml(etab, company), {
         className: 'bitd-popup',
         maxWidth: 360,
@@ -1037,7 +1171,7 @@
       marker.addTo(focusLayer);
       markerIndex.set(etab.site_id, marker);
       markerData.set(etab.site_id, etab);
-      bounds.push({ lat: etab.latitude, lng: etab.longitude, label: `${company.entreprise} — ${etab.ville || etab.nom_site || etab.site_id}` });
+      bounds.push(coords);
     });
 
     renderCompanyPanel(company, visibleEtabs, allEtabs, snapshot.statutEtablissements);
@@ -1048,17 +1182,18 @@
       window.BITDPanel.injectIntoPanelContent(String(company.id), panelEl);
     }
 
-    const fitBounds = buildBoundsPreferMetro(
-      bounds.length ? bounds : (
-        company.latitude != null && company.longitude != null
-          ? [{ lat: company.latitude, lng: company.longitude, label: company.entreprise }]
-          : []
-      )
-    );
-    refreshAndFitMap(fitBounds, {
+    if (!bounds.length) {
+      const fallbackCoords = toValidLatLng(company.latitude, company.longitude, {
+        entreprise: company.entreprise,
+        site_id: 'siege'
+      });
+      if (fallbackCoords) bounds.push(fallbackCoords);
+    }
+
+    refreshAndFitMap(bounds, {
       maxZoom: 9,
       singleZoom: 8,
-      paddingDesktop: [55, 55]
+      paddingDesktop: [56, 56]
     });
   }
 
@@ -1205,15 +1340,6 @@
     if (!window.BITDData || !document.getElementById('bitd-map')) return;
     ensureMap();
     bindControls();
-
-    // Single debounced resize listener to keep Leaflet aware of its real size
-    let _resizeTimer = null;
-    window.addEventListener('resize', () => {
-      clearTimeout(_resizeTimer);
-      _resizeTimer = setTimeout(() => {
-        if (map) map.invalidateSize({ animate: false });
-      }, 120);
-    });
 
     // Load programme data and fill select when ready
     if (window.BITDProgramme) {

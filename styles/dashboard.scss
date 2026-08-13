@@ -310,14 +310,6 @@ body {
   box-shadow: var(--shadow-card);
   position: relative;
 }
-#bitd-map {
-  height: 580px;
-  width: 100%;
-  border-radius: var(--radius-card);
-  position: relative;
-}
-@media (max-width: 900px) { #bitd-map { height: 420px; } }
-@media (max-width: 600px) { #bitd-map { height: 320px; } }
 
 // Leaflet controls
 .leaflet-control-zoom { border: none !important; box-shadow: var(--shadow-card) !important; border-radius: 10px !important; overflow: hidden; }
@@ -1245,7 +1237,6 @@ body {
     transition: transform 0.22s ease;
   }
   .map-side-panel.is-open { transform: translateY(0); }
-  #bitd-map { height: 420px; }
   .kpi-grid { grid-template-columns: repeat(2,1fr); padding: 1rem; }
   .hero-panel { padding: 1.5rem 1rem 0.75rem; }
   .hero-panel h1 { font-size: 1.7rem; }
@@ -1254,7 +1245,6 @@ body {
   .map-mode-bar { flex-wrap: wrap; }
 }
 @media (max-width: 600px) {
-  #bitd-map { height: 300px; }
   .kpi-grid { grid-template-columns: 1fr; }
 }
 
@@ -1718,19 +1708,25 @@ body {
 
 .explorer-map-wrap {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 #bitd-map {
   width: 100%;
-  height: calc(100vh - 220px);
-  min-height: 520px;
-  max-height: 900px;
+  height: clamp(520px, calc(100vh - 220px), 900px);
+  min-width: 0;
+  display: block;
 }
 
 .company-panel {
   padding: 1.25rem;
   min-width: 0;
   width: 100%;
+  max-width: 100%;
+  align-self: start;
   overflow-wrap: break-word;
 }
 
@@ -2160,7 +2156,7 @@ body {
   }
 }
 
-@media (max-width: 1199px) and (min-width: 901px) {
+@media (min-width: 901px) and (max-width: 1199px) {
   .explorer-grid {
     grid-template-columns:
       minmax(0, 1fr)
@@ -2170,12 +2166,16 @@ body {
     padding-left: 24px;
     padding-right: 24px;
   }
+  .navbar {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
 }
 
 
 @media (max-width: 900px) {
   .explorer-shell {
-    padding: 10px 14px 18px;
+    padding: 12px 14px 20px;
   }
 
   .explorer-header h1 {
@@ -2198,6 +2198,7 @@ body {
   }
 
   #bitd-map {
+    width: 100%;
     height: 58vh;
     min-height: 380px;
     max-height: 620px;
@@ -2217,7 +2218,7 @@ body {
   }
 
   .navbar {
-    padding: 0.4rem 12px !important;
+    padding: 0.4rem 14px !important;
   }
 
   .navbar-brand {
