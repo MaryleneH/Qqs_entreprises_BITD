@@ -1,9 +1,6 @@
-/.quarto/
-/_site/
-**/*.quarto_ipynb
-_site/
 _site/
 .quarto/
+**/*.quarto_ipynb
 .DS_Store
 Thumbs.db
 
