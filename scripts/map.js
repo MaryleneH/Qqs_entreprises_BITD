@@ -479,10 +479,10 @@
     title.textContent = company.entreprise;
 
     if (snapshot.statutEtablissements === 'tous') {
-      subtitle.textContent = `${visibleEtabs.length} établissements au total · ${regions.size} régions`;
+      subtitle.textContent = `${visibleEtabs.length} établissements au total · ${regions.size} régions${regions.has('Guyane') ? ' (dont Guyane)' : ''}`;
       counter.textContent = `${company.entreprise} · ${visibleEtabs.length} établissements au total`;
     } else {
-      subtitle.textContent = `${visibleEtabs.length} établissements actifs affichés · ${regions.size} régions`;
+      subtitle.textContent = `${visibleEtabs.length} établissements actifs affichés · ${regions.size} régions${regions.has('Guyane') ? ' (dont Guyane)' : ''}`;
       counter.textContent = `${company.entreprise} · ${visibleEtabs.length} établissements actifs affichés`;
     }
 
@@ -603,7 +603,7 @@
     });
 
     // Draw relation lines from MOE to participants (very subtle)
-    const moe = relations.find((r) => r.role && r.role.toLowerCase().includes('maître'));
+    const moe = relations.find((r) => r.role && /ma[iî]tr/i.test(r.role));
     if (moe && companyPositions.has(String(moe.entreprise_id))) {
       const moePos = companyPositions.get(String(moe.entreprise_id));
       relations.forEach((rel) => {
@@ -654,7 +654,7 @@
       const pos = companyPositions.get(String(rel.entreprise_id));
       if (!pos) return;
 
-      const isMoe = rel.role && rel.role.toLowerCase().includes('maître');
+      const isMoe = rel.role && /ma[iî]tr/i.test(rel.role);
       const color = sectorColors[company.primarySector] || '#5F7F82';
       const icon = isMoe ? progMoeIcon() : progCompanyIcon(color);
       const marker = L.marker([pos.lat, pos.lng], { icon, zIndexOffset: isMoe ? 2000 : 500 });

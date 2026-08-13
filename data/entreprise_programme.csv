@@ -7,23 +7,23 @@ scorpion;7;KNDS FRANCE;vehicules_blindes;Développement et production notamment 
 scorpion;9;ARQUUS – JOHN COCKERILL DEFENSE;mobilite_soutien_vehicules;Arquus est explicitement cité dans le groupement Griffon/Jaguar.;confirme;SRC_SCORPION_ADT_2024;true
 scorpion;1;THALES;electronique_systemes;Thales est explicitement cité dans le groupement Griffon/Jaguar.;confirme;SRC_SCORPION_ADT_2024;true
 fdi;4;NAVAL GROUP;maitre_oeuvre_industriel;La DGA commande les FDI à Naval Group.;confirme;SRC_FDI_DGA_2026;true
-barracuda;4;NAVAL GROUP;construction_integration;Naval Group est partenaire industriel explicitement cité par la DGA.;confirme;SRC_BARRACUDA_DGA_2026;true
+barracuda;4;NAVAL GROUP;maitre_oeuvre_ensemble;Maître d'œuvre d'ensemble du programme (architecture et construction du sous-marin), aux côtés de TechnicAtome pour la propulsion nucléaire. Naval Group est partenaire industriel explicitement cité par la DGA.;confirme;SRC_BARRACUDA_DGA_2026;true
 barracuda;11;TECHNICATOME;propulsion_nucleaire;TechnicAtome est explicitement cité comme partenaire du programme.;confirme;SRC_BARRACUDA_DGA_2026;true
 snle3g;4;NAVAL GROUP;maitrise_oeuvre_fabrication;Naval Group assure la maîtrise d'œuvre d'ensemble de la fabrication.;confirme;SRC_SNLE3G_DGA_2024;true
 snle3g;11;TECHNICATOME;chaufferies_nucleaires;TechnicAtome intervient en cotraitance pour les chaufferies nucléaires.;confirme;SRC_SNLE3G_DGA_2024;true
-pang;4;NAVAL GROUP;systeme_combat_integration;Naval Group est cité parmi les principaux acteurs industriels.;confirme;SRC_PANG_COLSBLEUS_2026;true
-pang;10;CHANTIERS DE L’ATLANTIQUE;plateforme_coque_integration;Chantiers de l'Atlantique est cité parmi les principaux acteurs industriels.;confirme;SRC_PANG_COLSBLEUS_2026;true
+pang;4;NAVAL GROUP;co_maitre_oeuvre_systeme_combat;Co-maîtrise d'œuvre du porte-avions (système de combat et intégration d'ensemble), au sein du groupement avec Chantiers de l'Atlantique. Naval Group est cité parmi les principaux acteurs industriels.;confirme;SRC_PANG_COLSBLEUS_2026;true
+pang;10;CHANTIERS DE L’ATLANTIQUE;co_maitre_oeuvre_plateforme;Co-maîtrise d'œuvre du porte-avions (plateforme et coque), au sein du groupement avec Naval Group. Chantiers de l'Atlantique est cité parmi les principaux acteurs industriels.;confirme;SRC_PANG_COLSBLEUS_2026;true
 pang;11;TECHNICATOME;chaufferies_nucleaires;TechnicAtome intervient sur les chaufferies nucléaires via le CEA.;confirme;SRC_PANG_COLSBLEUS_2026;true
 m51;8;ARIANEGROUP;maitre_oeuvre_missile;La DGA a notifié à ArianeGroup le développement et la production du M51.4.;confirme;SRC_M51_DGA_2025;true
-aster;6;MBDA;missiles_systeme;MBDA est maison mère d'Eurosam et explicitement impliquée dans le développement multi-couches.;confirme;SRC_ASTER_MICA_DGA_2026;true
+aster;6;MBDA;missiles_systeme;Le consortium Eurosam (MBDA/Thales), hors panel, est maître d'œuvre du système. MBDA est maison mère d'Eurosam et explicitement impliquée dans le développement multi-couches.;confirme;SRC_ASTER_MICA_DGA_2026;true
 aster;1;THALES;radar_systeme;Thales est maison mère d'Eurosam et explicitement impliquée dans le développement multi-couches.;confirme;SRC_ASTER_MICA_DGA_2026;true
-vl_mica;6;MBDA;missile_integration;MBDA est explicitement impliquée dans le développement multi-couches.;confirme;SRC_VLMICA_DGA_2026;true
+vl_mica;6;MBDA;maitre_oeuvre_systeme;Système développé et intégré sous maîtrise d'œuvre MBDA. MBDA est explicitement impliquée dans le développement multi-couches.;confirme;SRC_VLMICA_DGA_2026;true
 vl_mica;1;THALES;systeme_radar_integration;Thales est explicitement impliquée dans le développement multi-couches.;confirme;SRC_VLMICA_DGA_2026;true
 a400m;5;AIRBUS;maitre_oeuvre_plateforme;Le contrat de développement PMS est notifié à Airbus Defence & Space.;confirme;SRC_A400M_DGA_2026;true
-mrtt;5;AIRBUS;plateforme_mrtt;Le programme français repose sur l'Airbus A330 MRTT Enhanced.;confirme;SRC_MRTT_AAE;true
+mrtt;5;AIRBUS;maitre_oeuvre_plateforme;Airbus Defence and Space est maître d'œuvre de l'A330 MRTT (avion et conversion). Le programme français repose sur l'Airbus A330 MRTT Enhanced.;confirme;SRC_MRTT_AAE;true
 h160m;5;AIRBUS;maitre_oeuvre_helicoptere;La campagne d'essais est conduite avec Airbus Helicopters.;confirme;SRC_H160M_DGA_2026;true
 tiger_mk3;5;AIRBUS;maitre_oeuvre_modernisation;Airbus Helicopters porte l'intégration de la modernisation MkIII.;confirme;SRC_TIGER_OCCAR_2026;true
 tiger_mk3;6;MBDA;integration_armement;MBDA intervient sur l'intégration des armements MkIII.;confirme;SRC_TIGER_OCCAR_2026;true
 tiger_mk3;3;SAFRAN;optronique;Safran fournit l'Euroflir 510 associé au MkIII.;confirme;SRC_TIGER_OCCAR_2026;true
-nh90;5;AIRBUS;industriel_consortium;Airbus Helicopters est membre du consortium NHI et assemble les appareils français à Marignane.;confirme;SRC_NH90_DGA_2025;true
+nh90;5;AIRBUS;industriel_consortium;Le consortium NHIndustries (Airbus/Leonardo/Fokker), hors panel, est maître d'œuvre du programme. Airbus Helicopters est membre du consortium NHI et assemble les appareils français à Marignane.;confirme;SRC_NH90_DGA_2025;true
 nh90;3;SAFRAN;optronique_standard2;Le standard 2 utilise l'Euroflir 410 de Safran.;confirme;SRC_NH90_DGA_2025;true
