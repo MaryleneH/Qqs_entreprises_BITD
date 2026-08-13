@@ -64,7 +64,7 @@ body {
 .navbar {
   background: var(--navy) !important;
   border-bottom: 1px solid rgba(255,255,255,0.08) !important;
-  padding: 0.6rem 2rem !important;
+  padding: 0.6rem 32px !important;
   position: sticky; top: 0; z-index: 1100;
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
 }
@@ -1567,7 +1567,7 @@ body {
   max-width: none;
   min-width: 0;
   margin: 0;
-  padding: 12px 20px 24px;
+  padding: 18px 32px 28px;
 }
 
 .explorer-header h1 {
@@ -2151,8 +2151,12 @@ body {
     padding-right: 24px;
   }
   .explorer-shell {
-    padding-left: 28px;
-    padding-right: 28px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .navbar {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
   }
 }
 
@@ -2163,15 +2167,15 @@ body {
       340px;
   }
   .explorer-shell {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
 
 
 @media (max-width: 900px) {
   .explorer-shell {
-    padding: 10px 12px 18px;
+    padding: 10px 14px 18px;
   }
 
   .explorer-header h1 {
@@ -2213,7 +2217,7 @@ body {
   }
 
   .navbar {
-    padding: 0.4rem 0.8rem !important;
+    padding: 0.4rem 12px !important;
   }
 
   .navbar-brand {
