@@ -1,5 +1,5 @@
 ---
-title: "Méthodologie & sources"
+pagetitle: "Méthodologie & sources"
 format:
   html:
     page-layout: full
@@ -25,7 +25,7 @@ format:
 
 ```{=html}
     <div class="tracabilite-box">
-      <h2>Principe de traçabilité</h2>
+      <p class="tracabilite-box__title">Principe de traçabilité</p>
       <p><strong>Pas de source identifiable = pas de chiffre présenté comme établi.</strong></p>
       <p>
         Lorsqu'une donnée est calculée, le dashboard conserve la formule ainsi que la provenance
