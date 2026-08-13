@@ -1,0 +1,157 @@
+﻿entreprise_id,slug,capacite,ordre
+1,thales,Radars & veille aérienne,1
+1,thales,Sonars & guerre sous-marine,2
+1,thales,C4ISR & réseaux de commandement,3
+1,thales,Guerre électronique,4
+1,thales,Communications sécurisées,5
+1,thales,Cybersécurité défense,6
+2,dassault-aviation,Intégration avion de combat,1
+2,dassault-aviation,Aérodynamique & commandes de vol,2
+2,dassault-aviation,Maîtrise d'œuvre Rafale,3
+2,dassault-aviation,Intégration systèmes d'armes,4
+2,dassault-aviation,Tests & essais en vol,5
+2,dassault-aviation,Architecture cellule furtive,6
+3,safran,Propulsion militaire (M88),1
+3,safran,Navigation inertielle & guidage,2
+3,safran,Optronique & vision nocturne,3
+3,safran,Drones & systèmes autonomes,4
+3,safran,Viseurs & ciblage,5
+3,safran,Équipements aéronautiques défense,6
+4,naval-group,Construction de sous-marins,1
+4,naval-group,Systèmes navals de combat,2
+4,naval-group,Propulsion navale,3
+4,naval-group,Frégates & bâtiments de surface,4
+4,naval-group,MCO naval,5
+4,naval-group,Architecture navale militaire,6
+5,airbus,Transport militaire stratégique (A400M),1
+5,airbus,Ravitaillement en vol (MRTT),2
+5,airbus,Hélicoptères militaires,3
+5,airbus,Satellites de défense,4
+5,airbus,Combat aérien futur (SCAF),5
+6,mbda,"Missiles air-air (Meteor, MICA)",1
+6,mbda,"Missiles air-sol (SCALP, AASM)",2
+6,mbda,Missiles anti-navire (Exocet),3
+6,mbda,Défense sol-air (Aster),4
+6,mbda,Guidage & ogives militaires,5
+6,mbda,Missiles ASN4G (nucléaire),6
+7,knds-france,"Chars de combat (Leclerc, MGCS)",1
+7,knds-france,Artillerie automotrice (CAESAR),2
+7,knds-france,Véhicules blindés de combat,3
+7,knds-france,Tourelles & systèmes d'armes,4
+7,knds-france,MCO blindés,5
+7,knds-france,Munitions gros calibre,6
+8,arianegroup,Missile balistique M51 (dissuasion),1
+8,arianegroup,Propergols solides balistiques,2
+8,arianegroup,Propulsion spatiale (Ariane 6),3
+8,arianegroup,Guidage inertiel balistique,4
+8,arianegroup,Coiffes & têtes de rentrée,5
+9,arquus-john-cockerill-defense,"Véhicules blindés à roues (Griffon, Jaguar)",1
+9,arquus-john-cockerill-defense,Porteurs logistiques militaires,2
+9,arquus-john-cockerill-defense,Tourelles & systèmes d'armes,3
+9,arquus-john-cockerill-defense,MCO véhicules terrestres,4
+9,arquus-john-cockerill-defense,Programme SCORPION,5
+10,chantiers-de-latlantique,Construction navale de grands bâtiments,1
+10,chantiers-de-latlantique,Bâtiments de ravitaillement (FLOTLOG),2
+10,chantiers-de-latlantique,Infrastructures navales,3
+10,chantiers-de-latlantique,Systèmes propulsifs navals,4
+10,chantiers-de-latlantique,Intégration navale,5
+11,technicatome,Réacteurs nucléaires embarqués,1
+11,technicatome,Chaufferies compactes sous-marins,2
+11,technicatome,Propulsion nucléaire navale,3
+11,technicatome,MCO réacteurs navals,4
+11,technicatome,Combustible nucléaire naval,5
+12,exail-technologies,Navigation inertielle haute précision,1
+12,exail-technologies,Robots & drones sous-marins (AUV/UUV),2
+12,exail-technologies,Guerre des mines,3
+12,exail-technologies,Photonique & fibre optique,4
+12,exail-technologies,Positionnement sous-marin,5
+13,exosens,Détecteurs infrarouges & SWIR,1
+13,exosens,Vision nocturne & intensification,2
+13,exosens,Imagerie thermique,3
+13,exosens,Optronique embarquée,4
+13,exosens,Matériaux actifs photonique,5
+14,eurenco,Poudres propulsives militaires,1
+14,eurenco,Explosifs & charges militaires,2
+14,eurenco,Propergols pour munitions,3
+14,eurenco,Formulations énergétiques,4
+14,eurenco,Matières énergétiques réglementées,5
+15,roxel,Propulsion solide pour missiles,1
+15,roxel,Moteurs-fusées tactiques,2
+15,roxel,Propergols solides haute performance,3
+15,roxel,Tuyères & composants propulsifs,4
+15,roxel,Propulsion Meteor & SCALP,5
+16,aubert-duval,Superalliages base nickel,1
+16,aubert-duval,Aciers spéciaux haute résistance,2
+16,aubert-duval,Alliages de titane aéronautique,3
+16,aubert-duval,Forgeage de précision,4
+16,aubert-duval,Matériaux disques de turbine,5
+17,daher,"Aérostructures (Rafale, avions militaires)",1
+17,daher,Systèmes d'emport & réservoirs,2
+17,daher,Équipements de survie aéronautique,3
+17,daher,MCO aéronautique,4
+17,daher,Services logistiques défense,5
+18,hutchinson,Matériaux d'étanchéité & joints,1
+18,hutchinson,Systèmes antivibratoires,2
+18,hutchinson,Filtration systèmes militaires,3
+18,hutchinson,Protection balistique,4
+18,hutchinson,Matériaux furtivité & absorption,5
+19,latecoere,Portes & aérostructures,1
+19,latecoere,Câblage & harnais aéronautiques,2
+19,latecoere,Systèmes d'interconnexion embarqués,3
+19,latecoere,Structures de fuselage,4
+19,latecoere,Composants avions militaires,5
+20,mecachrome,Usinage haute précision,1
+20,mecachrome,Pièces de moteurs militaires,2
+20,mecachrome,Structures aéronautiques complexes,3
+20,mecachrome,Sous-ensembles de précision,4
+20,mecachrome,Matériaux durs & tolérances serrées,5
+21,figeac-aero,Pièces primaires de structure,1
+21,figeac-aero,Usinage aluminium & titane,2
+21,figeac-aero,Composites structuraux,3
+21,figeac-aero,Sous-ensembles voilure & fuselage,4
+21,figeac-aero,Production en grande série certifiée,5
+22,sabena-technics,MCO aéronautique militaire,1
+22,sabena-technics,Révision générale d'aéronefs,2
+22,sabena-technics,Intégration systèmes de mission,3
+22,sabena-technics,Modification & retrofit d'avions,4
+22,sabena-technics,Maintenance C-130 & Casa,5
+23,aresia,Systèmes hydrauliques embarqués,1
+23,aresia,Distribution de carburant avions,2
+23,aresia,Circuits hydrauliques Rafale,3
+23,aresia,Équipements de mission embarqués,4
+23,aresia,Pyrotechnie de bord,5
+24,etienne-lacroix-group,Contre-mesures infrarouge (leurres),1
+24,etienne-lacroix-group,Contre-mesures chaff,2
+24,etienne-lacroix-group,Fumigènes de combat,3
+24,etienne-lacroix-group,Artifices de signalisation militaire,4
+24,etienne-lacroix-group,Pyrotechnie navale & terrestre,5
+25,alcen,Lasers de puissance & armes dirigées,1
+25,alcen,Énergie embarquée haute performance,2
+25,alcen,Systèmes NRBC,3
+25,alcen,Électronique de défense critique,4
+25,alcen,Contre-mesures actives,5
+26,piriou-kership,Construction de patrouilleurs,1
+26,piriou-kership,Bâtiments de soutien navals,2
+26,piriou-kership,Petits bâtiments militaires,3
+26,piriou-kership,Construction navale de série,4
+26,piriou-kership,Intégration systèmes navals légers,5
+27,cnim-systemes-industriels,Systèmes de franchissement (PFM),1
+27,cnim-systemes-industriels,Engins amphibies,2
+27,cnim-systemes-industriels,Nacelles propulsées,3
+27,cnim-systemes-industriels,Systèmes d'armes spéciaux terrestres,4
+27,cnim-systemes-industriels,Équipements blindés de génie,5
+28,nse,Réparation équipements électroniques militaires,1
+28,nse,MCO cartes & systèmes électroniques,2
+28,nse,Support logistique équipements,3
+28,nse,Upgrade électronique,4
+28,nse,Maintenance avionique,5
+29,serma-group,Essais CEM & vibrations militaires,1
+29,serma-group,Qualification composants militaires,2
+29,serma-group,Expertise cybersécurité embarquée,3
+29,serma-group,Analyse de défaillances électroniques,4
+29,serma-group,Métrologie & calibration,5
+30,sogeclair,Ingénierie bureau d'études défense,1
+30,sogeclair,Simulation de vol,2
+30,sogeclair,Certification aéronautique militaire,3
+30,sogeclair,Systèmes embarqués logiciels,4
+30,sogeclair,Support technique programmes,5

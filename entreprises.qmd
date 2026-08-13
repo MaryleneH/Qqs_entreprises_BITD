@@ -24,8 +24,8 @@ page-layout: full
       <label>Domaine
         <select id="entreprises-filter-domain"><option value="all">Tous</option></select>
       </label>
-      <label>Rôle / chaîne de valeur
-        <select id="entreprises-filter-role"><option value="all">Tous</option></select>
+      <label>Position dans la chaîne de valeur
+        <select id="entreprises-filter-role"><option value="all">Toutes les positions</option></select>
       </label>
       <label>Programme
         <select id="entreprises-filter-programme"><option value="all">Tous</option></select>

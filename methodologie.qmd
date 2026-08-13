@@ -330,6 +330,59 @@ Pour les définitions des indicateurs financiers et des acronymes industriels, v
     <div id="panel-company-fiche" aria-live="polite"></div>
 ```
 
+## Lire la chaîne de valeur {#chaine-de-valeur}
+
+```{=html}
+    <p class="methodo-lead">
+      Cette classification est une <strong>lecture analytique</strong> propre au dashboard.
+      Elle structure la position des entreprises en huit fonctions industrielles, construites à
+      partir des sources documentées — notamment les travaux EcoDef sur les fonctions industrielles
+      des entreprises de défense.
+    </p>
+
+    <div class="cv-no-hierarchy-note">
+      <strong>Ces huit catégories ne constituent ni un classement, ni une note, ni un niveau
+      d'importance.</strong> Une position amont n'est pas « inférieure » à une position
+      d'intégration. Elles décrivent la <em>fonction industrielle</em> de chaque acteur dans
+      la chaîne, indépendamment de son statut institutionnel dans le panel.
+    </div>
+
+    <h3>Les huit positions</h3>
+    <div class="cv-referentiel-grid" id="cv-methodo-grid">
+      <!-- filled by identite.js renderMethodologieCVGrid() -->
+    </div>
+
+    <h3>Type d'acteur et position dans la chaîne de valeur</h3>
+    <p>
+      Le champ <em>type d'acteur</em> (grand maître d'œuvre, équipementier, etc.) reflète le
+      statut <strong>institutionnel</strong> d'une entreprise dans le panel&nbsp;: comment elle
+      est identifiée par les acteurs de la politique industrielle de défense.
+      La <em>position dans la chaîne de valeur</em>, quant à elle, est une lecture
+      <strong>fonctionnelle</strong> propre au dashboard&nbsp;: elle décrit la contribution
+      industrielle principale de l'entreprise.
+    </p>
+    <p>
+      Ces deux informations peuvent diverger. Une entreprise peut être identifiée
+      institutionnellement comme grand maître d'œuvre tout en ayant, dans notre lecture
+      fonctionnelle, une position principale d'équipementier de systèmes.
+    </p>
+
+    <h3>Source méthodologique</h3>
+    <p>
+      La classification s'appuie notamment sur&nbsp;:
+    </p>
+    <ul>
+      <li>
+        <a href="https://www.defense.gouv.fr/dgris/recherche-et-prospective/observatoire-economique-de-la-defense/statistiques-et-etudes-oed" target="_blank" rel="noopener noreferrer">
+          EcoDef Statistiques n°&nbsp;279 ↗
+        </a> — DGA / Observatoire économique de la défense, travaux sur les fonctions industrielles.
+      </li>
+    </ul>
+    <p class="methodo-lead" style="font-size:0.8rem;color:var(--text-secondary)">
+      Cette nomenclature ne constitue pas une classification officielle.
+    </p>
+```
+
 ```{=html}
   </div><!-- .methodo-container -->
 </div><!-- #methodo-page -->
