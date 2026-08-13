@@ -1,5 +1,5 @@
 ---
-title: "Méthodologie"
+title: "Méthodologie & sources"
 format:
   html:
     page-layout: article
@@ -9,108 +9,216 @@ format:
 ---
 
 ```{=html}
-<div class="page-container">
+<div id="methodo-page" class="page-container">
   <div class="methodo-container">
-    <h1 class="page-title">Méthodologie <span class="annotation">& sources</span></h1>
-    <p class="page-subtitle">Périmètre documentaire, millésime des données et règles de lecture du dashboard</p>
+    <h1 class="page-title">Méthodologie <span class="annotation">&amp; sources</span></h1>
+    <p class="page-subtitle">Comment sont construites, vérifiées et documentées les données du dashboard BITD France</p>
 
+    <p class="methodo-lead">
+      Le dashboard repose sur des sources publiques : publications officielles des entreprises, rapports financiers,
+      données Insee / SIRENE, sources institutionnelles et référentiels géographiques.
+      Les données sont conservées au niveau auquel elles sont effectivement publiées.
+    </p>
+```
+
+## Principe de traçabilité
+
+```{=html}
+    <div class="tracabilite-box">
+      <h2>Principe de traçabilité</h2>
+      <p><strong>Pas de source identifiable = pas de chiffre présenté comme établi.</strong></p>
+      <p>
+        Lorsqu'une donnée est calculée, le dashboard conserve la formule ainsi que la provenance
+        des données utilisées dans le calcul.
+      </p>
+    </div>
+```
+
+## À quel niveau sont présentés les chiffres financiers ?
+
+```{=html}
+    <div class="granularite-box">
+      <p>Les indicateurs financiers sont présentés uniquement au niveau auquel ils sont publiés :
+        <strong>groupe, société ou segment d'activité.</strong>
+      </p>
+      <p>
+        <strong>Aucun chiffre d'affaires n'est calculé ou estimé au niveau d'un établissement
+        lorsque cette information n'est pas publiée.</strong>
+      </p>
+      <p>
+        <em>Par exemple :</em> si Airbus publie un chiffre pour Airbus Defence and Space,
+        ce chiffre décrit ce périmètre. Il ne devient pas automatiquement le chiffre d'affaires
+        du site de Toulouse, Marignane ou d'un autre établissement.
+      </p>
+    </div>
+
+    <span class="annotation-hand">Toujours vérifier le périmètre avant de comparer deux chiffres.</span>
+```
+
+## Comment une donnée est-elle obtenue ?
+
+Les données du dashboard appartiennent à l'un de ces sept types. Un petit badge discret indique le type dans les fiches de provenance.
+
+```{=html}
+    <div class="data-types-grid">
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--publie">Publié</span>
+        <p class="data-type-card__desc">Donnée reprise directement d'un document ou d'une publication officielle.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge" style="background:#E8F0F8;color:#1A3A5C;border:1px solid #A9C4DE;">Registre public</span>
+        <p class="data-type-card__desc">Donnée provenant d'un registre ou référentiel public, par exemple SIRENE / Insee.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--calcule">Calculé</span>
+        <p class="data-type-card__desc">Donnée calculée à partir de plusieurs valeurs publiées. La formule est conservée.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--proxy">Proxy</span>
+        <p class="data-type-card__desc">Donnée réelle utilisée comme approximation d'un concept plus précis, faute de ventilation publique suffisante.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--geocode">Géocodé</span>
+        <p class="data-type-card__desc">Coordonnée géographique produite à partir d'un référentiel territorial.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge mode-badge--autre">Synthèse documentaire</span>
+        <p class="data-type-card__desc">Information résumée à partir de plusieurs sources documentaires.</p>
+      </div>
+      <div class="data-type-card">
+        <span class="data-type-card__badge mode-badge" style="background:#F5EEF8;color:#6C3483;border:1px solid #C39BD3;">Rapproché</span>
+        <p class="data-type-card__desc">Information obtenue en rapprochant plusieurs référentiels ou en qualifiant des données brutes.</p>
+      </div>
+    </div>
+```
+
+## Exemple de donnée calculée — Book-to-bill Airbus
+
+```{=html}
+    <div id="btb-example-container">
+      <!-- rempli dynamiquement par methodologie.js depuis provenance_entreprises.csv -->
+      <div class="btb-example">
+        <div class="btb-example__header">
+          <span class="btb-example__label">Book-to-bill</span>
+          <span class="btb-example__value">—</span>
+          <span class="mode-badge mode-badge--calcule">Calculé</span>
+        </div>
+        <div class="btb-example__formula">
+          <div class="btb-formula-row">Prises de commandes</div>
+          <div class="btb-formula-divider">÷</div>
+          <div class="btb-formula-row">Chiffre d'affaires</div>
+        </div>
+        <p class="methodo-empty">Chargement…</p>
+      </div>
+    </div>
+```
+
+## Sources utilisées
+
+```{=html}
     <div class="disclaimer-box">
-      ℹ Cette page présente la méthodologie et les sources documentaires du dashboard BITD France.
-      Les données sont issues <strong>exclusivement de sources publiques</strong> disponibles au 12 août 2026.
-      Ce site constitue un outil documentaire d'analyse économique, industrielle et territoriale de la BITD française. Il ne constitue pas une publication officielle de la <span class="term-definition" data-term="dga">DGA</span>.
+      Les grandes familles de sources utilisées dans le dashboard.
+    </div>
+```
+
+**Entreprises**
+: Rapports annuels, communiqués financiers, pages corporate, documents investisseurs, Universal Registration Documents.
+
+**Défense**
+: Ministère des Armées, DGA, publications institutionnelles.
+
+**Établissements**
+: Sources corporate, career pages, référentiel SIRENE / Api.
+
+**Géographie**
+: Référentiels territoriaux publics (communes, coordonnées centre-commune).
+
+## Sources par entreprise
+
+```{=html}
+    <select id="sources-entreprise-select" class="sources-entreprise-select" aria-label="Sélectionner une entreprise">
+      <option value="">— Choisir une entreprise —</option>
+    </select>
+    <div id="sources-entreprise-list"></div>
+```
+
+## Rechercher une source
+
+```{=html}
+    <form id="source-search-form" class="source-search-form" role="search" aria-label="Recherche de sources">
+      <select id="source-search-entreprise" aria-label="Filtrer par entreprise">
+        <option value="all">Toutes les entreprises</option>
+      </select>
+      <select id="source-search-type" aria-label="Filtrer par type">
+        <option value="all">Tous les types</option>
+      </select>
+      <input id="source-search-query" type="search" placeholder="Rechercher… (airbus, book-to-bill, SIRENE…)" aria-label="Recherche libre" />
+      <button type="submit" class="source-search-submit">Rechercher</button>
+    </form>
+    <div id="source-search-results" aria-live="polite"></div>
+```
+
+## Limites des données
+
+```{=html}
+    <ul class="limits-list">
+      <li>
+        <strong>Périmètres financiers</strong>
+        Les entreprises ne publient pas toutes les mêmes indicateurs ni selon les mêmes périmètres.
+        Un chiffre ne peut être comparé sans s'assurer d'abord que les deux périmètres sont comparables.
+      </li>
+      <li>
+        <strong>Granularité établissement</strong>
+        Les données financières ne sont pas attribuées aux établissements lorsqu'elles ne sont pas publiées à ce niveau.
+        La fiche d'un site n'affiche jamais le CA ou le carnet du groupe comme indicateur propre au site.
+      </li>
+      <li>
+        <strong>SIRENE</strong>
+        Un établissement administrativement actif dans SIRENE n'implique pas nécessairement qu'une activité BITD locale soit documentée.
+      </li>
+      <li>
+        <strong>Coordonnées</strong>
+        Certaines coordonnées représentent le centre de la commune, et non l'entrée précise d'un site industriel.
+      </li>
+      <li>
+        <strong>Programmes</strong>
+        Une entreprise associée à un programme ne signifie pas que tous ses établissements travaillent sur ce programme.
+      </li>
+    </ul>
+```
+
+## Qualité des sources
+
+```{=html}
+    <div class="quality-levels">
+      <div class="quality-level">
+        <div class="quality-level__name">Source primaire</div>
+        <p class="quality-level__desc">Rapport annuel, communiqué officiel, site institutionnel, SIRENE. À privilégier.</p>
+      </div>
+      <div class="quality-level">
+        <div class="quality-level__name">Source secondaire</div>
+        <p class="quality-level__desc">Utilisée lorsqu'une source primaire suffisamment précise n'est pas disponible.</p>
+      </div>
+      <div class="quality-level">
+        <div class="quality-level__name">Synthèse</div>
+        <p class="quality-level__desc">Produite par le dashboard à partir de plusieurs sources documentaires.</p>
+      </div>
     </div>
 ```
 
 ## Périmètre du dashboard
 
-Le dashboard suit **30 entreprises** retenues pour représenter une partie structurante de la <span class="term-definition" data-term="bitd">BITD</span> française. Il ne s'agit ni d'un classement officiel, ni d'un annuaire exhaustif : la BITD française comprend plusieurs milliers d'entreprises de profils très différents.
+Le dashboard suit **30 entreprises** retenues pour représenter une partie structurante de la <span class="term-definition" data-term="bitd">BITD</span> française. Ce n'est ni un classement officiel, ni un annuaire exhaustif.
 
-Le site a désormais une vocation **factuelle, descriptive et pédagogique**. Il cherche à répondre à trois questions :
+Le site a vocation **factuelle, descriptive et pédagogique**. Il cherche à répondre à trois questions :
 
 - **Où ?** où sont situés les sièges et les établissements industriels ;
-- **Quoi ?** quels produits, services, sous-systèmes ou programmes sont associés à chaque acteur ;
-- **Quelle dimension économique ?** quels indicateurs publics permettent d'apprécier la taille, la charge et la dynamique d'activité.
+- **Quoi ?** quels produits, services ou programmes sont associés à chaque acteur ;
+- **Quelle dimension économique ?** quels indicateurs publics permettent d'apprécier la taille, la charge et la dynamique.
 
-## Critères de sélection
-
-Le périmètre combine plusieurs éléments publics :
-
-- taille économique globale ou défense lorsqu'elle est publiée ;
-- rôle de <span class="term-definition" data-term="maitre_oeuvre_industriel">maître d'œuvre industriel</span>, de <span class="term-definition" data-term="systemier">systémier</span> ou d'<span class="term-definition" data-term="equipementier">équipementier</span> ;
-- implication visible dans les grands programmes de la <span class="term-definition" data-term="lpm">LPM</span> 2024–2030 ;
-- présence industrielle en France ;
-- disponibilité d'une documentation publique suffisamment robuste.
-
-## Sources documentaires
-
-Les données sont prioritairement issues :
-
-- des rapports annuels, documents d'enregistrement universel et communiqués publiés par les groupes ;
-- des sites institutionnels et corporate ;
-- des éléments publics diffusés par le ministère des Armées et la <span class="term-definition" data-term="dga">DGA</span> ;
-- de l'Annuaire des Entreprises et de référentiels publics complémentaires.
-
-Les fichiers du dossier `sources/` constituent le référentiel documentaire historique utilisé pour consolider les fiches. Ils ne sont pas modifiés par cette évolution.
-
-## Millésime et comparabilité
-
-**Situation arrêtée au 12 août 2026.**
-
-Les données financières reflètent prioritairement les exercices 2024 et 2025 selon les publications disponibles. Les périmètres publiés ne sont pas homogènes :
-
-- certains groupes publient un <span class="term-definition" data-term="ca_defense">chiffre d'affaires Défense</span> identifiable ;
-- d'autres ne publient qu'un périmètre mixte du type « Defence and Space » ou « Équipements & Défense » ;
-- d'autres enfin ne ventilent pas publiquement leur activité militaire.
-
-Le dashboard signale ces différences directement dans les libellés et les notes d'indicateurs.
-
-## Donnée publiée vs donnée calculée
-
-::: {.disclaimer-box}
-**Convention de lecture :** lorsqu'une donnée n'est pas publiée sur un périmètre suffisamment clair, la mention **n.c.** (non communiqué) est conservée. Le dashboard n'invente pas de valeur absente.
-:::
-
-Deux cas coexistent :
-
-- **Publié** : la valeur est reprise telle qu'elle apparaît dans une source publique, dans son périmètre annoncé ;
-- **Calculé** : le ratio est reconstitué à partir de deux données publiées. C'est notamment le cas de <span class="term-definition" data-term="carnet_ca">Carnet / CA</span>.
-
-## Localisation des établissements
-
-La carte distingue :
-
-- la **vue nationale**, centrée sur les sièges des 30 entreprises ;
-- le **focus entreprise**, qui affiche le siège et les implantations industrielles françaises connues.
-
-Les établissements proviennent d'informations publiques consolidées. Le niveau de précision géographique dépend des sources disponibles :
-
-- certaines implantations sont localisées à la ville ;
-- d'autres à un site industriel ou à une aire urbaine ;
-- l'absence d'un site sur la carte ne signifie pas nécessairement l'absence de présence industrielle.
-
-## Indicateurs économiques et ratios
-
-Le dashboard mobilise quelques indicateurs simples pour aider à lire la dimension économique :
-
-- <span class="term-definition" data-term="chiffre_affaires">chiffre d'affaires</span> ;
-- <span class="term-definition" data-term="ca_defense">chiffre d'affaires Défense</span> lorsqu'il est réellement publié ;
-- <span class="term-definition" data-term="carnet_commandes">carnet de commandes</span> ;
-- <span class="term-definition" data-term="book_to_bill">Book-to-bill</span> ;
-- <span class="term-definition" data-term="carnet_ca">Carnet / CA</span> ;
-- <span class="term-definition" data-term="ebitda">EBITDA</span>, <span class="term-definition" data-term="ebit">EBIT</span> ou <span class="term-definition" data-term="marge_ebitda">marge EBITDA</span> selon ce que publie l'entreprise ;
-- <span class="term-definition" data-term="free_cash_flow">Free Cash Flow</span> ou <span class="term-definition" data-term="dette_nette">dette nette</span> lorsque l'information est utile et disponible.
-
-Pour les définitions détaillées, les formules et les principaux acronymes industriels, voir la page <a href="comprendre.html">Comprendre les données</a>.
-
-## Limites du dashboard
-
-- les périmètres financiers restent **hétérogènes** d'un groupe à l'autre ;
-- une donnée publiée au niveau d'une division mixte ne doit pas être lue comme un pur indicateur militaire sans précaution ;
-- la cartographie n'a pas vocation à documenter l'intégralité des micro-sites, ateliers ou sous-traitants ;
-- l'absence de publication signifie parfois seulement que le groupe ne diffuse pas le détail demandé ;
-- ce site documente des réalités industrielles publiques, il ne produit pas de notation des entreprises.
+Pour les définitions des indicateurs financiers et des acronymes industriels, voir <a href="comprendre.html">Comprendre les données</a>.
 
 ```{=html}
-  </div>
-</div>
+  </div><!-- .methodo-container -->
+</div><!-- #methodo-page -->
 ```

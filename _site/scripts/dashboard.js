@@ -19,6 +19,7 @@
     statutEtablissements: 'actifs',
     explorerMode: 'entreprise',
     selectedProgrammeId: null,
+    selectedRegion: null,
     subscribers: [],
     schema: {
       statusColumn: null,
@@ -319,15 +320,43 @@
   }
 
   function setExplorerMode(mode) {
-    const validMode = mode === 'programme' ? 'programme' : 'entreprise';
+    const validMode = ['programme', 'region'].includes(mode) ? mode : 'entreprise';
     state.explorerMode = validMode;
-    if (validMode === 'entreprise') {
-      state.selectedProgrammeId = null;
-    }
-    if (validMode === 'programme') {
-      state.entrepriseId = null;
-    }
+    if (validMode !== 'region') state.selectedRegion = null;
+    if (validMode !== 'programme') state.selectedProgrammeId = null;
+    if (validMode !== 'entreprise') state.entrepriseId = null;
     notify();
+  }
+
+  function setRegion(regionName) {
+    state.selectedRegion = regionName || null;
+    state.explorerMode = 'region';
+    state.entrepriseId = null;
+    state.selectedProgrammeId = null;
+    notify();
+  }
+
+  function getVisibleRegionEstablishments(regionName, mode) {
+    if (!regionName) return [];
+    const normalizedTarget = normalizeText(regionName);
+    const filtered = state.allEtablissements.filter((e) => normalizeText(e.region || '') === normalizedTarget);
+    if (mode === 'tous') return filtered;
+    return filtered.filter((e) => isActiveEstablishment(e));
+  }
+
+  function getUniqueRegions() {
+    const seen = new Set();
+    const regions = [];
+    state.allEtablissements.forEach((e) => {
+      const raw = String(e.region || '').trim();
+      if (!raw) return;
+      const normalized = normalizeText(raw);
+      if (!seen.has(normalized)) {
+        seen.add(normalized);
+        regions.push(raw);
+      }
+    });
+    return regions.sort((a, b) => a.localeCompare(b, 'fr'));
   }
 
   function setProgramme(programmeId) {
@@ -474,6 +503,9 @@
     setExplorerMode,
     setProgramme,
     switchToEntreprise,
+    setRegion,
+    getVisibleRegionEstablishments,
+    getUniqueRegions,
     constants: { sectorColors },
     helpers: {
       normalizeText,

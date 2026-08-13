@@ -2165,7 +2165,8 @@ main.content { padding: 0 !important; }
 }
 
 #programme-controls,
-#entreprise-controls {
+#entreprise-controls,
+#region-controls {
   display: contents;
 }
 
@@ -2610,4 +2611,705 @@ main.content { padding: 0 !important; }
       li { margin-bottom: 0.2rem; }
     }
   }
+}
+
+// =============================================================================
+// MODE RÉGION — Panneau territorial
+// =============================================================================
+
+.region-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.region-panel-empty {
+  padding: 1rem 0;
+  h3 { font-size: 1rem; color: var(--navy); margin: 0 0 0.4rem; }
+  p { font-size: 0.82rem; color: var(--text-secondary); }
+}
+
+.region-panel-header {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.region-panel-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin: 0 0 0.25rem;
+}
+
+.region-panel-title {
+  font-family: 'Kalam', cursive;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.7rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.region-kpis {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.region-kpi {
+  flex: 1 1 80px;
+  min-width: 70px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+
+  strong {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  span {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+  }
+}
+
+.region-section-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 1rem 0 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.region-companies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.region-company-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition);
+  gap: 0.5rem;
+
+  &:hover {
+    background: var(--background);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+}
+
+.region-company-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.region-company-count {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.region-activities {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.activity-bar-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+}
+
+.activity-bar-label {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.activity-bar-track {
+  width: 60px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.activity-bar-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.activity-bar-count {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  width: 1.8em;
+  flex-shrink: 0;
+}
+
+.region-methodological-note {
+  margin-top: 1rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding: 0.5rem 0.6rem;
+  background: var(--background);
+  border-radius: 8px;
+  border-left: 2px solid var(--border);
+}
+
+.region-info-icon {
+  color: var(--teal);
+  margin-right: 0.3em;
+}
+
+// Segmented mode — 3 buttons compact on mobile
+@media (max-width: 480px) {
+  .segmented--mode .segmented-btn {
+    min-width: 0;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.8rem;
+  }
+}
+
+// =============================================================================
+// TRAÇABILITÉ — Source buttons, provenance panel, mode badges
+// =============================================================================
+
+// --- External link SVG icon ---
+.ext-icon {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  vertical-align: middle;
+  margin-left: 0.15em;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+// --- Source button ---
+.source-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--teal);
+  background: transparent;
+  border: 1px solid var(--teal);
+  border-radius: 20px;
+  padding: 0.15em 0.55em;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: background var(--transition), color var(--transition);
+  white-space: nowrap;
+  vertical-align: middle;
+  margin-left: 0.35em;
+  text-decoration: none;
+}
+.source-btn:hover, .source-btn:focus {
+  background: var(--teal);
+  color: #fff;
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.source-btn--site {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+}
+
+// --- Mode badges ---
+.mode-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 0.15em 0.5em;
+  line-height: 1.5;
+  vertical-align: middle;
+  margin-left: 0.25em;
+}
+.mode-badge--sm { font-size: 0.6rem; }
+.mode-badge--publie   { background: #E8F8F0; color: #1A6B3A; border: 1px solid #A6DDB9; }
+.mode-badge--calcule  { background: #EAF2F8; color: #1A5276; border: 1px solid #A9CCE3; }
+.mode-badge--proxy    { background: #FEF5E7; color: #7D6608; border: 1px solid #FAD7A0; }
+.mode-badge--geocode  { background: #F5EEF8; color: #6C3483; border: 1px solid #D2B4DE; }
+.mode-badge--autre    { background: var(--background); color: var(--text-secondary); border: 1px solid var(--border); }
+
+// --- Provenance overlay & panel ---
+#prov-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 32, 51, 0.45);
+  z-index: 9000;
+  align-items: flex-end;
+  justify-content: center;
+}
+#prov-overlay.is-open { display: flex; }
+
+#prov-panel {
+  background: var(--card);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  box-shadow: 0 -4px 40px rgba(22,32,51,0.14);
+  padding: 1.5rem 1.5rem 2rem;
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+#prov-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  font-size: 1.4rem;
+  line-height: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+#prov-close:hover { background: var(--background); }
+
+.prov-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.2rem;
+  padding-right: 2rem;
+}
+.prov-company {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem;
+  font-style: italic;
+}
+.prov-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.prov-details {
+  margin: 0.75rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.prov-row {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.prov-row:last-child { border-bottom: none; }
+.prov-label {
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex: 0 0 6rem;
+  padding-top: 0.1em;
+}
+.prov-formula {
+  background: var(--background);
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: var(--navy);
+}
+.prov-source-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.prov-source-link {
+  color: var(--teal);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+.prov-source-link:hover { text-decoration: underline; }
+.prov-no-source {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+.prov-warn {
+  background: #FEF5E7;
+  border: 1px solid #FAD7A0;
+  color: #7D6608;
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.78rem;
+  margin: 0.5rem 0;
+}
+.prov-warn-inline {
+  font-size: 0.68rem;
+  color: #7D6608;
+  font-style: italic;
+}
+.prov-comment {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  border-left: 2px solid var(--border);
+  padding-left: 0.7rem;
+  margin: 0.5rem 0 0;
+  font-style: italic;
+}
+.prov-revalidation {
+  color: #7D6608;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+.prov-site-fields { display: flex; flex-direction: column; gap: 0.6rem; }
+.prov-site-field {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  background: var(--card);
+}
+.prov-site-field__header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  margin-bottom: 0.25rem;
+}
+.prov-site-field__source { font-size: 0.8rem; }
+
+// site popup sources footer
+.site-popup__sources {
+  margin-top: 0.5rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(0,0,0,0.07);
+}
+
+// --- Financial indicator cell + source btn ---
+.financial-indicator-cell { position: relative; }
+.financial-indicator-cell .source-btn { display: block; margin: 0.2rem 0 0; }
+
+// Desktop: panel becomes side-sheet
+@media (min-width: 768px) {
+  #prov-overlay {
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 1.5rem;
+  }
+  #prov-panel {
+    border-radius: var(--radius-card);
+    max-height: 80vh;
+    margin-bottom: 0;
+  }
+}
+
+// =============================================================================
+// MÉTHODOLOGIE PAGE
+// =============================================================================
+.methodo-container {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.methodo-lead {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  max-width: 680px;
+}
+
+.tracabilite-box {
+  background: var(--navy);
+  color: #F5F6F2;
+  border-radius: var(--radius-card);
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+  box-shadow: var(--shadow-card);
+}
+.tracabilite-box h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tracabilite-box p {
+  margin: 0.4rem 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.tracabilite-box strong { color: #F5F6F2; }
+
+.granularite-box {
+  background: #EAF2F8;
+  border-left: 4px solid #1A5276;
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+}
+.granularite-box p { margin: 0.4rem 0; font-size: 0.88rem; line-height: 1.65; color: var(--navy); }
+
+// 7 types badges grid
+.data-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.data-type-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-card);
+}
+.data-type-card__badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 4px;
+  padding: 0.15em 0.5em;
+  margin-bottom: 0.5rem;
+}
+.data-type-card__desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.55; margin: 0; }
+
+// Book-to-bill example
+.btb-example {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  margin: 1.5rem 0;
+}
+.btb-example__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.btb-example__label { font-weight: 700; font-size: 0.9rem; color: var(--navy); }
+.btb-example__value { font-size: 1.6rem; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
+.btb-example__formula {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: var(--background);
+  border-radius: 10px;
+}
+.btb-formula-divider { font-size: 1.2rem; font-weight: 700; color: var(--teal); }
+.btb-formula-row { color: var(--text); }
+.btb-example__meta { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem; font-size: 0.82rem; margin: 0; }
+.btb-example__meta dt { color: var(--text-secondary); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.btb-example__meta dd { margin: 0; color: var(--text); }
+
+// Source search
+.source-search-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.source-search-form input, .source-search-form select {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: var(--card);
+  color: var(--text);
+  width: 100%;
+}
+.source-search-form input:focus, .source-search-form select:focus {
+  outline: 2px solid var(--teal);
+  border-color: var(--teal);
+}
+.source-search-submit {
+  grid-column: 1 / -1;
+  background: var(--navy);
+  color: #F5F6F2;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.source-search-submit:hover { background: var(--navy-secondary); }
+
+#source-search-results { margin-top: 0.75rem; }
+.source-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--card);
+}
+.source-card__link {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--teal);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+.source-card__link:hover { text-decoration: underline; }
+.source-card__link--noop { color: var(--text); font-weight: 500; }
+.source-card__meta {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.source-card__type {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.65rem;
+  color: var(--navy-secondary);
+}
+
+// Sources par entreprise
+.sources-entreprise-select {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  min-width: 240px;
+  background: var(--card);
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+.source-group { margin-bottom: 1.5rem; }
+.source-group__title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+
+.methodo-empty { color: var(--text-secondary); font-style: italic; font-size: 0.85rem; }
+
+// Limits & quality sections
+.limits-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+.limits-list li {
+  border-left: 3px solid var(--gold);
+  padding: 0.6rem 0 0.6rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.limits-list li strong { color: var(--navy); display: block; margin-bottom: 0.15rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+.quality-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.quality-level {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+}
+.quality-level__name { font-weight: 700; font-size: 0.85rem; color: var(--navy); margin-bottom: 0.3rem; }
+.quality-level__desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.55; margin: 0; }
+
+// Annotation manuscrite
+.annotation-hand {
+  font-family: 'Kalam', cursive;
+  font-size: 0.95rem;
+  color: var(--teal);
+  display: block;
+  margin: 1.5rem 0;
+  border-left: 2px dashed var(--teal);
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .source-search-form { grid-template-columns: 1fr; }
+  .data-types-grid { grid-template-columns: 1fr 1fr; }
+  .quality-levels { grid-template-columns: 1fr; }
+  #prov-panel { padding: 1.2rem 1rem 2rem; }
 }

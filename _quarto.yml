@@ -24,7 +24,7 @@ website:
       - href: comprendre.qmd
         text: Comprendre les données
       - href: methodologie.qmd
-        text: Méthodologie
+        text: Méthodologie & sources
     right:
       - text: Situation au 12 août 2026
   page-footer:
@@ -51,9 +51,11 @@ format:
           <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
       - text: |
           <script src="scripts/glossary.js" defer></script>
+          <script src="scripts/provenance.js" defer></script>
           <script src="scripts/dashboard.js" defer></script>
           <script src="scripts/filters.js" defer></script>
           <script src="scripts/programme.js" defer></script>
           <script src="scripts/map.js" defer></script>
           <script src="scripts/table.js" defer></script>
           <script src="scripts/comprendre.js" defer></script>
+          <script src="scripts/methodologie.js" defer></script>

@@ -200,6 +200,7 @@
         <div class="site-popup__meta">${escapeHtml(sireneLine)}</div>
         ${bitdLine ? `<div class="site-popup__meta">${escapeHtml(bitdLine)}</div>` : ''}
         ${precisionLine ? `<div class="site-popup__meta">${escapeHtml(precisionLine)}</div>` : ''}
+        ${window.BITDProvenance ? `<div class="site-popup__sources">${window.BITDProvenance.siteSourceButton(etab.site_id, etab.ville || etab.nom_site || 'Établissement')}</div>` : ''}
       </article>
     `;
   }
@@ -761,10 +762,15 @@
     const regions = new Set(visibleEtabs.map((e) => e.region).filter(Boolean));
     const secteurs = (company.sectors || []).slice(0, 3).join(' · ');
 
+    function cpSrcBtn(champ, label) {
+      if (!window.BITDProvenance) return '';
+      return window.BITDProvenance.sourceButton({ entrepriseId: company.id, entrepriseName: company.entreprise, champ, label, value: '' });
+    }
+
     const companyInfos = [
       company.specialite ? `<li><strong>Spécialité :</strong> ${escapeHtml(company.specialite)}</li>` : '',
       company.siege_ville ? `<li><strong>Siège :</strong> ${escapeHtml(company.siege_ville)}${company.siege_region ? `, ${escapeHtml(company.siege_region)}` : ''}</li>` : '',
-      company.effectif_label ? `<li><strong>Effectif :</strong> ${escapeHtml(company.effectif_label)}</li>` : '',
+      company.effectif_label ? `<li><strong>Effectif :</strong> ${escapeHtml(company.effectif_label)} ${cpSrcBtn('effectif_label', 'Effectifs')}</li>` : '',
       company.programmes ? `<li><strong>Programmes :</strong> ${escapeHtml(company.programmes)}</li>` : '',
       company.site_web ? `<li><strong>Site :</strong> <a href="${escapeHtml(company.site_web)}" target="_blank" rel="noreferrer">${escapeHtml(company.site_web.replace(/^https?:\/\//, ''))}</a></li>` : ''
     ].filter(Boolean).join('');
