@@ -102,8 +102,21 @@ Faits saillants confrontés à des sources primaires ou officielles :
    Aresia, remplacées par la racine du site officiel ; domaine aresia.aero abandonné au profit
    d'aresia.com). Les six erreurs SSL (Eurenco, Arquus) sont des chaînes de certificats
    incomplètes côté serveur, pas des liens morts : URL conservées, vérificateur passé en mode
-   tolérant sur la validation des certificats.
-6. **Provenance re-routée (52 lignes).** Propagation des nouveaux `site_id` dans
+   tolérant sur la validation des certificats. Seconde passe : deux pages réellement mortes
+   démasquées derrière ces erreurs SSL et remplacées (Eurenco : page des sites supprimée, renvoi
+   vers la page contact ; Arquus : « nos centres de production » devenue « nos centres
+   d'excellence ») ; une occurrence de l'ancienne page OED corrigée dans la page Méthodologie.
+6. **Passe éditoriale sur les programmes (13/08/2026, suite de l'audit §7).** Libellés courts
+   alignés sur les faits : SCAF « Avion commun arrêté » (le résumé détaillé, inchangé, documente la
+   poursuite du Combat Cloud) ; MGCS « Recentré (R&D) » avec un résumé au ton moins affirmatif.
+   Maîtrises d'œuvre documentées ajoutées : Naval Group (Barracuda, maître d'œuvre d'ensemble),
+   co-maîtrise Naval Group / Chantiers de l'Atlantique (PA-Ng), Airbus DS (A330 MRTT), MBDA
+   (VL MICA) ; consortiums maîtres d'œuvre hors panel explicités (Eurosam pour Aster/SAMP-T,
+   NHIndustries pour le NH90). SCORPION reste volontairement sans maître d'œuvre unique
+   (groupement momentané d'entreprises). Correctif d'affichage associé dans la carte : détection
+   du rôle de maître d'œuvre insensible aux accents et mention « dont Guyane » sur le décompte
+   des régions.
+7. **Provenance re-routée (52 lignes).** Propagation des nouveaux `site_id` dans
    `provenance_etablissements.csv`, par jointure sur le nom de site puis sur la valeur du champ ;
    les lignes à valeur commune aux deux établissements ont été dupliquées pour préserver la
    traçabilité de chacun.
