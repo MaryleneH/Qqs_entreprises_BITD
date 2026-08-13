@@ -9,7 +9,8 @@
     view: 'explorer',
     panelLoaded: false,
     programmeLoaded: false,
-    provenanceLoaded: false
+    provenanceLoaded: false,
+    identiteLoaded: false
   };
 
   const dom = {
@@ -239,13 +240,40 @@
       );
     }
 
+    if (window.BITDIdentite && window.BITDIdentite.loadAll) {
+      optionalTasks.push(
+        window.BITDIdentite.loadAll().then(() => {
+          state.identiteLoaded = true;
+          state.rows = state.rows.map((row) => {
+            const identite = window.BITDIdentite.getIdentite(row.id);
+            const caps = window.BITDIdentite.getCapabilities(row.id);
+            const primaryCV = window.BITDIdentite.getPrimaryChainValue(row.id);
+            const secondaryCVs = window.BITDIdentite.getSecondaryChainValues(row.id);
+            return {
+              ...row,
+              identite: identite || null,
+              capacites: caps,
+              primaryChainValueId: identite ? identite.chaine_valeur_principale_id : '',
+              primaryChainValueLabel: primaryCV ? primaryCV.libelle : '',
+              secondaryChainValues: secondaryCVs
+            };
+          });
+        }).catch((err) => {
+          console.warn('[BITD][Entreprises] Identité industrielle indisponible (fail-soft) :', err);
+        })
+      );
+    }
+
     await Promise.all(optionalTasks);
 
     state.rows = state.rows.map((row) => {
       const programmeNames = (row.programmesDoc || []).map((p) => p.label);
+      const identiteContrib = (state.identiteLoaded && window.BITDIdentite)
+        ? window.BITDIdentite.buildSearchIndexContribution(row.id)
+        : '';
       return {
         ...row,
-        searchIndex: normalizeText(`${row.searchIndex} ${programmeNames.join(' ')}`)
+        searchIndex: normalizeText(`${row.searchIndex} ${programmeNames.join(' ')} ${identiteContrib}`)
       };
     });
   }
@@ -283,7 +311,13 @@
       if (q && !row.searchIndex.includes(q)) return false;
       if (circle !== 'all' && String(row.cercle || '') !== String(circle)) return false;
       if (domain !== 'all' && row.secteurPrincipal !== domain) return false;
-      if (role !== 'all' && row.role !== role) return false;
+      if (role !== 'all') {
+        // Filter by chain of value label (primary or secondary)
+        const cvLabel = row.primaryChainValueLabel || row.role;
+        const secondaryLabels = (row.secondaryChainValues || []).map((cv) => cv.libelle);
+        const allLabels = [cvLabel, ...secondaryLabels];
+        if (!allLabels.includes(role)) return false;
+      }
       if (programme !== 'all') {
         const names = (row.programmesDoc || []).map((p) => p.label);
         if (!names.includes(programme)) return false;
@@ -322,18 +356,17 @@
   function renderCards() {
     const cards = state.filtered.map((row) => {
       const isActive = row.id === state.selectedId;
-      const tags = (row.programmesDoc || []).slice(0, 3).map((p) => `<span class="chip">${esc(p.label)}</span>`).join('');
-      const implants = row.implantationsCount != null
-        ? `${formatCount(row.implantationsCount, `implantation${row.implantationsCount > 1 ? 's' : ''} référencée${row.implantationsCount > 1 ? 's' : ''}`)}`
-        : '';
+      const cvLabel = row.primaryChainValueLabel || '';
+      const caps = (row.capacites || []).slice(0, 3);
+      const capTags = caps.map((c) => `<span class="chip chip-cap">${esc(c)}</span>`).join('');
       return `
         <article class="entreprise-card ${isActive ? 'is-active' : ''}" data-company-id="${esc(row.id)}">
           <button type="button" class="entreprise-card-btn" data-company-id="${esc(row.id)}">
             <h3>${esc(row.entreprise)}</h3>
             <p class="entreprise-card-role">${esc(circleLabel(row))}</p>
-            <p class="entreprise-card-domain">${esc(row.secteurPrincipal || 'Domaine non renseigné')} · ${esc(compactText(row.specialite, 70) || 'Spécialité non renseignée')}</p>
-            ${implants ? `<p class="entreprise-card-implants">${esc(implants)}</p>` : ''}
-            ${tags ? `<div class="entreprise-card-tags">${tags}</div>` : ''}
+            <p class="entreprise-card-domain">${esc(row.secteurPrincipal || 'Domaine non renseigné')}</p>
+            ${cvLabel ? `<p class="entreprise-card-cv"><span class="cv-badge">${esc(cvLabel)}</span></p>` : ''}
+            ${capTags ? `<div class="entreprise-card-tags">${capTags}</div>` : ''}
             <span class="entreprise-card-link">Voir la fiche →</span>
           </button>
         </article>
@@ -430,8 +463,16 @@
     }).join('')}</ul>`;
   }
 
-  function renderMainSources(row) {
+  function renderMainSources(row, identite = null) {
     const items = [];
+
+    // Add identity source if available
+    if (identite && identite.source_industrielle_id && window.BITDProvenance && state.provenanceLoaded) {
+      const src = window.BITDProvenance.getSourceById(identite.source_industrielle_id);
+      if (src && src.url) {
+        items.push({ key: src.url, title: src.libelle || 'Source industrielle', url: src.url, priority: 0 });
+      }
+    }
 
     if (window.BITDProvenance && state.provenanceLoaded) {
       const srcs = window.BITDProvenance.getSourcesForEntreprise(row.entreprise) || [];
@@ -466,7 +507,105 @@
     return htmlItems || '<li class="small-note">Aucune source disponible.</li>';
   }
 
+  // ---------------------------------------------------------------------------
+  // Chain of value visualization helpers
+  // ---------------------------------------------------------------------------
+
+  // Conceptual zones for the chain of value visualization
+  const CV_ZONES = [
+    {
+      label: 'Amont',
+      ids: ['CV04', 'CV05', 'CV08'],
+      description: 'Composants, matériaux, munitions & production'
+    },
+    {
+      label: 'Équipements',
+      ids: ['CV03'],
+      description: 'Équipementiers & fournisseurs de systèmes'
+    },
+    {
+      label: 'Intégration',
+      ids: ['CV01', 'CV02'],
+      description: 'Maîtres d\'œuvre & ensembliers'
+    },
+    {
+      label: 'Soutien & expertise',
+      ids: ['CV06', 'CV07'],
+      description: 'MCO, services, ingénierie & qualification'
+    }
+  ];
+
+  function renderChainValueViz(row, mobile = false) {
+    const primaryId = row.primaryChainValueId || '';
+    const secondaryIds = (row.secondaryChainValues || []).map((cv) => cv.id);
+
+    if (!primaryId) return '';
+
+    if (mobile) {
+      // Mobile: simple text display
+      const primaryLabel = row.primaryChainValueLabel || primaryId;
+      const secondaryLabels = (row.secondaryChainValues || []).map((cv) => cv.libelle);
+      return `
+        <div class="cv-mobile">
+          <div class="cv-mobile-primary">
+            <span class="cv-mobile-label">Rôle principal</span>
+            <span class="cv-badge cv-badge--primary">${esc(primaryLabel)}</span>
+          </div>
+          ${secondaryLabels.length ? `
+            <div class="cv-mobile-secondary">
+              <span class="cv-mobile-label">Rôles complémentaires</span>
+              <div class="cv-mobile-secondary-list">
+                ${secondaryLabels.map((l) => `<span class="cv-badge cv-badge--secondary">${esc(l)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+          <button type="button" class="cv-info-btn" data-cv-id="${esc(primaryId)}">Comprendre cette position ⓘ</button>
+        </div>
+      `;
+    }
+
+    // Desktop: 4-zone visualization
+    const zonesHtml = CV_ZONES.map((zone) => {
+      const cvRows = zone.ids.map((id) => {
+        if (!window.BITDIdentite) return null;
+        const cv = window.BITDIdentite.getChainValue(id);
+        if (!cv) return null;
+        const isPrimary = id === primaryId;
+        const isSecondary = secondaryIds.includes(id);
+        const cls = isPrimary ? 'cv-node cv-node--primary'
+          : isSecondary ? 'cv-node cv-node--secondary'
+            : 'cv-node cv-node--inactive';
+        return `
+          <div class="${cls}" data-cv-id="${esc(id)}" tabindex="0" role="button" aria-label="${esc(cv.libelle)}">
+            <span class="cv-node-label">${esc(cv.libelle)}</span>
+            <div class="cv-tooltip" role="tooltip">
+              <strong>${esc(cv.libelle)}</strong>
+              <p>${esc(cv.definition)}</p>
+            </div>
+          </div>
+        `;
+      }).filter(Boolean).join('');
+      return `
+        <div class="cv-zone">
+          <span class="cv-zone-label">${esc(zone.label)}</span>
+          <div class="cv-zone-nodes">${cvRows}</div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="cv-viz" aria-label="Position dans la chaîne de valeur">
+        <div class="cv-zones">${zonesHtml}</div>
+        <p class="cv-annotation">Lecture analytique de la chaîne de valeur</p>
+        <p class="cv-methodo-link">
+          <button type="button" class="cv-methodo-btn" data-cv-methodo>Comment cette classification est-elle construite ? ⓘ</button>
+        </p>
+      </div>
+    `;
+  }
+
   function buildDetailHtml(row, mobile = false) {
+    const identite = row.identite || null;
     const figures = keyFigures(row);
     const figureHtml = figures.length
       ? `<div class="detail-figures-grid">${figures.map((fig) => `
@@ -481,38 +620,99 @@
 
     const criteria = splitValues(row.criteresSelection).join(' · ');
     const programs = renderProgrammeChips(row);
-    const sourceItems = renderMainSources(row);
+    const sourceItems = renderMainSources(row, identite);
+
+    // Industrial identity sections
+    const hasIdentite = Boolean(identite);
+
+    const headerSectorLine = hasIdentite
+      ? esc(identite.secteur_principal || row.secteurPrincipal || 'Domaine non renseigné')
+      : esc([row.secteurPrincipal, ...row.sectors.filter((s) => s !== row.secteurPrincipal)].filter(Boolean).slice(0, 3).join(' · ') || 'Domaine non renseigné');
+
+    const cvMainLabel = row.primaryChainValueLabel || (hasIdentite ? identite.type_acteur_panel : row.role) || '';
+
+    const positionnementHtml = hasIdentite
+      ? `<section class="detail-section">
+          <h3>Positionnement industriel</h3>
+          <p class="positionnement-text">${esc(identite.positionnement_industriel || '')}</p>
+          ${identite.type_acteur_panel && identite.primaryChainValueLabel !== identite.type_acteur_panel ? `
+            <p class="small-note type-acteur-note">
+              <em>Type d'acteur panel (institutionnel) :</em> ${esc(identite.type_acteur_panel)}<br>
+              <em>Position fonctionnelle (chaîne de valeur) :</em> ${esc(row.primaryChainValueLabel || '')}
+            </p>
+          ` : ''}
+        </section>`
+      : `<section class="detail-section">
+          <h3>Positionnement industriel</h3>
+          <p><strong>Spécialité :</strong> ${esc(row.specialite || 'Non renseignée')}</p>
+        </section>`;
+
+    const retenir = hasIdentite && identite.ce_qu_il_faut_retenir
+      ? `<section class="detail-section detail-retenir">
+          <div class="retenir-block">
+            <span class="retenir-label">Ce qu'il faut retenir</span>
+            <p class="retenir-text">${esc(identite.ce_qu_il_faut_retenir)}</p>
+          </div>
+        </section>`
+      : '';
+
+    const cvSection = (hasIdentite && row.primaryChainValueId)
+      ? `<section class="detail-section">
+          <h3>Position dans la chaîne de valeur</h3>
+          <div class="cv-roles">
+            <div class="cv-role-primary">
+              <span class="cv-role-label">Rôle principal</span>
+              <span class="cv-badge cv-badge--primary">${esc(row.primaryChainValueLabel || row.primaryChainValueId)}</span>
+            </div>
+            ${(row.secondaryChainValues || []).length ? `
+              <div class="cv-role-secondary">
+                <span class="cv-role-label">Rôles complémentaires</span>
+                <div class="cv-role-secondary-list">
+                  ${(row.secondaryChainValues || []).map((cv) => `<span class="cv-badge cv-badge--secondary">${esc(cv.libelle)}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+          ${renderChainValueViz(row, mobile)}
+        </section>`
+      : '';
+
+    const capsSection = (hasIdentite && row.capacites && row.capacites.length)
+      ? `<section class="detail-section">
+          <h3>Capacités clés</h3>
+          <div class="detail-capacites">${row.capacites.slice(0, 6).map((c) => `<span class="chip chip-cap">${esc(c)}</span>`).join('')}</div>
+        </section>`
+      : '';
+
+    const identiteUnavailableNote = !hasIdentite
+      ? '<p class="small-note identite-unavailable">Analyse industrielle détaillée non disponible.</p>'
+      : '';
 
     return `
       <div class="entreprise-detail-content ${mobile ? 'is-mobile' : ''}">
         <header class="detail-identity">
           <h2>${esc(row.entreprise)}</h2>
-          <p>${esc([row.secteurPrincipal, ...row.sectors.filter((s) => s !== row.secteurPrincipal)].filter(Boolean).slice(0, 3).join(' · ') || 'Domaine non renseigné')}</p>
-          <p class="detail-circle">${esc(circleLabel(row))}</p>
+          <p class="detail-sector">${headerSectorLine}</p>
+          <p class="detail-circle">${esc(circleLabel(row))}${cvMainLabel ? ` · <span class="detail-cv-header">${esc(cvMainLabel)}</span>` : ''}</p>
           <div class="detail-actions">
             <a href="index.html?entreprise=${encodeURIComponent(row.slug || row.id)}" class="detail-map-link">Voir sur la carte →</a>
             ${state.panelLoaded ? `<button type="button" class="detail-why-btn" data-why-company="${esc(row.id)}">Pourquoi dans le panel ? ⓘ</button>` : ''}
           </div>
         </header>
 
-        <section class="detail-section">
-          <h3>Résumé</h3>
-          <p>${esc(row.description || 'Résumé non disponible.')}</p>
-        </section>
+        ${identiteUnavailableNote}
+        ${retenir}
+        ${positionnementHtml}
+        ${cvSection}
+        ${capsSection}
 
         <section class="detail-section">
-          <h3>Positionnement industriel</h3>
-          <p><strong>Rôle :</strong> ${esc(row.role || 'Non renseigné')}</p>
-          <p><strong>Spécialité :</strong> ${esc(row.specialite || 'Non renseignée')}</p>
-        </section>
-
-        <section class="detail-section">
-          <h3>Chiffres clés</h3>
+          <h3>Quelques chiffres</h3>
           ${figureHtml}
         </section>
 
         <section class="detail-section">
-          <h3>Programmes associés</h3>
+          <h3>Programmes documentés</h3>
           ${programs}
         </section>
 
@@ -526,15 +726,16 @@
         <section class="detail-section">
           <h3>Pourquoi dans le panel ?</h3>
           ${row.justificationSelection ? `<p>${esc(row.justificationSelection)}</p>` : '<p class="small-note">Justification indisponible.</p>'}
-          ${row.libelleModeSelection ? `<p><strong>Nature de sélection :</strong> ${esc(row.libelleModeSelection)}</p>` : ''}
-          ${criteria ? `<p><strong>Critères :</strong> ${esc(criteria)}</p>` : ''}
+          ${row.libelleModeSelection ? `<p class="panel-meta"><strong>Nature :</strong> ${esc(row.libelleModeSelection)}</p>` : ''}
+          ${criteria ? `<p class="panel-meta"><strong>Critères :</strong> ${esc(criteria)}</p>` : ''}
           ${renderPanelSources(row)}
         </section>
 
         <section class="detail-section">
-          <h3>Sources principales</h3>
+          <h3>Sources</h3>
+          ${hasIdentite ? `<p class="panel-meta"><strong>Nature de l'analyse :</strong> Synthèse analytique documentée</p>` : ''}
           <ul class="detail-source-list">${sourceItems}</ul>
-          <a href="methodologie.html#constitution-du-panel" class="detail-map-link">Voir toutes les sources →</a>
+          <a href="methodologie.html#lire-la-chaine-de-valeur" class="detail-map-link">Voir la méthodologie →</a>
         </section>
       </div>
     `;
@@ -546,6 +747,51 @@
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-why-company');
         if (window.BITDPanel && id) window.BITDPanel.openWhyOverlay(id, btn);
+      });
+    });
+
+    // CV node tooltip on click/focus for mobile
+    root.querySelectorAll('.cv-node').forEach((node) => {
+      node.addEventListener('click', () => {
+        root.querySelectorAll('.cv-node').forEach((n) => n.classList.remove('cv-node--open'));
+        node.classList.toggle('cv-node--open');
+      });
+      node.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          root.querySelectorAll('.cv-node').forEach((n) => n.classList.remove('cv-node--open'));
+          node.classList.toggle('cv-node--open');
+        }
+      });
+    });
+
+    // CV methodo button
+    root.querySelectorAll('[data-cv-methodo]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const msg = 'Cette classification est une lecture analytique propre au dashboard BITD France, construite pour rendre lisible la position des entreprises dans la chaîne de valeur. Elle s\'appuie notamment sur les travaux EcoDef consacrés aux fonctions industrielles des entreprises de défense ; elle ne constitue pas une nomenclature officielle.';
+        // Simple alert-like overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'cv-methodo-overlay';
+        overlay.innerHTML = `<div class="cv-methodo-overlay-box"><p>${esc(msg)}</p><button type="button" class="cv-methodo-close">Fermer</button></div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelector('.cv-methodo-close').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+      });
+    });
+
+    // CV info button (mobile)
+    root.querySelectorAll('.cv-info-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cvId = btn.getAttribute('data-cv-id');
+        if (!cvId || !window.BITDIdentite) return;
+        const cv = window.BITDIdentite.getChainValue(cvId);
+        if (!cv) return;
+        const overlay = document.createElement('div');
+        overlay.className = 'cv-methodo-overlay';
+        overlay.innerHTML = `<div class="cv-methodo-overlay-box"><strong>${esc(cv.libelle)}</strong><p>${esc(cv.definition)}</p><button type="button" class="cv-methodo-close">Fermer</button></div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelector('.cv-methodo-close').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
       });
     });
   }
@@ -659,7 +905,18 @@
       await enrichOptionalData();
 
       fillFilterSelect(dom.filterDomain, uniqueSorted(state.rows.map((row) => row.secteurPrincipal)), 'Tous');
-      fillFilterSelect(dom.filterRole, uniqueSorted(state.rows.map((row) => row.role)), 'Tous');
+
+      // Chain of value filter: prefer identity data, fall back to row.role
+      const cvLabels = state.identiteLoaded && window.BITDIdentite
+        ? window.BITDIdentite.getAllChainValues().map((cv) => cv.libelle)
+        : uniqueSorted(state.rows.flatMap((row) => {
+          const labels = [];
+          if (row.primaryChainValueLabel) labels.push(row.primaryChainValueLabel);
+          (row.secondaryChainValues || []).forEach((cv) => labels.push(cv.libelle));
+          if (!labels.length) labels.push(row.role);
+          return labels;
+        }));
+      fillFilterSelect(dom.filterRole, cvLabels.filter(Boolean), 'Toutes les positions');
       fillFilterSelect(
         dom.filterProgramme,
         uniqueSorted(state.rows.flatMap((row) => (row.programmesDoc || []).map((p) => p.label))),

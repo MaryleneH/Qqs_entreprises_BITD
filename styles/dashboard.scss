@@ -4746,3 +4746,477 @@ body.mobile-detail-open {
     line-height: 1.45;
   }
 }
+
+// =============================================================================
+// IDENTITÉ INDUSTRIELLE — Carte d'identité analyste
+// =============================================================================
+
+// ---------------------------------------------------------------------------
+// Carte entreprise enrichie (liste gauche)
+// ---------------------------------------------------------------------------
+.entreprise-card-cv {
+  margin: 0.2rem 0 0.35rem;
+}
+
+.cv-badge {
+  display: inline-block;
+  background: rgba(95,127,130,0.10);
+  color: var(--navy-secondary);
+  border: 1px solid rgba(95,127,130,0.25);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.18rem 0.6rem;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+
+  &--primary {
+    background: rgba(20,38,61,0.07);
+    color: var(--navy);
+    border-color: rgba(20,38,61,0.18);
+    font-weight: 600;
+  }
+
+  &--secondary {
+    background: rgba(95,127,130,0.08);
+    color: var(--teal);
+    border-color: rgba(95,127,130,0.2);
+  }
+}
+
+.chip-cap {
+  background: rgba(201,154,74,0.10) !important;
+  color: #7a5a1e !important;
+  border: 1px solid rgba(201,154,74,0.22) !important;
+}
+
+// ---------------------------------------------------------------------------
+// En-tête fiche détaillée
+// ---------------------------------------------------------------------------
+.detail-sector {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--teal);
+  margin: 0.15rem 0 0.2rem;
+}
+
+.detail-cv-header {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--teal);
+}
+
+// ---------------------------------------------------------------------------
+// Bloc Ce qu'il faut retenir
+// ---------------------------------------------------------------------------
+.detail-retenir {
+  margin: 1rem 0 1.25rem;
+}
+
+.retenir-block {
+  background: #F8F5EC;
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--radius-badge) var(--radius-badge) 0;
+  padding: 1rem 1.25rem 1rem 1.15rem;
+  position: relative;
+}
+
+.retenir-label {
+  display: block;
+  font-family: 'Kalam', cursive;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: var(--gold);
+  margin-bottom: 0.55rem;
+  letter-spacing: 0.01em;
+}
+
+.retenir-text {
+  font-size: 0.9rem;
+  color: var(--navy);
+  line-height: 1.65;
+  margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Positionnement industriel
+// ---------------------------------------------------------------------------
+.positionnement-text {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+.type-acteur-note {
+  margin-top: 0.65rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(20,38,61,0.04);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+// ---------------------------------------------------------------------------
+// Position dans la chaîne de valeur — rôles
+// ---------------------------------------------------------------------------
+.cv-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.cv-role-primary,
+.cv-role-secondary {
+  flex: 0 1 auto;
+}
+
+.cv-role-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+}
+
+.cv-role-secondary-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+// ---------------------------------------------------------------------------
+// Visualisation chaîne de valeur — Desktop
+// ---------------------------------------------------------------------------
+.cv-viz {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.85rem 1rem;
+  background: rgba(20,38,61,0.025);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.cv-zones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+
+  @media (max-width: 800px) {
+    flex-wrap: wrap;
+  }
+}
+
+.cv-zone {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.cv-zone-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary);
+  margin-bottom: 0.45rem;
+  white-space: nowrap;
+}
+
+.cv-zone-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.cv-node {
+  position: relative;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.73rem;
+  line-height: 1.35;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: var(--transition);
+  background: var(--card);
+
+  &--primary {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+    font-weight: 600;
+  }
+
+  &--secondary {
+    background: rgba(95,127,130,0.12);
+    color: var(--navy-secondary);
+    border-color: rgba(95,127,130,0.3);
+    font-weight: 500;
+  }
+
+  &--inactive {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: var(--border);
+    opacity: 0.6;
+  }
+
+  &:hover, &:focus {
+    z-index: 10;
+    .cv-tooltip { display: block; }
+  }
+
+  &--open .cv-tooltip { display: block; }
+}
+
+.cv-node-label {
+  display: block;
+}
+
+.cv-tooltip {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: 0.5rem;
+  width: 220px;
+  background: var(--navy);
+  color: #fff;
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  pointer-events: none;
+
+  strong { display: block; margin-bottom: 0.35rem; font-size: 0.78rem; }
+  p { margin: 0; opacity: 0.88; }
+
+  // Fallback for rightmost zone — show to left
+  .cv-zone:last-child & {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 0.5rem;
+  }
+
+  @media (max-width: 900px) {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;
+    bottom: 1rem;
+    width: min(300px, 90vw);
+  }
+}
+
+.cv-annotation {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0.6rem 0 0.2rem;
+  text-align: center;
+}
+
+.cv-methodo-link { text-align: center; margin: 0.25rem 0 0; }
+
+.cv-methodo-btn {
+  background: none;
+  border: none;
+  color: var(--teal);
+  font-size: 0.74rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover { color: var(--navy); }
+}
+
+// Methodology overlay
+.cv-methodo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,38,61,0.45);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.cv-methodo-overlay-box {
+  background: var(--card);
+  border-radius: var(--radius-card);
+  padding: 1.5rem 1.75rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+
+  strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+  }
+
+  p {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0 0 1rem;
+  }
+}
+
+.cv-methodo-close {
+  display: block;
+  margin: 0 auto;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:hover { opacity: 0.88; }
+}
+
+// ---------------------------------------------------------------------------
+// Mobile chain of value
+// ---------------------------------------------------------------------------
+.cv-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.cv-mobile-label {
+  display: block;
+  font-size: 0.71rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3rem;
+}
+
+.cv-mobile-secondary-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.cv-info-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--teal);
+  font-size: 0.76rem;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  align-self: flex-start;
+
+  &:hover { background: rgba(95,127,130,0.08); }
+}
+
+// ---------------------------------------------------------------------------
+// Capacités clés
+// ---------------------------------------------------------------------------
+.detail-capacites {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+// ---------------------------------------------------------------------------
+// Panel meta
+// ---------------------------------------------------------------------------
+.panel-meta {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0.3rem 0;
+}
+
+// ---------------------------------------------------------------------------
+// Identity unavailable note
+// ---------------------------------------------------------------------------
+.identite-unavailable {
+  padding: 0.6rem 0.85rem;
+  background: rgba(201,154,74,0.07);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 6px 6px 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+// =============================================================================
+// PAGE MÉTHODOLOGIE — Section Chaîne de valeur
+// =============================================================================
+.cv-referentiel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.9rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.cv-referentiel-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+
+  &:hover { box-shadow: var(--shadow-card-hover); }
+}
+
+.cv-referentiel-code {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.cv-referentiel-libelle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0 0 0.5rem;
+}
+
+.cv-referentiel-definition {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 0.5rem;
+}
+
+.cv-referentiel-exemples {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0;
+}
+
+.cv-no-hierarchy-note {
+  background: rgba(201,154,74,0.07);
+  border-left: 3px solid var(--gold);
+  padding: 0.85rem 1rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  color: var(--text);
+  margin: 0.75rem 0 1rem;
+  line-height: 1.55;
+}
+
