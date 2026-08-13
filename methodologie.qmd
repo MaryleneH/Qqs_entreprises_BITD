@@ -2,7 +2,7 @@
 title: "Méthodologie & sources"
 format:
   html:
-    page-layout: article
+    page-layout: full
     toc: true
     toc-title: "Sommaire"
     toc-depth: 2
