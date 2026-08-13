@@ -326,7 +326,22 @@
     }
   }
 
-  function addLegend(mode, sectors) {
+  function capSector(k) {
+    const v = k || 'services/MCO';
+    return v.charAt(0).toUpperCase() + v.slice(1);
+  }
+
+  function sectorsFromCompanies(companies) {
+    const colors = window.BITDData.constants.sectorColors;
+    return [...new Map(
+      (companies || []).filter(Boolean).map((c) => {
+        const k = c.sectorKey || 'services/MCO';
+        return [capSector(k), colors[k] || '#5F7F82'];
+      })
+    ).entries()];
+  }
+
+  function addLegend(mode, sectors, opts) {
     if (!map) return;
     if (currentLegend) { currentLegend.remove(); currentLegend = null; }
     const legend = L.control({ position: 'bottomleft' });
@@ -362,6 +377,24 @@
         return div;
       };
     } else {
+      const o = opts || {};
+      const sectorRows = (sectors || [])
+        .map(([name, color]) => `
+          <div class="legend-item">
+            <span class="legend-symbol" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};"></span>
+            <span>${name}</span>
+          </div>`)
+        .join('');
+      const inkStyle = 'color:rgba(245,246,242,0.9);display:inline-flex;align-items:center;';
+      const typeRows = o.showTypes ? `
+          <div class="legend-item"><span class="legend-symbol" style="${inkStyle}">${SVG_ICONS.production}</span><span>Production</span></div>
+          <div class="legend-item"><span class="legend-symbol" style="${inkStyle}">${SVG_ICONS.recherche}</span><span>R&amp;D / bureaux d'études</span></div>
+          <div class="legend-item"><span class="legend-symbol" style="${inkStyle}">${SVG_ICONS.mco}</span><span>MCO / maintenance</span></div>
+          <div class="legend-item"><span class="legend-symbol" style="${inkStyle}">${SVG_ICONS.essais}</span><span>Essais</span></div>
+          <div class="legend-item"><span class="legend-symbol" style="${inkStyle}">${SVG_ICONS.services}</span><span>Services / tertiaire</span></div>` : '';
+      const stateRows = o.showStates === false ? '' : `
+          <div class="legend-item"><span class="legend-symbol legend-symbol--active">●</span><span>Établissement actif</span></div>
+          <div class="legend-item"><span class="legend-symbol legend-symbol--inactive">○</span><span>Établissement inactif</span></div>`;
       legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'map-legend map-legend--simple');
         div.innerHTML = `
@@ -371,9 +404,7 @@
               <svg viewBox="0 0 14 14" width="12" height="12" fill="rgba(245,246,242,0.9)"><path d="M7 1l1.6 4.4H14l-3.7 2.7 1.4 4.4L7 9.8 2.3 12.5l1.4-4.4L0 5.4h5.4z"/></svg>
             </span>
             <span>Siège</span>
-          </div>
-          <div class="legend-item"><span class="legend-symbol legend-symbol--active">●</span><span>Établissement actif</span></div>
-          <div class="legend-item"><span class="legend-symbol legend-symbol--inactive">○</span><span>Établissement inactif</span></div>
+          </div>${stateRows}${typeRows ? `<div class="legend-title" style="margin-top:8px;">Pictogrammes = activité du site</div>${typeRows}` : ''}${sectorRows ? `<div class="legend-title" style="margin-top:8px;">${o.sectorTitle || 'Couleur = secteur'}</div>${sectorRows}` : ''}
         `;
         return div;
       };
@@ -594,12 +625,9 @@
     const siteLinks = window.BITDProgramme.getSitesProgramme(programmeId);
     const allCompanies = snapshot.allRows;
     const sectorColors = window.BITDData.constants.sectorColors;
-    const legendSectors = [...new Map(
-      relations
-        .map((rel) => allCompanies.find((c) => String(c.id) === String(rel.entreprise_id)))
-        .filter(Boolean)
-        .map((c) => { const k = c.sectorKey || 'services/MCO'; return [k.charAt(0).toUpperCase() + k.slice(1), sectorColors[k] || '#5F7F82']; })
-    ).entries()];
+    const legendSectors = sectorsFromCompanies(
+      relations.map((rel) => allCompanies.find((c) => String(c.id) === String(rel.entreprise_id)))
+    );
     addLegend('programme', legendSectors);
 
     const bounds = [];
@@ -950,6 +978,7 @@
     const regionSites = window.BITDData.getVisibleRegionEstablishments(snapshot.selectedRegion, snapshot.statutEtablissements);
     const sectorColors = window.BITDData.constants.sectorColors;
     const allCompanies = snapshot.allRows;
+    addLegend('entreprise', sectorsFromCompanies(regionSites.map((e) => allCompanies.find((c) => String(c.id) === String(e.entreprise_id)))), { showTypes: true });
     const bounds = [];
 
     regionSites.forEach((etab) => {
@@ -992,6 +1021,7 @@
     regionSitesLayer.clearLayers();
 
     const headquarters = getNationalHeadquarters(snapshot);
+    addLegend('entreprise', sectorsFromCompanies(headquarters.map((h) => h.company)), { showStates: false });
     const bounds = [];
 
     headquarters.forEach(({ company, lat, lng }) => {
@@ -1171,6 +1201,7 @@
     const visibleEtabs = window.BITDData.getVisibleEstablishments(company.id, snapshot.statutEtablissements);
     const color = window.BITDData.constants.sectorColors[company.sectorKey] || '#5F7F82';
     currentFocusColor = color;
+    addLegend('entreprise', sectorsFromCompanies([company]), { showTypes: true, sectorTitle: "Couleur = secteur de l'entreprise" });
     const bounds = [];
 
     // Find siege
