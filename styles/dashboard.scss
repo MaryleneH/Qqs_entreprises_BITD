@@ -4361,3 +4361,388 @@ body.mobile-detail-open {
     &:hover { color: var(--navy); }
   }
 }
+
+
+// ===================================================================
+// --- Nouveau panneau programme enrichi (statut / sources / composantes)
+// ===================================================================
+
+// --- Nom complet sous l'acronyme ---
+.prog-nom-complet {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.3rem;
+  line-height: 1.4;
+}
+
+// --- Type objet ---
+.prog-type-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--navy-secondary);
+  background: rgba(38,62,89,0.06);
+  border: 1px solid rgba(38,62,89,0.12);
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.03em;
+}
+
+// --- Bloc statut (badge + vigilance) ---
+.prog-statut-block {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+// --- Badge statut coloré ---
+.prog-statut-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-radius: 5px;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid transparent;
+
+  &.prog-statut-badge--actif {
+    background: rgba(46, 125, 120, 0.10);
+    color: #1a5c58;
+    border-color: rgba(46, 125, 120, 0.25);
+  }
+
+  &.prog-statut-badge--en-service {
+    background: rgba(39, 174, 96, 0.10);
+    color: #1a7a45;
+    border-color: rgba(39, 174, 96, 0.25);
+  }
+
+  &.prog-statut-badge--livre {
+    background: rgba(39, 174, 96, 0.10);
+    color: #1a7a45;
+    border-color: rgba(39, 174, 96, 0.25);
+  }
+
+  &.prog-statut-badge--reconfigure {
+    background: rgba(176, 116, 36, 0.10);
+    color: #7a4e10;
+    border-color: rgba(176, 116, 36, 0.28);
+  }
+
+  &.prog-statut-badge--arrete {
+    background: rgba(140, 60, 60, 0.09);
+    color: #6b2c2c;
+    border-color: rgba(140, 60, 60, 0.22);
+  }
+}
+
+// --- Indicateur de vigilance ---
+.prog-vigilance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #7a4e10;
+  background: rgba(176, 116, 36, 0.08);
+  border: 1px solid rgba(176, 116, 36, 0.22);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  cursor: help;
+
+  svg { flex-shrink: 0; }
+}
+
+// --- Résumé statut ---
+.prog-resume-statut {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.65;
+  margin: 0 0 1rem;
+}
+
+// --- Bloc vérification + sources ---
+.prog-verif-block {
+  margin-bottom: 0.5rem;
+}
+
+.prog-verif-date {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 0.55rem;
+}
+
+.prog-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.prog-source-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.prog-source-row--secondary {
+  .prog-source-label { color: var(--text-secondary); }
+  .prog-source-link { font-size: 0.75rem; color: var(--navy-secondary); }
+}
+
+.prog-source-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--teal);
+  display: block;
+}
+
+.prog-source-link {
+  font-size: 0.78rem;
+  color: var(--navy-secondary);
+  text-decoration: none;
+  line-height: 1.45;
+  border-bottom: 1px solid rgba(38,62,89,0.2);
+  transition: color 0.15s, border-color 0.15s;
+  display: inline;
+
+  &:hover {
+    color: var(--navy);
+    border-bottom-color: var(--navy);
+  }
+}
+
+// --- Séparateur de section ---
+.prog-section {
+  margin-top: 1.1rem;
+}
+
+.prog-section-separator {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 0.85rem;
+}
+
+.prog-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0 0 0.65rem;
+}
+
+// --- Composantes ---
+.prog-composantes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.prog-composante {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: rgba(95,127,130,0.35);
+  }
+}
+
+.prog-composante-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.prog-composante-nom {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--navy);
+  flex: 1;
+  min-width: 0;
+}
+
+.prog-composante-resume {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 0.35rem;
+}
+
+.prog-composante-source {
+  margin-top: 0.25rem;
+}
+
+// --- Entreprises documentées ---
+.prog-entreprises-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.prog-entreprise {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: rgba(95,127,130,0.35);
+  }
+}
+
+.prog-entreprise-header {
+  margin-bottom: 0.15rem;
+}
+
+.prog-entreprise-role {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+}
+
+.prog-entreprise-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 0.3rem;
+}
+
+.prog-entreprise-source {
+  margin-top: 0.25rem;
+}
+
+// --- Message "aucune donnée" ---
+.prog-no-data {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  background: rgba(38,62,89,0.03);
+  border-radius: 6px;
+  border: 1px dashed var(--border);
+}
+
+
+// --- Méthodologie : section Statut des programmes ---
+.methodo-programmes-section {
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 0.85rem;
+  }
+}
+
+.methodo-exemple-statuts {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.methodo-exemple-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.methodo-exemple-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  min-width: 90px;
+}
+
+.methodo-exemple-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0 0 0.75rem;
+  line-height: 1.55;
+}
+
+.methodo-exemple-composantes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.methodo-exemple-composante {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--background);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.methodo-exemple-composante-nom {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--navy);
+  flex: 1;
+}
+
+.methodo-exemple-source {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0;
+}
+
+.methodo-statuts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.methodo-statut-item {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+
+  p {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin: 0.35rem 0 0;
+    line-height: 1.45;
+  }
+}

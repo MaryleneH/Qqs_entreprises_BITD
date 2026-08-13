@@ -515,7 +515,7 @@
 
     // Render programme panel
     if (window.BITDProgramme) {
-      window.BITDProgramme.renderProgrammePanel(programme, relations, siteLinks, allCompanies);
+      window.BITDProgramme.renderProgrammePanel(programme);
     }
   }
 
@@ -1099,7 +1099,7 @@
     const note = document.getElementById('map-context-note');
     if (!snapshot.selectedProgrammeId) {
       if (title) title.textContent = 'Vue nationale du panel';
-      if (subtitle) subtitle.textContent = '30 sièges · Sélectionnez un programme pour explorer les acteurs associés.';
+      if (subtitle) subtitle.textContent = 'Sélectionnez un programme pour explorer son statut et les acteurs documentés.';
       if (note) note.textContent = '';
       const counter = document.getElementById('site-count');
       if (counter) counter.textContent = '30 entreprises · Vue nationale';
@@ -1108,8 +1108,8 @@
     const prog = window.BITDProgramme && window.BITDProgramme.getProgramme(snapshot.selectedProgrammeId);
     if (!prog) return;
     if (title) title.textContent = prog.acronyme || prog.nom;
-    if (subtitle) subtitle.textContent = prog.description_courte;
-    if (note) note.textContent = `${prog.domaine} · ${prog.statut}`;
+    if (subtitle) subtitle.textContent = prog.statut_libelle || '';
+    if (note) note.textContent = prog.domaine || '';
   }
 
   function bindControls() {

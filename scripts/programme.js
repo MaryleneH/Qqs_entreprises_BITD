@@ -1,6 +1,12 @@
 /**
  * BITD France — Mode Programme
  * Gestion du chargement des données, du rendu carte et du panneau programme.
+ *
+ * Sources de vérité :
+ *   data/programmes.csv
+ *   data/entreprise_programme.csv
+ *   data/programme_sources.csv     (enrichissement — fail-soft)
+ *   data/programme_composantes.csv (enrichissement — fail-soft)
  */
 (function () {
   // -------------------------------------------------------------------------
@@ -10,6 +16,8 @@
     programmes: [],
     entrepriseProgramme: [],
     siteProgramme: [],
+    sources: [],
+    composantes: [],
     loaded: false,
     loadPromise: null
   };
@@ -26,11 +34,18 @@
       .replace(/'/g, '&#39;');
   }
 
-  function parseCSV(text) {
+  function isTrue(value) {
+    return String(value ?? '').trim().toLowerCase() === 'true';
+  }
+
+  /** Parse a delimited text file. Delimiter is auto-detected (first header char search). */
+  function parseDelimitedCSV(text, sep) {
     const rows = [];
     let current = '';
     let row = [];
     let inQuotes = false;
+
+    const delimiter = sep || (text.indexOf(';') !== -1 && text.indexOf(';') < (text.indexOf(',') === -1 ? Infinity : text.indexOf(',')) ? ';' : ',');
 
     for (let i = 0; i < text.length; i += 1) {
       const char = text[i];
@@ -38,7 +53,7 @@
       if (char === '"') {
         if (inQuotes && next === '"') { current += '"'; i += 1; }
         else { inQuotes = !inQuotes; }
-      } else if (char === ',' && !inQuotes) {
+      } else if (char === delimiter && !inQuotes) {
         row.push(current); current = '';
       } else if ((char === '\n' || char === '\r') && !inQuotes) {
         if (char === '\r' && next === '\n') i += 1;
@@ -59,7 +74,16 @@
     const url = new URL(filename, document.baseURI);
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Impossible de charger ${filename}`);
-    return parseCSV(await res.text());
+    return parseDelimitedCSV(await res.text());
+  }
+
+  async function loadCSVOptional(filename) {
+    try {
+      return await loadCSV(filename);
+    } catch (err) {
+      console.warn(`[BITD][Programme] Enrichissement non chargé : ${filename}`, err);
+      return [];
+    }
   }
 
   async function loadAll() {
@@ -67,16 +91,23 @@
     progState.loadPromise = Promise.all([
       loadCSV('data/programmes.csv'),
       loadCSV('data/entreprise_programme.csv'),
-      loadCSV('data/site_programme.csv')
-    ]).then(([progs, ep, sp]) => {
+      loadCSV('data/site_programme.csv'),
+      loadCSVOptional('data/programme_sources.csv'),
+      loadCSVOptional('data/programme_composantes.csv')
+    ]).then(([progs, ep, sp, srcs, comps]) => {
       progState.programmes = progs;
       progState.entrepriseProgramme = ep;
       progState.siteProgramme = sp;
+      progState.sources = srcs;
+      progState.composantes = comps;
       progState.loaded = true;
     });
     return progState.loadPromise;
   }
 
+  // -------------------------------------------------------------------------
+  // Accesseurs
+  // -------------------------------------------------------------------------
   function getProgramme(id) {
     return progState.programmes.find((p) => p.programme_id === id) || null;
   }
@@ -85,18 +116,31 @@
     return progState.programmes.slice();
   }
 
+  /** Returns only currently active relations (relation_actuelle = true). */
   function getEntreprisesProgramme(programmeId) {
-    return progState.entrepriseProgramme.filter((r) => r.programme_id === programmeId);
+    return progState.entrepriseProgramme.filter(
+      (r) => r.programme_id === programmeId && isTrue(r.relation_actuelle)
+    );
   }
 
   function getSitesProgramme(programmeId) {
     return progState.siteProgramme.filter((r) => r.programme_id === programmeId);
   }
 
+  function getComposantes(programmeId) {
+    return progState.composantes.filter((c) => c.programme_id === programmeId);
+  }
+
+  function getSource(sourceId) {
+    if (!sourceId) return null;
+    return progState.sources.find((s) => s.source_id === sourceId) || null;
+  }
+
+  /** Returns programmes associated with an entreprise (current relations only). */
   function getProgrammesForEntreprise(entrepriseId) {
     const id = String(entrepriseId);
     return progState.entrepriseProgramme
-      .filter((r) => String(r.entreprise_id) === id)
+      .filter((r) => String(r.entreprise_id) === id && isTrue(r.relation_actuelle))
       .map((r) => {
         const prog = getProgramme(r.programme_id);
         return prog ? { ...r, nom: prog.nom, acronyme: prog.acronyme } : null;
@@ -105,7 +149,56 @@
   }
 
   // -------------------------------------------------------------------------
-  // Rendu panneau programme
+  // Helpers de rendu
+  // -------------------------------------------------------------------------
+  function formatDate(isoDate) {
+    if (!isoDate) return '';
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    const parts = String(isoDate).split('-');
+    if (parts.length !== 3) return isoDate;
+    const d = parseInt(parts[2], 10);
+    const m = parseInt(parts[1], 10) - 1;
+    if (m < 0 || m > 11) return isoDate;
+    return `${d} ${months[m]} ${parts[0]}`;
+  }
+
+  const TYPE_LABELS = {
+    plateforme_et_programme_evolutif: 'Plateforme / programme évolutif',
+    programme: 'Programme',
+    programme_cooperation: 'Programme de coopération',
+    famille_missile: 'Famille de missiles',
+    famille_missile_et_systeme: 'Famille de missiles et systèmes',
+    systeme_missile: 'Système missile',
+    plateforme_et_programme: 'Plateforme / programme',
+    programme_et_plateforme: 'Programme et plateforme',
+    programme_modernisation: 'Programme de modernisation'
+  };
+
+  function getTypeLabel(typeObjet) {
+    return TYPE_LABELS[typeObjet] || typeObjet || '';
+  }
+
+  /** Returns CSS modifier class for a statut_code (used on both programme and composante). */
+  function statutClass(statut_code) {
+    const code = String(statut_code || '').toUpperCase();
+    if (code === 'ARRETE') return 'arrete';
+    if (code === 'RECONFIGURE' || code === 'REFORMULE') return 'reconfigure';
+    if (code === 'LIVRE' || code === 'COMMANDE') return 'livre';
+    if (code === 'EN_SERVICE') return 'en-service';
+    return 'actif'; // ACTIF_* and everything else
+  }
+
+  function buildSourceLink(sourceId, ariaLabel) {
+    const src = getSource(sourceId);
+    if (!src || !src.url) return '';
+    const label = src.organisme ? `${esc(src.organisme)} — ${esc(src.titre)}` : esc(src.titre);
+    const aria = ariaLabel ? ` aria-label="${esc(ariaLabel)}"` : '';
+    return `<a class="prog-source-link" href="${esc(src.url)}" target="_blank" rel="noopener noreferrer"${aria}>${label} ↗</a>`;
+  }
+
+  // -------------------------------------------------------------------------
+  // Rendu panneau programme (vide)
   // -------------------------------------------------------------------------
   function renderProgrammeEmpty() {
     const panel = document.getElementById('company-panel-content');
@@ -119,76 +212,145 @@
           </svg>
         </div>
         <h3>Explorer un programme</h3>
-        <p class="small-note">Sélectionnez un programme dans le menu pour découvrir les entreprises du référentiel qui y participent.</p>
+        <p class="small-note">Sélectionnez un programme dans le menu pour explorer son statut et les acteurs documentés.</p>
       </div>
     `;
   }
 
-  function renderProgrammePanel(programme, relations, siteLinks, allCompanies) {
+  // -------------------------------------------------------------------------
+  // Rendu panneau programme (fiche complète)
+  // -------------------------------------------------------------------------
+  function renderProgrammePanel(programme) {
     const panel = document.getElementById('company-panel-content');
     if (!panel) return;
 
-    const moe = relations.find((r) => r.role && r.role.toLowerCase().includes('maître'));
-    const autres = relations.filter((r) => r !== moe);
+    const programmeId = programme.programme_id;
 
-    const totalSites = siteLinks.length;
-    const roles = [...new Set(relations.map((r) => r.role).filter(Boolean))];
+    // --- Statut ---
+    const statutCode = programme.statut_code || '';
+    const statutLibelle = programme.statut_libelle || programme.statut || '';
+    const resumeStatut = programme.resume_statut || '';
+    const derniereVerif = formatDate(programme.derniere_verification);
+    const vigilance = String(programme.niveau_vigilance || '').toLowerCase();
+    const cssClass = statutClass(statutCode);
 
-    const moeHtml = moe ? `
-      <div class="programme-moe">
-        <span class="programme-moe-label">Maître d'œuvre</span>
-        <button type="button" class="programme-company-link" data-entreprise-id="${esc(moe.entreprise_id)}">
-          <strong>${esc(moe.entreprise)}</strong>
-        </button>
-        ${moe.sous_systeme ? `<span class="programme-tag">${esc(moe.sous_systeme)}</span>` : ''}
+    // --- Vigilance badge ---
+    const vigilanceHtml = vigilance === 'elevee' ? `
+      <span class="prog-vigilance" title="Ce programme a connu une évolution politique ou industrielle récente. Son statut doit être revalidé régulièrement." aria-label="Niveau de vigilance élevé : statut récemment reconfiguré">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 1L15 14H1L8 1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M8 6v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="8" cy="11.5" r="0.6" fill="currentColor"/>
+        </svg>
+        Statut récemment reconfiguré
+      </span>
+    ` : '';
+
+    // --- Sources ---
+    const srcPrincHtml = buildSourceLink(
+      programme.source_statut_principale_id,
+      `Voir la source du statut du programme ${programme.acronyme || programme.nom}`
+    );
+    const srcSeconHtml = programme.source_statut_secondaire_id
+      ? buildSourceLink(programme.source_statut_secondaire_id, `Source complémentaire pour ${programme.acronyme || programme.nom}`)
+      : '';
+
+    const sourcesHtml = (srcPrincHtml || srcSeconHtml) ? `
+      <div class="prog-sources">
+        ${srcPrincHtml ? `<div class="prog-source-row"><span class="prog-source-label">Source</span>${srcPrincHtml}</div>` : ''}
+        ${srcSeconHtml ? `<div class="prog-source-row prog-source-row--secondary"><span class="prog-source-label">Source complémentaire</span>${srcSeconHtml}</div>` : ''}
       </div>
     ` : '';
 
-    const autresHtml = autres.map((r) => {
-      const company = allCompanies.find((c) => String(c.id) === String(r.entreprise_id));
-      const siteCount = siteLinks.filter((s) => String(s.entreprise_id) === String(r.entreprise_id)).length;
-      const confirmation = r.niveau_confirmation === 'confirme'
-        ? '<span class="prog-badge prog-badge--confirme">Documenté</span>'
-        : '<span class="prog-badge prog-badge--partial">Documenté partiellement</span>';
-      return `
-        <div class="programme-participant">
-          <button type="button" class="programme-company-link" data-entreprise-id="${esc(r.entreprise_id)}">
-            <strong>${esc(r.entreprise)}</strong>
-          </button>
-          ${confirmation}
-          <div class="programme-participant-role">${esc(r.role)}${r.sous_systeme ? ` · <em>${esc(r.sous_systeme)}</em>` : ''}</div>
-          ${siteCount > 0 ? `<div class="programme-participant-sites">${siteCount} site${siteCount > 1 ? 's' : ''} documenté${siteCount > 1 ? 's' : ''}</div>` : '<div class="programme-participant-sites programme-participant-sites--none">Site précis non identifié dans les sources</div>'}
+    // --- Composantes ---
+    const composantes = getComposantes(programmeId);
+    let composantesHtml = '';
+    if (composantes.length > 0) {
+      const items = composantes.map((c) => {
+        const cClass = statutClass(c.statut_code);
+        const cSrcHtml = c.source_id ? buildSourceLink(c.source_id, `Source de la composante ${c.composante}`) : '';
+        return `
+          <div class="prog-composante">
+            <div class="prog-composante-header">
+              <span class="prog-composante-nom">${esc(c.composante)}</span>
+              <span class="prog-statut-badge prog-statut-badge--${cClass}">${esc(c.statut_libelle)}</span>
+            </div>
+            ${c.resume_court ? `<p class="prog-composante-resume">${esc(c.resume_court)}</p>` : ''}
+            ${cSrcHtml ? `<div class="prog-composante-source">${cSrcHtml}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      composantesHtml = `
+        <div class="prog-section">
+          <div class="prog-section-separator" aria-hidden="true"></div>
+          <h4 class="prog-section-title">État des composantes</h4>
+          <div class="prog-composantes-list">${items}</div>
         </div>
       `;
-    }).join('');
+    }
+
+    // --- Entreprises documentées ---
+    const relations = getEntreprisesProgramme(programmeId);
+    let entreprisesHtml = '';
+    if (relations.length > 0) {
+      const items = relations.map((r) => {
+        const rSrcHtml = r.source_id ? buildSourceLink(r.source_id, `Source pour ${r.entreprise} sur ${programme.acronyme || programme.nom}`) : '';
+        const roleLabel = String(r.role || '').replace(/_/g, ' ');
+        return `
+          <div class="prog-entreprise">
+            <div class="prog-entreprise-header">
+              <button type="button" class="programme-company-link" data-entreprise-id="${esc(r.entreprise_id)}">
+                <strong>${esc(r.entreprise)}</strong>
+              </button>
+            </div>
+            ${roleLabel ? `<div class="prog-entreprise-role">${esc(roleLabel)}</div>` : ''}
+            ${r.description_role ? `<p class="prog-entreprise-desc">${esc(r.description_role)}</p>` : ''}
+            ${rSrcHtml ? `<div class="prog-entreprise-source">${rSrcHtml}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      entreprisesHtml = `
+        <div class="prog-section">
+          <div class="prog-section-separator" aria-hidden="true"></div>
+          <h4 class="prog-section-title">Entreprises documentées</h4>
+          <div class="prog-entreprises-list">${items}</div>
+        </div>
+      `;
+    } else {
+      entreprisesHtml = `
+        <div class="prog-section">
+          <div class="prog-section-separator" aria-hidden="true"></div>
+          <h4 class="prog-section-title">Entreprises documentées</h4>
+          <p class="prog-no-data">Répartition industrielle actuelle à revalider après la reconfiguration de 2026.</p>
+        </div>
+      `;
+    }
+
+    const typeLabel = getTypeLabel(programme.type_objet);
 
     panel.innerHTML = `
       <div class="programme-panel">
         <div class="programme-panel-header">
           <span class="programme-panel-domaine">${esc(programme.domaine)}</span>
           <h3 class="programme-panel-titre">${esc(programme.acronyme || programme.nom)}</h3>
-          <p class="programme-panel-desc">${esc(programme.description_courte)}</p>
-          <div class="programme-panel-statut">
-            <span class="programme-statut-badge">${esc(programme.statut)}</span>
-          </div>
+          ${programme.acronyme && programme.nom !== programme.acronyme ? `<p class="prog-nom-complet">${esc(programme.nom)}</p>` : ''}
+          ${typeLabel ? `<span class="prog-type-label">${esc(typeLabel)}</span>` : ''}
         </div>
 
-        <div class="programme-kpis">
-          <div><strong>${relations.length}</strong><span>entreprise${relations.length > 1 ? 's' : ''} référencée${relations.length > 1 ? 's' : ''}</span></div>
-          <div><strong>${totalSites}</strong><span>site${totalSites > 1 ? 's' : ''} documenté${totalSites > 1 ? 's' : ''}</span></div>
-          <div><strong>${roles.length}</strong><span>rôle${roles.length > 1 ? 's' : ''}</span></div>
+        <div class="prog-statut-block">
+          <span class="prog-statut-badge prog-statut-badge--${cssClass}">${esc(statutLibelle)}</span>
+          ${vigilanceHtml}
         </div>
 
-        ${moeHtml}
+        ${resumeStatut ? `<p class="prog-resume-statut">${esc(resumeStatut)}</p>` : ''}
 
-        ${autres.length > 0 ? `
-          <h4 class="programme-section-title">Entreprises participantes</h4>
-          <div class="programme-participants-list">${autresHtml}</div>
-        ` : ''}
+        <div class="prog-verif-block">
+          ${derniereVerif ? `<span class="prog-verif-date">Statut vérifié le ${derniereVerif}</span>` : ''}
+          ${sourcesHtml}
+        </div>
 
-        <p class="programme-panel-source-note">
-          Données issues de sources publiques documentées. Seules les participations explicitement référencées sont affichées.
-        </p>
+        ${composantesHtml}
+        ${entreprisesHtml}
       </div>
     `;
 
@@ -244,8 +406,9 @@
     const select = document.getElementById('programme-select');
     if (!select) return;
     const current = select.value;
+    const visible = progState.programmes.filter((p) => isTrue(p.afficher_dashboard));
     const options = ['<option value="">Tous les programmes</option>']
-      .concat(progState.programmes.map((p) => `<option value="${esc(p.programme_id)}">${esc(p.nom)}</option>`));
+      .concat(visible.map((p) => `<option value="${esc(p.programme_id)}">${esc(p.nom)}</option>`));
     select.innerHTML = options.join('');
     if (current) select.value = current;
   }
@@ -259,6 +422,8 @@
     getAllProgrammes,
     getEntreprisesProgramme,
     getSitesProgramme,
+    getComposantes,
+    getSource,
     getProgrammesForEntreprise,
     fillProgrammeSelect,
     renderProgrammeEmpty,
