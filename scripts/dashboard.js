@@ -196,6 +196,19 @@
     return { label: 'Indicateur', value: 'n.c.', type: 'non disponible', term: null, sort: -Infinity };
   }
 
+  /** Normalise secteur_principal vers les 8 clés de la palette sectorColors. */
+  function sectorKeyOf(secteurPrincipal) {
+    const v = (secteurPrincipal || '').toLowerCase();
+    if (/naval|robotique/.test(v)) return 'naval';
+    if (/terrestre/.test(v)) return 'terrestre';
+    if (/missile|munition|pyrotechnie/.test(v)) return 'missiles/munitions';
+    if (/électronique|electronique|photonique|optronique/.test(v)) return 'électronique/capteurs';
+    if (/spatial/.test(v) && !/aéronautique/.test(v)) return 'spatial';
+    if (/matériaux|materiaux|métallurgie|mécanique|équipements & matériaux|propulsion & équipements/.test(v)) return 'matériaux/équipements';
+    if (/aéronautique|aeronautique/.test(v)) return 'aéronautique';
+    return 'services/MCO';
+  }
+
   function hydrateRow(row, index) {
     const sectors = splitValues(row.secteurs);
     return {
@@ -210,7 +223,8 @@
       book_to_bill_num: numberOrNull(row.book_to_bill),
       marge_num: numberOrNull(row.marge ?? row.marge_pct),
       sectors,
-      primarySector: sectors[0] || 'services/MCO'
+      primarySector: sectors[0] || 'services/MCO',
+      sectorKey: sectorKeyOf(row.secteur_principal)
     };
   }
 
