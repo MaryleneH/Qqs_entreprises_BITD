@@ -29,6 +29,7 @@ jobs:
         with:
           args: >-
             --no-progress
+            --insecure
             --max-concurrency 8
             --timeout 20
             --max-retries 2

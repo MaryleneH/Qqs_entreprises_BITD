@@ -94,7 +94,16 @@ Faits saillants confrontés à des sources primaires ou officielles :
    defense.gouv.fr, elysee.fr) n'a révélé aucun autre lien mort parmi les URL testées — y
    compris des slugs d'apparence suspecte (`marin-nucleaire`, `m514`) qui sont les slugs
    authentiques du CMS ministériel.
-5. **Provenance re-routée (52 lignes).** Propagation des nouveaux `site_id` dans
+5. **Réparation en lot des liens externes (rapport CI du 13/08/2026).** Le premier passage du
+   contrôle automatique (232 URL testées, 25 en erreur) a conduit à remplacer 17 URL mortes par
+   leur adresse actuelle — pages déplacées lors de refontes de sites (Naval Group, ArianeGroup,
+   Airbus, MBDA, KNDS, Thales carrières, Aubert & Duval, TechnicAtome, publications ÉcoDef du
+   SSM Défense) ou supprimées (pages « implantations » de Mecachrome, Figeac Aéro, Roxel, NSE et
+   Aresia, remplacées par la racine du site officiel ; domaine aresia.aero abandonné au profit
+   d'aresia.com). Les six erreurs SSL (Eurenco, Arquus) sont des chaînes de certificats
+   incomplètes côté serveur, pas des liens morts : URL conservées, vérificateur passé en mode
+   tolérant sur la validation des certificats.
+6. **Provenance re-routée (52 lignes).** Propagation des nouveaux `site_id` dans
    `provenance_etablissements.csv`, par jointure sur le nom de site puis sur la valeur du champ ;
    les lignes à valeur commune aux deux établissements ont été dupliquées pour préserver la
    traçabilité de chacun.
