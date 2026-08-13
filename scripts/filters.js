@@ -28,6 +28,8 @@
 
       fillSelect(sector, sectorValues, 'Tous les secteurs');
       fillSelect(region, allRegions, "Toutes les régions d'implantation");
+    }).catch((err) => {
+      console.warn('[BITDFilters] Impossible de charger les filtres :', err);
     });
 
     const sync = () => {
