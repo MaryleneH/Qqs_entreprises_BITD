@@ -1,7 +1,6 @@
 ---
 title: "BITD France"
-page-layout: full
-title-block: false
+page-layout: custom
 ---
 
 ```{=html}

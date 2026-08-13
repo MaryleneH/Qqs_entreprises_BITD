@@ -5336,3 +5336,14 @@ body.mobile-detail-open {
   margin: 0.75rem 0 1rem;
   line-height: 1.55;
 }
+
+/* Neutralise la grille Quarto injectée (page-columns) sur nos conteneurs */
+body section.explorer-shell.page-columns { display: block; }
+body section.explorer-grid.page-columns {
+  grid-template-columns: minmax(0, 1fr) clamp(380px, 28vw, 520px);
+}
+@media (max-width: 900px) {
+  body section.explorer-grid.page-columns { grid-template-columns: 1fr; }
+}
+.explorer-shell.page-columns > *,
+.explorer-grid.page-columns > * { grid-column: auto; }
