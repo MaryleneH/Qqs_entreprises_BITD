@@ -63,11 +63,18 @@
       }
     });
 
+    function searchHint() {
+      const n = window.BITDProvenance ? window.BITDProvenance.getAllSources().length : 0;
+      resultContainer.innerHTML = `<p class="methodo-empty">${n} sources documentées — affinez par entreprise, type ou mot-clé pour les afficher.</p>`;
+    }
+
     function doSearch() {
       if (!window.BITDProvenance) return;
       const entreprise = (entrepriseSelect && entrepriseSelect.value !== 'all') ? entrepriseSelect.value : null;
       const type = (typeSelect && typeSelect.value !== 'all') ? typeSelect.value : null;
       const query = ((queryInput && queryInput.value) || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      if (!entreprise && !type && !query) { searchHint(); return; }
 
       let sources = window.BITDProvenance.getAllSources();
 
@@ -88,8 +95,8 @@
     [entrepriseSelect, typeSelect].forEach((el) => el && el.addEventListener('change', doSearch));
     if (queryInput) queryInput.addEventListener('input', doSearch);
 
-    // Show all sources initially
-    window.BITDProvenance.load().then(() => doSearch());
+    // Pas de rendu par défaut : le catalogue complet rendait la page interminable.
+    window.BITDProvenance.load().then(searchHint);
   }
 
   // ---------------------------------------------------------------------------

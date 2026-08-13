@@ -16,7 +16,7 @@ format:
 ```{=html}
 <div id="methodo-page" class="page-container">
   <div class="methodo-container">
-    <h1 class="page-title">Méthodologie <span class="annotation">&amp; sources</span></h1>
+    <h1 class="page-title">Méthodologie &amp; sources</h1>
     <p class="page-subtitle">Comment sont construites, vérifiées et documentées les données du dashboard BITD France</p>
 
     <p class="methodo-lead">
@@ -304,17 +304,6 @@ Pour les définitions des indicateurs financiers et des acronymes industriels, v
 ## Constitution du panel {#constitution-du-panel}
 
 ```{=html}
-    <div class="panel-methodo-toc">
-      <h4>Sur cette page</h4>
-      <ul>
-        <li><a href="#comment-lire">Comment lire les données</a></li>
-        <li><a href="#constitution-du-panel">Constitution du panel</a></li>
-        <li><a href="#pourquoi-cette-entreprise">Pourquoi cette entreprise ?</a></li>
-        <li><a href="#sources">Sources</a></li>
-        <li><a href="#limites-des-donnees">Limites des données</a></li>
-      </ul>
-    </div>
-
     <h2 id="comment-les-entreprises-ont-elles-ete-selectionnees" class="panel-section-anchor">
       Comment les 30 entreprises ont-elles été sélectionnées ?
     </h2>
