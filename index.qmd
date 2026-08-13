@@ -3,7 +3,7 @@ pagetitle: "BITD France"
 page-layout: custom
 format:
   html:
-    css: styles/home.css
+    css: styles/home.css?v=20260813b
 ---
 
 ```{=html}
