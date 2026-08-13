@@ -201,14 +201,14 @@
     return {
       ...row,
       _order: index,
-      latitude: numberOrNull(row.latitude),
-      longitude: numberOrNull(row.longitude),
+      latitude: numberOrNull(row.latitude ?? row.siege_latitude),
+      longitude: numberOrNull(row.longitude ?? row.siege_longitude),
       effectif_num: numberOrNull(row.effectif),
       ca_defense_num: numberOrNull(row.ca_defense),
       carnet_num: numberOrNull(row.carnet_commandes),
       ratio_carnet_ca_num: numberOrNull(row.ratio_carnet_ca),
       book_to_bill_num: numberOrNull(row.book_to_bill),
-      marge_num: numberOrNull(row.marge),
+      marge_num: numberOrNull(row.marge ?? row.marge_pct),
       sectors,
       primarySector: sectors[0] || 'services/MCO'
     };
@@ -259,7 +259,10 @@
 
       const searchIndex = normalizeText([
         row.entreprise,
+        row.categorie,
+        row.secteur_principal,
         row.specialite,
+        row.description,
         row.siege_ville,
         row.siege_region,
         row.programmes,

@@ -244,7 +244,7 @@
     const select = document.getElementById('programme-select');
     if (!select) return;
     const current = select.value;
-    const options = ['<option value="">Sélectionner un programme</option>']
+    const options = ['<option value="">Tous les programmes</option>']
       .concat(progState.programmes.map((p) => `<option value="${esc(p.programme_id)}">${esc(p.nom)}</option>`));
     select.innerHTML = options.join('');
     if (current) select.value = current;
