@@ -1,6 +1,9 @@
 ---
-title: "Entreprises"
+pagetitle: "Entreprises"
 page-layout: full
+format:
+  html:
+    css: styles/pages.css
 ---
 
 ```{=html}

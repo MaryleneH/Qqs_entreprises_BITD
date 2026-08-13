@@ -1,9 +1,10 @@
 ---
-title: "Comprendre les données"
+pagetitle: "Comprendre les données"
 format:
   html:
-    page-layout: article
+    page-layout: full
     toc: false
+    css: styles/pages.css
 ---
 
 ```{=html}

@@ -368,6 +368,9 @@
     if (existing) existing.remove();
 
     load().then(() => {
+      // Garde anti-course : n'injecter que si le panneau affiche toujours cette entreprise
+      if (panelEl.dataset.companyId !== String(companyId)) return;
+      if (!panelEl.querySelector('#back-to-national')) return;
       const row = getByCompanyId(companyId);
       if (!row) return;
       const cercle = row.cercle;

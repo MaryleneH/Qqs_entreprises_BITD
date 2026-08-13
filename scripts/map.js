@@ -1003,19 +1003,58 @@
 
     const panel = document.getElementById('company-panel-content');
     if (panel) {
-      const circle1 = snapshot && snapshot.allRows.filter((r) => r.cercle === '1' || r.cercle === 1).length;
-      const circle2 = snapshot && snapshot.allRows.filter((r) => r.cercle === '2' || r.cercle === 2).length;
+      delete panel.dataset.companyId;
+      const rows = (snapshot && snapshot.allRows) || [];
+      const circle1 = rows.filter((r) => r.cercle === '1' || r.cercle === 1).length;
+      const circle2 = rows.filter((r) => r.cercle === '2' || r.cercle === 2).length;
       const circleHtml = (circle1 || circle2) ? `
         <div class="national-panel-circles">
-          <span>${circle1} Cercle&nbsp;1</span>
-          <span>${circle2} Cercle&nbsp;2</span>
+          <span><strong>${circle1}</strong> Cercle&nbsp;1 · maîtres d'œuvre DGA</span>
+          <span><strong>${circle2}</strong> Cercle&nbsp;2 · acteurs structurants</span>
         </div>` : '';
+
+      const sectorColors = (window.BITDData && window.BITDData.constants.sectorColors) || {};
+      let totalActifs = 0;
+      const regionSet = new Set();
+      const listRows = rows
+        .slice()
+        .sort((a, b) => String(a.entreprise).localeCompare(String(b.entreprise), 'fr'))
+        .map((company) => {
+          const actifs = window.BITDData
+            ? window.BITDData.getVisibleEstablishments(company.id, 'actifs')
+            : [];
+          totalActifs += actifs.length;
+          actifs.forEach((e) => { if (e.region) regionSet.add(e.region); });
+          const color = sectorColors[company.primarySector] || '#5F7F82';
+          return `
+            <button type="button" class="national-item" data-company-id="${escapeHtml(String(company.id))}">
+              <span class="national-item-dot" style="background:${color}" aria-hidden="true"></span>
+              <span class="national-item-main">
+                <strong>${escapeHtml(company.entreprise)}</strong>
+                <span>${escapeHtml(company.siege_ville || '')}${company.siege_ville && actifs.length ? ' · ' : ''}${actifs.length ? `${actifs.length} étab. actifs` : ''}</span>
+              </span>
+            </button>`;
+        }).join('');
+
       panel.innerHTML = `
         <h3>Panel national</h3>
-        <p class="small-note">30 acteurs industriels · Vue nationale</p>
+        <p class="small-note">Sélectionnez une entreprise sur la carte ou dans la liste ci-dessous.</p>
+        <div class="panel-kpis panel-kpis--3">
+          <div><strong>${rows.length}</strong><span>entreprises</span></div>
+          <div><strong>${totalActifs}</strong><span>établissements actifs</span></div>
+          <div><strong>${regionSet.size}</strong><span>régions couvertes</span></div>
+        </div>
         ${circleHtml}
-        <p class="small-note" style="margin-top:0.75rem">Sélectionnez un siège sur la carte ou utilisez les contrôles d'exploration.</p>
+        <h4>Les ${rows.length} entreprises</h4>
+        <div class="national-list">${listRows}</div>
       `;
+
+      panel.querySelectorAll('.national-item').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-company-id');
+          if (window.BITDData && id) window.BITDData.switchToEntreprise(id);
+        });
+      });
     }
 
     refreshAndFitMap(bounds, {
@@ -1033,6 +1072,7 @@
   function renderCompanyPanel(company, visibleEtabs, allEtabs, statutMode) {
     const panel = document.getElementById('company-panel-content');
     if (!panel) return;
+    panel.dataset.companyId = String(company.id);
 
     const regions = new Set(visibleEtabs.map((e) => e.region).filter(Boolean));
     const secteurs = (company.sectors || []).slice(0, 3).join(' · ');

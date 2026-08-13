@@ -1,37 +1,40 @@
 ---
-title: "BITD France"
-page-layout: full
-title-block: false
+pagetitle: "BITD France"
+page-layout: custom
+format:
+  html:
+    css: styles/home.css
 ---
 
 ```{=html}
-<section class="explorer-shell" aria-labelledby="explorer-title">
-  <header class="explorer-header">
-    <h1 id="explorer-title">
-      Panel de 30 acteurs industriels majeurs de la BITD
-      <span class="panel-title-info-wrap">
-        <button type="button"
-                class="panel-title-info-btn"
-                id="panel-title-info-btn"
-                aria-label="À propos du panel"
-                aria-expanded="false"
-                aria-controls="panel-title-tooltip">ⓘ</button>
-        <div class="panel-title-tooltip"
-             id="panel-title-tooltip"
-             role="tooltip"
-             aria-hidden="true">
-          <!-- filled by panel-methodology.js -->
-        </div>
-      </span>
-    </h1>
-    <p class="explorer-subtitle">Entreprises &amp; implantations industrielles</p>
-    <p class="explorer-intro">Explorez un panel de 30 acteurs industriels majeurs de la Base industrielle et technologique de défense française, leurs établissements, leurs programmes et leur implantation territoriale.</p>
+<div id="home-v2">
+
+  <header class="hv-head">
+    <div class="hv-head-titles">
+      <h1 id="explorer-title">
+        Panel de 30 acteurs industriels majeurs de la BITD
+        <span class="panel-title-info-wrap">
+          <button type="button"
+                  class="panel-title-info-btn"
+                  id="panel-title-info-btn"
+                  aria-label="À propos du panel"
+                  aria-expanded="false"
+                  aria-controls="panel-title-tooltip">ⓘ</button>
+          <div class="panel-title-tooltip"
+               id="panel-title-tooltip"
+               role="tooltip"
+               aria-hidden="true"></div>
+        </span>
+      </h1>
+      <p class="hv-sub">Entreprises &amp; implantations industrielles</p>
+    </div>
+    <p class="hv-intro">Explorez un panel de 30 acteurs industriels majeurs de la Base industrielle et technologique de défense française, leurs établissements, leurs programmes et leur implantation territoriale.</p>
   </header>
 
-  <section class="explorer-controls" aria-label="Contrôles d'exploration">
+  <section class="hv-toolbar" aria-label="Contrôles d'exploration">
 
-    <div class="control-group control-group--mode">
-      <span class="control-mode-label">Explorer par</span>
+    <div class="hv-group hv-group--mode">
+      <span class="hv-label">Explorer par</span>
       <div class="segmented segmented--mode" role="group" aria-label="Mode d'exploration">
         <button type="button" class="segmented-btn explorer-mode-btn is-active" data-mode="entreprise" aria-pressed="true">Entreprise</button>
         <button type="button" class="segmented-btn explorer-mode-btn" data-mode="programme" aria-pressed="false">Programme</button>
@@ -39,61 +42,56 @@ title-block: false
       </div>
     </div>
 
-    <div id="entreprise-controls">
-      <div class="control-group control-group--wide">
-        <label for="entreprise-select">Entreprise</label>
-        <select id="entreprise-select" class="explorer-select" aria-label="Sélection de l'entreprise">
-          <option value="">Toutes les entreprises</option>
-        </select>
-      </div>
+    <div id="entreprise-controls" class="hv-group hv-group--select">
+      <label class="hv-label" for="entreprise-select">Entreprise</label>
+      <select id="entreprise-select" class="explorer-select" aria-label="Sélection de l'entreprise">
+        <option value="">Toutes les entreprises</option>
+      </select>
     </div>
 
-    <div id="programme-controls" hidden>
-      <div class="control-group control-group--wide">
-        <label for="programme-select">Programme</label>
-        <select id="programme-select" class="explorer-select" aria-label="Sélection du programme">
-          <option value="">Tous les programmes</option>
-        </select>
-      </div>
+    <div id="programme-controls" class="hv-group hv-group--select" hidden>
+      <label class="hv-label" for="programme-select">Programme</label>
+      <select id="programme-select" class="explorer-select" aria-label="Sélection du programme">
+        <option value="">Tous les programmes</option>
+      </select>
     </div>
 
-    <div id="region-controls" hidden>
-      <div class="control-group control-group--wide">
-        <label for="region-select">Région</label>
-        <select id="region-select" class="explorer-select" aria-label="Sélection de la région">
-          <option value="">Toutes les régions</option>
-        </select>
-      </div>
+    <div id="region-controls" class="hv-group hv-group--select" hidden>
+      <label class="hv-label" for="region-select">Région</label>
+      <select id="region-select" class="explorer-select" aria-label="Sélection de la région">
+        <option value="">Toutes les régions</option>
+      </select>
     </div>
 
-    <div class="control-group" id="etab-filter-control">
-      <span id="etabs-label">Établissements</span>
+    <div class="hv-group" id="etab-filter-control">
+      <span class="hv-label" id="etabs-label">Établissements</span>
       <div class="segmented" role="group" aria-labelledby="etabs-label">
         <button type="button" class="segmented-btn is-active" data-etab-filter="actifs" aria-pressed="true">Actifs uniquement</button>
         <button type="button" class="segmented-btn" data-etab-filter="tous" aria-pressed="false">Tous</button>
       </div>
     </div>
 
-    <div class="control-summary" id="site-count" aria-live="polite">30 entreprises · Vue nationale</div>
+    <div class="hv-summary" id="site-count" aria-live="polite">30 entreprises · Vue nationale</div>
   </section>
 
-  <section class="map-context" aria-live="polite">
+  <section class="hv-context" aria-live="polite">
     <h2 id="map-context-title">Panel de 30 acteurs de la BITD</h2>
     <p id="map-context-subtitle">Sélectionnez une entreprise pour explorer ses établissements.</p>
     <p id="map-context-note" class="small-note"></p>
   </section>
 
-  <section class="explorer-grid">
-    <div class="explorer-map-wrap surface-card">
+  <section class="hv-stage">
+    <div class="hv-map">
       <div id="bitd-map" aria-label="Carte des entreprises et établissements BITD"></div>
     </div>
 
-    <aside class="company-panel surface-card" id="company-panel" aria-live="polite">
+    <div class="hv-panel" id="company-panel" role="complementary" aria-live="polite">
       <div id="company-panel-content">
         <h3>Vue nationale</h3>
         <p class="small-note">Les 30 sièges des entreprises sont affichés. Sélectionnez une entreprise dans le menu ou cliquez sur un siège pour passer en focus.</p>
       </div>
-    </aside>
+    </div>
   </section>
-</section>
+
+</div>
 ```

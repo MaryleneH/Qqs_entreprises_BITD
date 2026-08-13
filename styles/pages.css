@@ -1,0 +1,76 @@
+/* =============================================================================
+   PAGES.CSS — harmonisation des vues Entreprises / Comprendre / Méthodologie
+   Chargée par le front matter de ces trois pages uniquement.
+   ========================================================================== */
+
+/* Quarto promeut le premier h1 du contenu dans son title-block : on assume
+   ce comportement et on style le titre promu aux couleurs du site, aligné
+   sur la largeur des conteneurs de page. */
+#title-block-header {
+  max-width: 1400px;
+  margin: 1.5rem auto 0;
+  padding: 0 2rem;
+}
+
+#title-block-header h1 {
+  margin: 0;
+  font-family: 'Kalam', cursive;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--navy, #14263D);
+  border: 0;
+  padding: 0;
+}
+
+#title-block-header h1:empty { display: none; }
+
+/* Respiration de tête cohérente avec l'accueil */
+.page-container,
+.entreprises-shell { padding-top: 0.6rem; }
+
+.page-title,
+.entreprises-header h1 { margin-top: 0; }
+
+/* ---------------------------------------------------------------------------
+   Correctifs Méthodologie
+--------------------------------------------------------------------------- */
+
+/* Contraste : la règle générique ".methodo-container p" imposait un texte
+   sombre dans les encadrés à fond navy. On rétablit l'encre claire. */
+.methodo-container .tracabilite-box p,
+.methodo-container .tracabilite-box strong,
+.methodo-container .tracabilite-box li {
+  color: #F5F6F2;
+}
+
+.methodo-container .tracabilite-box a {
+  color: #E8CE9F;
+  text-decoration: underline;
+}
+
+/* Sommaire : titre plus net, repères de lecture */
+#quarto-margin-sidebar #TOC .toc-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #65707F);
+}
+
+#quarto-margin-sidebar #TOC a {
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+/* ---------------------------------------------------------------------------
+   Correctifs Comprendre les données
+--------------------------------------------------------------------------- */
+
+/* L'en-tête (titre, sous-titre, retour dashboard) se lit comme un seul bloc */
+.glossary-hero {
+  align-items: center;
+  margin-top: 0.4rem;
+}
+
+.glossary-hero .chip-link { white-space: nowrap; }

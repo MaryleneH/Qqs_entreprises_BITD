@@ -1003,7 +1003,7 @@
   }
 
   window.addEventListener('resize', () => {
-    if (isDesktopLayout() && !dom.mobileDetail.hidden) closeMobileDetail();
+    if (dom.mobileDetail && isDesktopLayout() && !dom.mobileDetail.hidden) closeMobileDetail();
   });
 
   init();

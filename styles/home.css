@@ -1,0 +1,614 @@
+/* =============================================================================
+   HOME V2 — Poste de travail cartographique BITD
+   Feuille dédiée à index.qmd, chargée via le front matter de la page.
+   Tous les sélecteurs sont scopés sous #home-v2 : spécificité (1,0,0)+
+   garantit la priorité sur dashboard.scss et sur le CSS Quarto, sans
+   modifier ni l'un ni l'autre. Palette héritée des variables :root du site.
+   ========================================================================== */
+
+#home-v2 {
+  --hv-gap: 14px;
+  --hv-panel-w: 400px;
+  --hv-radius: var(--radius-card, 14px);
+  --hv-border: var(--border, #DDE2E5);
+  --hv-card: var(--card, #FFFFFF);
+  --hv-navy: var(--navy, #14263D);
+  --hv-gold: var(--gold, #C99A4A);
+  --hv-teal: var(--teal, #5F7F82);
+  --hv-text: var(--text, #162033);
+  --hv-text-2: var(--text-secondary, #65707F);
+  --hv-bg: var(--background, #F5F6F2);
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1680px;
+  margin-inline: auto;
+  padding: 16px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--hv-gap);
+  height: calc(100vh - 64px);
+  min-height: 660px;
+}
+
+#home-v2 h1, #home-v2 h2, #home-v2 h3, #home-v2 h4 {
+  border: 0;
+  padding-bottom: 0;
+}
+
+#home-v2 *,
+#home-v2 *::before,
+#home-v2 *::after { box-sizing: border-box; }
+
+/* ---------------------------------------------------------------------------
+   En-tête : titre + sous-titre à gauche, phrase d'intro à droite
+--------------------------------------------------------------------------- */
+
+#home-v2 .hv-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2.5rem;
+  flex-wrap: wrap;
+}
+
+#home-v2 .hv-head h1 {
+  margin: 0;
+  font-family: 'Kalam', cursive;
+  font-size: clamp(1.45rem, 1.1rem + 1vw, 1.9rem);
+  line-height: 1.15;
+  color: var(--hv-navy);
+}
+
+#home-v2 .hv-sub {
+  margin: 0.15rem 0 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--hv-teal);
+}
+
+#home-v2 .hv-intro {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--hv-text-2);
+}
+
+/* Bouton ⓘ + infobulle méthodologie (contenu injecté par panel-methodology.js) */
+
+#home-v2 .panel-title-info-wrap { position: relative; display: inline-block; }
+
+#home-v2 .panel-title-info-btn {
+  border: 0;
+  background: none;
+  padding: 0 0.15rem;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--hv-gold);
+  cursor: pointer;
+  vertical-align: super;
+}
+
+#home-v2 .panel-title-info-btn:hover { color: var(--hv-navy); }
+
+#home-v2 .panel-title-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1200;
+  width: min(440px, 82vw);
+  background: var(--hv-card);
+  border: 1px solid var(--hv-border);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px rgba(20, 38, 61, 0.16);
+  padding: 0.9rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--hv-text);
+}
+
+#home-v2 .panel-title-tooltip[aria-hidden="true"] { display: none; }
+
+/* ---------------------------------------------------------------------------
+   Barre d'outils : mode · sélecteur · filtre établissements · compteur
+--------------------------------------------------------------------------- */
+
+#home-v2 .hv-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1.4rem;
+  background: var(--hv-card);
+  border: 1px solid var(--hv-border);
+  border-radius: var(--hv-radius);
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(20, 38, 61, 0.06));
+  padding: 0.7rem 1rem 0.8rem;
+}
+
+#home-v2 .hv-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+#home-v2 .hv-group[hidden] { display: none; }
+
+#home-v2 .hv-group--select {
+  flex: 1 1 240px;
+  max-width: 380px;
+  align-items: stretch;
+}
+
+#home-v2 .hv-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hv-text-2);
+}
+
+#home-v2 .hv-summary {
+  margin-left: auto;
+  align-self: center;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--hv-navy);
+  white-space: nowrap;
+}
+
+/* Boutons segmentés */
+
+#home-v2 .segmented {
+  display: inline-flex;
+  border: 1px solid var(--hv-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--hv-bg);
+}
+
+#home-v2 .segmented-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+  color: var(--hv-text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  min-height: 40px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+#home-v2 .segmented-btn + .segmented-btn { border-left: 1px solid var(--hv-border); }
+
+#home-v2 .segmented-btn:hover { background: rgba(95, 127, 130, 0.10); }
+
+#home-v2 .segmented-btn.is-active {
+  background: var(--hv-navy);
+  color: #F5F6F2;
+}
+
+#home-v2 .segmented-btn:focus-visible {
+  outline: 2px solid var(--hv-teal);
+  outline-offset: -2px;
+}
+
+/* Sélecteur */
+
+#home-v2 .explorer-select {
+  width: 100%;
+  min-height: 40px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--hv-text);
+  background-color: var(--hv-bg);
+  border: 1px solid var(--hv-border);
+  border-radius: 10px;
+  padding: 0.45rem 2rem 0.45rem 0.75rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2365707F' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 13px;
+  cursor: pointer;
+}
+
+#home-v2 .explorer-select:focus {
+  outline: none;
+  border-color: var(--hv-teal);
+  box-shadow: 0 0 0 3px rgba(95, 127, 130, 0.16);
+  background-color: var(--hv-card);
+}
+
+/* ---------------------------------------------------------------------------
+   Bandeau de contexte : une seule ligne fine sous la barre d'outils
+--------------------------------------------------------------------------- */
+
+#home-v2 .hv-context {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  min-height: 1.4rem;
+  padding: 0 0.2rem;
+}
+
+#home-v2 .hv-context h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--hv-navy);
+}
+
+#home-v2 .hv-context p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--hv-text-2);
+}
+
+#home-v2 .hv-context .small-note:empty { display: none; }
+
+/* ---------------------------------------------------------------------------
+   Scène : carte (fluide) + panneau dossier (400px, scroll interne)
+   La hauteur est contrainte au viewport : le poste de travail tient à l'écran.
+--------------------------------------------------------------------------- */
+
+#home-v2 .hv-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--hv-panel-w);
+  gap: var(--hv-gap);
+  align-items: stretch;
+  grid-template-rows: minmax(0, 1fr);
+  flex: 1 1 auto;
+  min-height: 480px;
+}
+
+#home-v2 .hv-map {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  background: var(--hv-card);
+  border: 1px solid var(--hv-border);
+  border-radius: var(--hv-radius);
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(20, 38, 61, 0.06));
+  overflow: hidden;
+}
+
+#home-v2 #bitd-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Panneau « dossier » : liseré or, en-tête stable, contenu scrollable */
+
+#home-v2 .hv-panel {
+  min-width: 0;
+  height: 100%;
+  background: var(--hv-card);
+  border: 1px solid var(--hv-border);
+  border-left: 3px solid var(--hv-gold);
+  border-radius: var(--hv-radius);
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(20, 38, 61, 0.06));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+#home-v2 #company-panel-content {
+  padding: 1.1rem 1.15rem 1.25rem;
+  overflow-wrap: break-word;
+}
+
+#home-v2 #company-panel-content > * { max-width: 100%; }
+
+/* Composants injectés par map.js — repris ici pour ne plus dépendre
+   des règles historiques de dashboard.scss */
+
+#home-v2 .panel-top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+#home-v2 .back-to-national {
+  border: 1px solid var(--hv-border);
+  background: var(--hv-bg);
+  color: var(--hv-text);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+#home-v2 .back-to-national:hover { border-color: var(--hv-teal); color: var(--hv-navy); }
+
+#home-v2 .panel-full-profile-link {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--hv-teal);
+  text-decoration: none;
+}
+
+#home-v2 .panel-full-profile-link:hover { text-decoration: underline; }
+
+#home-v2 #company-panel-content h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.15rem;
+  line-height: 1.25;
+  color: var(--hv-navy);
+}
+
+#home-v2 #company-panel-content h4 {
+  margin: 1rem 0 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--hv-text-2);
+}
+
+#home-v2 .small-note {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--hv-text-2);
+}
+
+#home-v2 .panel-kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  margin: 0.7rem 0;
+}
+
+#home-v2 .panel-kpis > div {
+  background: var(--hv-bg);
+  border: 1px solid var(--hv-border);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+}
+
+#home-v2 .panel-kpis strong {
+  display: block;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  color: var(--hv-navy);
+}
+
+#home-v2 .panel-kpis span {
+  font-size: 0.72rem;
+  color: var(--hv-text-2);
+}
+
+#home-v2 .panel-company-infos {
+  list-style: none;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: var(--hv-text);
+}
+
+#home-v2 .panel-company-infos li { margin: 0.15rem 0; }
+
+#home-v2 .panel-company-infos a { color: var(--hv-teal); word-break: break-word; }
+
+/* Liste des implantations : le scroll appartient au panneau, pas à la liste */
+
+#home-v2 .site-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: none;
+  overflow: visible;
+}
+
+#home-v2 .site-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--hv-border);
+  background: var(--hv-card);
+  border-radius: 10px;
+  padding: 0.5rem 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+#home-v2 .site-list-item:hover { border-color: var(--hv-teal); background: rgba(95, 127, 130, 0.06); }
+
+#home-v2 .site-list-item.is-active {
+  border-color: var(--hv-gold);
+  background: rgba(201, 154, 74, 0.10);
+}
+
+#home-v2 .site-list-item.is-inactive { opacity: 0.62; }
+
+#home-v2 .site-list-symbol {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  color: var(--hv-gold);
+}
+
+#home-v2 .site-list-main { min-width: 0; }
+
+#home-v2 .site-list-main strong {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--hv-navy);
+}
+
+#home-v2 .site-list-main span {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--hv-text-2);
+}
+
+/* Panneau national enrichi -------------------------------------------------- */
+
+#home-v2 .panel-kpis--3 { grid-template-columns: repeat(3, 1fr); }
+
+#home-v2 .national-panel-circles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.15rem 0 0.2rem;
+}
+
+#home-v2 .national-panel-circles span {
+  font-size: 0.72rem;
+  color: var(--hv-text-2);
+  background: var(--hv-bg);
+  border: 1px solid var(--hv-border);
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+}
+
+#home-v2 .national-panel-circles strong { color: var(--hv-navy); }
+
+#home-v2 .national-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+#home-v2 .national-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 9px;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+#home-v2 .national-item:hover {
+  background: rgba(95, 127, 130, 0.07);
+  border-color: var(--hv-border);
+}
+
+#home-v2 .national-item:focus-visible {
+  outline: 2px solid var(--hv-teal);
+  outline-offset: 1px;
+}
+
+#home-v2 .national-item-dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(20, 38, 61, 0.08);
+}
+
+#home-v2 .national-item-main { min-width: 0; }
+
+#home-v2 .national-item-main strong {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  color: var(--hv-navy);
+}
+
+#home-v2 .national-item-main span {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--hv-text-2);
+}
+
+/* Finitions ------------------------------------------------------------------ */
+
+#home-v2 #company-panel-content h4::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--hv-gold);
+  margin-right: 0.45rem;
+  vertical-align: middle;
+}
+
+#home-v2 .hv-panel::-webkit-scrollbar { width: 8px; }
+#home-v2 .hv-panel::-webkit-scrollbar-track { background: transparent; }
+#home-v2 .hv-panel::-webkit-scrollbar-thumb {
+  background: var(--hv-border);
+  border-radius: 4px;
+}
+#home-v2 .hv-panel::-webkit-scrollbar-thumb:hover { background: var(--hv-teal); }
+
+/* ---------------------------------------------------------------------------
+   Responsive — au-dessous de 900px : flux vertical (comportement mobile actuel)
+--------------------------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  #home-v2 { --hv-panel-w: 340px; }
+}
+
+@media (max-width: 900px) {
+  #home-v2 { padding: 12px 14px 18px; gap: 12px; }
+
+  #home-v2 .hv-head { align-items: flex-start; }
+  #home-v2 .hv-intro { max-width: none; }
+
+  #home-v2 .hv-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  #home-v2 .hv-group--select { max-width: none; flex: 0 0 auto; }
+
+  #home-v2 .hv-summary {
+    margin-left: 0;
+    align-self: flex-start;
+    white-space: normal;
+  }
+
+  #home-v2 { height: auto; min-height: 0; }
+
+  #home-v2 .hv-stage {
+    display: block;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+
+  #home-v2 .hv-map {
+    height: 58vh;
+    min-height: 380px;
+    max-height: 620px;
+  }
+
+  #home-v2 .hv-panel {
+    margin-top: 12px;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 430px) {
+  #home-v2 .hv-map { min-height: 360px; }
+  #home-v2 .segmented-btn { padding: 0.45rem 0.6rem; font-size: 0.8rem; }
+  #home-v2 .hv-intro,
+  #home-v2 .hv-context p { font-size: 0.82rem; }
+}
