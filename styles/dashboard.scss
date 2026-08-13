@@ -59,6 +59,20 @@ body {
 .quarto-container, #quarto-content { padding: 0 !important; max-width: none !important; }
 main.content { padding: 0 !important; }
 
+// --- Suppression des conteneurs Bootstrap sur les pages dashboard (full-width) ---
+@media (min-width: 1200px) {
+  .page-layout-full .container,
+  .page-layout-full .container-sm,
+  .page-layout-full .container-md,
+  .page-layout-full .container-lg,
+  .page-layout-full .container-xl,
+  .page-layout-full .container-xxl,
+  .page-layout-full .container-fluid {
+    max-width: none !important;
+    padding-inline: 0 !important;
+  }
+}
+
 // =============================================================================
 // NAVBAR
 // =============================================================================
@@ -1668,8 +1682,8 @@ main.content { padding: 0 !important; }
 
 .explorer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 1rem;
+  grid-template-columns: minmax(0, 2.3fr) minmax(340px, 1fr);
+  gap: 14px;
   align-items: start;
 }
 
@@ -1685,7 +1699,7 @@ main.content { padding: 0 !important; }
 }
 
 .company-panel {
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .company-panel h3 {
@@ -2095,9 +2109,15 @@ main.content { padding: 0 !important; }
   color: #d1d5dc;
 }
 
+@media (min-width: 1600px) {
+  .explorer-grid {
+    grid-template-columns: minmax(0, 2.5fr) minmax(380px, 1fr);
+  }
+}
+
 @media (max-width: 1200px) {
   .explorer-grid {
-    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
   }
 }
 
@@ -3654,7 +3674,7 @@ main.content { padding: 0 !important; }
 // ENTREPRISES EXPLORER PAGE
 // =============================================================================
 .entreprises-shell {
-  max-width: 1440px;
+  max-width: min(97vw, 1900px);
   margin: 0 auto;
   padding: 1rem 1.5rem 1.5rem;
 }
@@ -3778,8 +3798,8 @@ main.content { padding: 0 !important; }
 .entreprises-explorer {
   margin-top: 0.9rem;
   display: grid;
-  grid-template-columns: minmax(0, 40%) minmax(0, 60%);
-  gap: 0.9rem;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 14px;
   align-items: start;
 }
 
