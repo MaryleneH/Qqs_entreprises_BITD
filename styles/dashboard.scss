@@ -315,6 +315,7 @@ main.content { padding: 0 !important; }
   height: 580px;
   width: 100%;
   border-radius: var(--radius-card);
+  position: relative;
 }
 @media (max-width: 900px) { #bitd-map { height: 420px; } }
 @media (max-width: 600px) { #bitd-map { height: 320px; } }
@@ -331,6 +332,43 @@ main.content { padding: 0 !important; }
 }
 .leaflet-control-zoom a:hover { background: var(--background) !important; }
 .leaflet-control-zoom a:last-child { border-bottom: none !important; }
+
+// Recentrer button
+.leaflet-control-recenter {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px;
+  background: var(--card) !important;
+  color: var(--navy);
+  border: none;
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.15s;
+}
+.leaflet-control-recenter:hover { background: var(--background) !important; }
+
+// Scroll-wheel hint tooltip
+.map-scroll-hint {
+  position: absolute;
+  bottom: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(245,246,242,0.95);
+  color: var(--navy);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.25s;
+  white-space: nowrap;
+}
+.map-scroll-hint.is-visible { opacity: 1; }
 .leaflet-tile { filter: saturate(0.85) brightness(1.03) #{"contrast(0.96)"}; }
 
 // Custom markers

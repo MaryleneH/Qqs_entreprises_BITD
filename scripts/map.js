@@ -70,7 +70,7 @@
     const mapEl = document.getElementById('bitd-map');
     if (!mapEl || map || typeof L === 'undefined') return map;
 
-    map = L.map(mapEl, { zoomControl: true, scrollWheelZoom: true }).setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom);
+    map = L.map(mapEl, { zoomControl: true, scrollWheelZoom: false }).setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
       subdomains: 'abcd',
@@ -82,7 +82,70 @@
     programmeLayer = L.layerGroup().addTo(map);
     regionSitesLayer = L.layerGroup().addTo(map);
     addLegend('entreprise');
+    addRecenterControl();
+    addScrollHintListener(mapEl);
     return map;
+  }
+
+  // --- Recentrer button ---
+  function addRecenterControl() {
+    const RecenterControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd() {
+        const btn = L.DomUtil.create('button', 'leaflet-control-recenter');
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Recentrer la carte sur les éléments visibles');
+        btn.title = 'Recentrer';
+        btn.innerHTML = '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="3.5"/><line x1="10" y1="1" x2="10" y2="5.5"/><line x1="10" y1="14.5" x2="10" y2="19"/><line x1="1" y1="10" x2="5.5" y2="10"/><line x1="14.5" y1="10" x2="19" y2="10"/></svg>';
+        L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation);
+        L.DomEvent.on(btn, 'click', L.DomEvent.preventDefault);
+        L.DomEvent.on(btn, 'click', () => { recenterMap(); });
+        return btn;
+      }
+    });
+    new RecenterControl().addTo(map);
+  }
+
+  // --- Subtle scroll-wheel hint ---
+  let scrollHintTimer = null;
+  function addScrollHintListener(mapEl) {
+    let hintEl = null;
+    mapEl.addEventListener('wheel', () => {
+      if (!hintEl) {
+        hintEl = document.createElement('div');
+        hintEl.className = 'map-scroll-hint';
+        hintEl.textContent = 'Zoom molette désactivé · utilisez + / −';
+        mapEl.appendChild(hintEl);
+      }
+      hintEl.classList.add('is-visible');
+      clearTimeout(scrollHintTimer);
+      scrollHintTimer = setTimeout(() => { hintEl.classList.remove('is-visible'); }, 1800);
+    }, { passive: true });
+  }
+
+  function recenterMap() {
+    if (!map) return;
+    const snap = window.BITDData && window.BITDData.getState();
+    if (!snap) return;
+    if (snap.explorerMode === 'entreprise' && snap.entrepriseId && snap.selectedCompany) {
+      const etabs = window.BITDData.getVisibleEstablishments(snap.entrepriseId, snap.statutEtablissements);
+      const bounds = etabs.filter((e) => e.latitude != null && e.longitude != null).map((e) => [e.latitude, e.longitude]);
+      if (bounds.length > 1) map.fitBounds(bounds, { padding: [46, 46], maxZoom: 10, animate: true });
+      else if (bounds.length === 1) map.setView(bounds[0], 9, { animate: true });
+      else map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+    } else if (snap.explorerMode === 'region' && snap.selectedRegion) {
+      const etabs = window.BITDData.getVisibleRegionEstablishments(snap.selectedRegion, snap.statutEtablissements);
+      const bounds = etabs.filter((e) => e.latitude != null && e.longitude != null).map((e) => [e.latitude, e.longitude]);
+      if (bounds.length > 1) map.fitBounds(bounds, { padding: [46, 46], maxZoom: 10, animate: true });
+      else if (bounds.length === 1) map.setView(bounds[0], 9, { animate: true });
+      else map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+    } else {
+      // National: fit the 30 headquarters
+      const companies = window.BITDData.getMapNationalCompanies();
+      const bounds = companies.filter((c) => c.latitude != null && c.longitude != null).map((c) => [c.latitude, c.longitude]);
+      if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 6, animate: true });
+      else map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
+    }
   }
 
   function addLegend(mode) {
@@ -316,17 +379,22 @@
     addLegend('programme');
 
     const programmeId = snapshot.selectedProgrammeId;
-    if (!programmeId || !window.BITDProgramme.getAllProgrammes().length) {
+    if (!programmeId) {
+      // No programme selected: show national overview with 30 sièges
+      addLegend('entreprise');
+      renderNationalOverview(snapshot);
+      setContextProgramme(snapshot);
+      return;
+    }
+    if (!window.BITDProgramme.getAllProgrammes().length) {
       map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
       if (window.BITDProgramme) window.BITDProgramme.renderProgrammeEmpty();
-      // If programme data not loaded yet, try loading then re-render
-      if (programmeId && !window.BITDProgramme.getAllProgrammes().length) {
-        window.BITDProgramme.loadAll().then(() => {
-          window.BITDProgramme.fillProgrammeSelect();
-          const snap = window.BITDData.getState();
-          if (snap.explorerMode === 'programme' && snap.selectedProgrammeId) renderProgramme(snap);
-        }).catch((err) => console.error('[BITD][Programme]', err));
-      }
+      // Programme data not loaded yet: load then re-render
+      window.BITDProgramme.loadAll().then(() => {
+        window.BITDProgramme.fillProgrammeSelect();
+        const snap = window.BITDData.getState();
+        if (snap.explorerMode === 'programme' && snap.selectedProgrammeId) renderProgramme(snap);
+      }).catch((err) => console.error('[BITD][Programme]', err));
       return;
     }
 
@@ -567,10 +635,10 @@
     const counter = document.getElementById('site-count');
 
     if (!snapshot.selectedRegion) {
-      if (title) title.textContent = 'Explorer par région';
-      if (subtitle) subtitle.textContent = 'Sélectionnez une région dans le menu pour découvrir les implantations BITD.';
+      if (title) title.textContent = 'Vue nationale du panel';
+      if (subtitle) subtitle.textContent = '30 sièges · Sélectionnez une région pour explorer les implantations.';
       if (note) note.textContent = '';
-      if (counter) counter.textContent = 'Mode Région · Vue nationale';
+      if (counter) counter.textContent = '30 entreprises · Vue nationale';
       return;
     }
 
@@ -673,8 +741,8 @@
     currentFocusColor = null;
 
     if (!snapshot.selectedRegion) {
-      map.setView(FRANCE_VIEW.center, FRANCE_VIEW.zoom, { animate: true });
-      renderRegionPanel(snapshot, []);
+      renderNationalOverview(snapshot);
+      setContextRegion(snapshot, []);
       return;
     }
 
@@ -709,7 +777,7 @@
     setContextRegion(snapshot, regionSites);
   }
 
-  function renderNational(snapshot) {
+  function renderNationalOverview(snapshot) {
     ensureMap();
     if (!map) return;
     markerIndex.clear();
@@ -718,6 +786,8 @@
     currentFocusColor = null;
     nationalLayer.clearLayers();
     focusLayer.clearLayers();
+    programmeLayer.clearLayers();
+    regionSitesLayer.clearLayers();
 
     const companies = window.BITDData.getMapNationalCompanies();
     const bounds = [];
@@ -725,7 +795,7 @@
     companies.forEach((company) => {
       if (company.latitude == null || company.longitude == null) return;
       const color = window.BITDData.constants.sectorColors[company.primarySector] || '#5F7F82';
-      const marker = L.marker([company.latitude, company.longitude], { icon: companyIcon(color, false) });
+      const marker = L.marker([company.latitude, company.longitude], { icon: siegeIcon(color, false), zIndexOffset: 1000 });
       const allEtabs = window.BITDData.getVisibleEstablishments(company.id, 'tous');
       const activeEtabs = window.BITDData.getVisibleEstablishments(company.id, 'actifs');
       marker.bindPopup(getNationalPopupHtml(company, activeEtabs.length, allEtabs.length), {
@@ -747,12 +817,25 @@
 
     const panel = document.getElementById('company-panel-content');
     if (panel) {
+      const circle1 = snapshot && snapshot.allRows.filter((r) => r.cercle === '1' || r.cercle === 1).length;
+      const circle2 = snapshot && snapshot.allRows.filter((r) => r.cercle === '2' || r.cercle === 2).length;
+      const circleHtml = (circle1 || circle2) ? `
+        <div class="national-panel-circles">
+          <span>${circle1} Cercle&nbsp;1</span>
+          <span>${circle2} Cercle&nbsp;2</span>
+        </div>` : '';
       panel.innerHTML = `
-        <h3>Vue nationale</h3>
-        <p class="small-note">30 sièges d'entreprise affichés pour garder une lecture claire du territoire.</p>
-        <p class="small-note">Cliquez sur un siège ou utilisez le menu pour passer en focus entreprise.</p>
+        <h3>Panel national</h3>
+        <p class="small-note">30 acteurs industriels · Vue nationale</p>
+        ${circleHtml}
+        <p class="small-note" style="margin-top:0.75rem">Sélectionnez un siège sur la carte ou utilisez les contrôles d'exploration.</p>
       `;
     }
+  }
+
+  // Legacy alias kept for any remaining call-sites
+  function renderNational(snapshot) {
+    renderNationalOverview(snapshot);
   }
 
   function renderCompanyPanel(company, visibleEtabs, allEtabs, statutMode) {
@@ -898,6 +981,7 @@
       const panelEl = document.getElementById('company-panel-content');
       window.BITDPanel.injectIntoPanelContent(String(company.id), panelEl);
     }
+  }
 
   function fillEntrepriseSelect(snapshot) {
     const select = document.getElementById('entreprise-select');
@@ -983,9 +1067,11 @@
     const subtitle = document.getElementById('map-context-subtitle');
     const note = document.getElementById('map-context-note');
     if (!snapshot.selectedProgrammeId) {
-      if (title) title.textContent = 'Explorer un programme';
-      if (subtitle) subtitle.textContent = 'Sélectionnez un programme pour découvrir les entreprises du référentiel qui y participent.';
+      if (title) title.textContent = 'Vue nationale du panel';
+      if (subtitle) subtitle.textContent = '30 sièges · Sélectionnez un programme pour explorer les acteurs associés.';
       if (note) note.textContent = '';
+      const counter = document.getElementById('site-count');
+      if (counter) counter.textContent = '30 entreprises · Vue nationale';
       return;
     }
     const prog = window.BITDProgramme && window.BITDProgramme.getProgramme(snapshot.selectedProgrammeId);
