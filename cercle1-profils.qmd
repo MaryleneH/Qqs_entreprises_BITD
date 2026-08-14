@@ -1,0 +1,25 @@
+---
+pagetitle: "Cercle 1 — Fiches groupes"
+page-layout: custom
+format:
+  html:
+    css: [styles/pages.css, styles/cercle1.css]
+---
+
+```{=html}
+<div class="c1x-page" id="c1p-app">
+
+  <header class="c1x-header">
+    <h1>Cercle 1 — fiches groupes</h1>
+    <p class="c1x-sub">Que sait-on vraiment de chacun des neuf maîtres d'œuvre&nbsp;? Ce qu'il fabrique, ce que ses comptes disent de sa part défense, où il est implanté, avec qui il est lié, et ce qu'il emploie.</p>
+    <p class="c1x-scope">Chaque champ indique son périmètre exact et sa source. Les montants ne sont pas recalculés&nbsp;: ils sont repris des publications des groupes, avec le périmètre qu'elles définissent. Voir <a href="perimetre.html">Périmètre &amp; sélection</a>.</p>
+  </header>
+
+  <div class="c1x-chips" id="c1p-chips" role="group" aria-label="Choix du groupe"></div>
+
+  <div id="c1p-body" aria-live="polite"><p class="c1x-empty">Chargement des donnees…</p></div>
+
+</div>
+
+<script src="scripts/cercle1-profils.js?v=20260814a" defer></script>
+```
