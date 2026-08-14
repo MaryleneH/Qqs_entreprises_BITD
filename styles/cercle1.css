@@ -33,9 +33,21 @@
 .c1x-count { font-size: .75rem; color: #7A8794; margin-left: auto; }
 #c1x-app .c1x-grid { display: grid !important;
   grid-template-columns: minmax(0, 1fr) 430px !important; gap: 1.1rem; align-items: start; }
-#c1x-app #c1x-map { grid-column: 1 !important; min-width: 0; }
-#c1x-app .c1x-panel { grid-column: 2 !important; }
-@media (max-width: 1080px) { #c1x-app .c1x-grid { grid-template-columns: 1fr !important; } }
+#c1x-app #c1x-map { min-width: 0; }
+/* Placement en deux colonnes reserve aux grands ecrans : sur mobile la grille
+   passe a une colonne et tout placement explicite doit etre annule, sans quoi
+   une seconde colonne implicite ecrase la carte. */
+@media (min-width: 1081px) {
+  #c1x-app #c1x-map { grid-column: 1 !important; }
+  #c1x-app .c1x-panel { grid-column: 2 !important; }
+}
+@media (max-width: 1080px) {
+  #c1x-app .c1x-grid { grid-template-columns: 1fr !important; }
+  #c1x-app #c1x-map, #c1x-app .c1x-panel { grid-column: auto !important; }
+  #c1x-app #c1x-map { height: 380px; min-height: 380px; }
+  #c1x-app .c1x-panel { max-height: none; }
+  #c1x-app .c1x-chips { grid-template-columns: repeat(2, 1fr) !important; }
+}
 .c1x-mapfail { font-size: .82rem; color: #A03B3B; background: #FDEEEE; border: 1px solid #EBC6C6;
   border-radius: 8px; padding: .9rem 1.1rem; margin: 1rem; line-height: 1.5; }
 #c1x-map { height: 620px; border-radius: 10px; border: 1px solid #E3E8EE; box-shadow: 0 2px 10px rgba(31,58,95,.05); }
