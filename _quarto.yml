@@ -19,6 +19,7 @@ project:
 
 website:
   title: "BITD France"
+  favicon: assets/favicon.png
   navbar:
     left:
       - href: index.qmd
