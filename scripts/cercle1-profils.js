@@ -51,6 +51,12 @@
     out.push(cur); return out;
   }
   function parseCsv(text, d) {
+    // Le séparateur déclaré peut ne pas correspondre au fichier réellement déposé :
+    // on fait confiance à la ligne d'en-tête plutôt qu'à la déclaration.
+    const premiere = text.replace(/^\uFEFF/, '').split(/\r?\n/)[0] || '';
+    if (premiere.split(';').length !== premiere.split(',').length) {
+      d = (premiere.split(';').length > premiere.split(',').length) ? ';' : ',';
+    }
     const rows = []; let cur = '', q = false, lines = [];
     for (let i = 0; i < text.length; i++) {
       const c = text[i];
@@ -175,8 +181,12 @@
       tip: "Un doute documenté existe sur ce chiffre : lisez la note avant de vous en servir." }
   };
 
+  const SLUGS = { '1': 'thales', '2': 'dassault_aviation', '3': 'safran', '4': 'naval_group',
+                  '5': 'airbus', '6': 'mbda', '7': 'knds_france', '8': 'arianegroup', '9': 'arquus' };
   function renderMainOeuvre(id) {
-    const m = byId(data.mainOeuvre, id);
+    // Tolère les deux schémas : entreprise_id numérique, ou slug hérité du fichier source.
+    const m = byId(data.mainOeuvre, id) ||
+              data.mainOeuvre.find(r => r.id_entreprise === SLUGS[id] || r.id_entreprise_source === SLUGS[id]);
     if (!m) return '';
     const publie = /^publie/.test(m.statut_chiffrage_futur);
     const pr = PREUVE[m.niveau_preuve_futur] || null;
@@ -357,12 +367,18 @@
     }));
   }
 
+  const OPTIONNELS = ['mainOeuvre'];
   Promise.all(Object.entries(FILES).map(([k, [u, d]]) =>
-    fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.text(); }).then(t => { data[k] = parseCsv(t, d); })
+    fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.text(); })
+      .then(t => { data[k] = parseCsv(t, d); })
+      .catch(err => {
+        if (OPTIONNELS.indexOf(k) === -1) throw err;
+        data[k] = [];   // section absente plutôt que page cassée
+        console.warn('cercle1-profils : ' + u + ' indisponible, section ignorée');
+      })
   )).then(() => { buildChips(); render(); })
     .catch(err => {
       document.getElementById('c1p-body').innerHTML =
         `<p class="c1x-empty">Erreur de chargement des données (${esc(String(err.message || err))}).</p>`;
     });
 })();
-
