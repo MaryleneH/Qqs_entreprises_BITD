@@ -1,130 +1,50 @@
 ---
-title: "Cercle 1 — International"
+pagetitle: "Cercle 1 — International"
 page-layout: full
-title-block: false
 format:
   html:
-    css: styles/pages.css
+    css: [styles/pages.css, styles/cercle1.css]
 ---
 
 ```{=html}
-<div class="c1-page">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- ── En-tête ── -->
-  <header class="c1-header">
-    <h1 class="c1-title">Cercle 1 — empreinte internationale &amp; coopérations industrielles</h1>
-    <p class="c1-subtitle">Les neuf maîtres d'œuvre industriels du panel : implantations étrangères sélectionnées et relations industrielles explicitement documentées.</p>
-    <div class="c1-scope-banner" role="note">
-      <strong>Périmètre : sélection documentée, non exhaustive.</strong> Les coordonnées cartographiques sont des approximations de centre-ville à revalider. Les liens entre entreprises représentent des relations documentaires, pas des flux logistiques.
-    </div>
+<div class="c1x-page" id="c1x-app">
+
+  <header class="c1x-header">
+    <h1>Cercle 1 — empreinte internationale &amp; coopérations</h1>
+    <p class="c1x-sub">Où les neuf maîtres d'œuvre du panel sont-ils implantés hors de France, et avec qui coopèrent-ils ? Sélectionnez une entreprise, ou explorez l'ensemble.</p>
+    <p class="c1x-scope">Sélection documentée, non exhaustive — coordonnées approximatives (centre-ville), relations documentaires et non flux logistiques. Critères détaillés dans <a href="perimetre.html">Périmètre &amp; sélection</a> et dans la méthode en bas de page.</p>
   </header>
 
-  <!-- ── KPI ── -->
-  <div class="c1-kpi-row" id="c1-kpi-row" aria-live="polite">
-    <div class="c1-kpi"><span class="c1-kpi-value" id="kpi-acteurs">9</span><span class="c1-kpi-label">acteurs</span></div>
-    <div class="c1-kpi"><span class="c1-kpi-value" id="kpi-implantations">—</span><span class="c1-kpi-label">implantations dans la sélection</span></div>
-    <div class="c1-kpi"><span class="c1-kpi-value" id="kpi-pays">—</span><span class="c1-kpi-label">pays représentés</span></div>
-    <div class="c1-kpi"><span class="c1-kpi-value" id="kpi-relations">—</span><span class="c1-kpi-label">relations documentées</span></div>
+  <div class="c1x-chips" id="c1x-chips" role="group" aria-label="Choix de l'entreprise"></div>
+
+  <div class="c1x-controls">
+    <div class="c1x-seg" id="c1x-seg" role="group" aria-label="Pertinence défense">
+      <button data-pert="directe">Défense directe</button>
+      <button data-pert="dual" class="is-active">Défense + dual</button>
+      <button data-pert="tout">Tout</button>
+    </div>
+    <details class="c1x-more">
+      <summary>Affiner</summary>
+      <label><input type="checkbox" id="c1x-annonces"> Inclure annonces, LOI et démonstrateurs</label>
+      <label><input type="checkbox" id="c1x-knds"> Inclure le périmètre groupe KNDS (hors KNDS France)</label>
+    </details>
+    <span class="c1x-count" id="c1x-count" aria-live="polite">Chargement…</span>
   </div>
 
-  <!-- ── Contrôles ── -->
-  <section class="c1-controls surface-card" aria-label="Filtres et modes">
-
-    <!-- Mode tabs -->
-    <div class="c1-mode-tabs" role="tablist" aria-label="Mode de lecture">
-      <button class="c1-tab is-active" role="tab" aria-selected="true"  data-mode="implantations" id="tab-implantations">Implantations</button>
-      <button class="c1-tab"           role="tab" aria-selected="false" data-mode="partenaires"   id="tab-partenaires">Partenaires Défense</button>
-      <button class="c1-tab"           role="tab" aria-selected="false" data-mode="reseau"        id="tab-reseau">Réseau</button>
-    </div>
-
-    <!-- Filtres principaux -->
-    <div class="c1-filters-row">
-      <label class="c1-filter-label">Entreprise
-        <select id="c1-filter-entreprise">
-          <option value="all">Toutes (9)</option>
-        </select>
-      </label>
-      <label class="c1-filter-label">Pays
-        <select id="c1-filter-pays">
-          <option value="all">Tous</option>
-        </select>
-      </label>
-      <label class="c1-filter-label" id="c1-label-pertinence">Pertinence Défense
-        <select id="c1-filter-pertinence">
-          <option value="all">Toutes</option>
-          <option value="directe">Directe</option>
-          <option value="mixte/duale">Mixte / duale</option>
-          <option value="duale/indirecte">Duale / indirecte</option>
-          <option value="commerciale">Commerciale</option>
-          <option value="faible/civile">Faible / civile</option>
-        </select>
-      </label>
-      <label class="c1-filter-label" id="c1-label-type">Type de site
-        <select id="c1-filter-type">
-          <option value="all">Tous</option>
-        </select>
-      </label>
-      <label class="c1-filter-label" id="c1-label-statut">Statut
-        <select id="c1-filter-statut">
-          <option value="all">Tous</option>
-        </select>
-      </label>
-      <label class="c1-filter-label">Confiance
-        <select id="c1-filter-confiance">
-          <option value="all">Tous niveaux</option>
-          <option value="haute">Haute</option>
-          <option value="moyenne">Moyenne</option>
-          <option value="faible">Faible</option>
-        </select>
-      </label>
-    </div>
-
-    <!-- Toggles -->
-    <div class="c1-toggles-row">
-      <label class="c1-toggle-label">
-        <input type="checkbox" id="toggle-annonces"> Inclure annonces / LOI / démonstrateurs
-      </label>
-      <label class="c1-toggle-label">
-        <input type="checkbox" id="toggle-dual"> Inclure activités duales / civiles
-      </label>
-      <label class="c1-toggle-label">
-        <input type="checkbox" id="toggle-knds"> Inclure périmètre groupe KNDS
-      </label>
-    </div>
-
-    <div class="c1-controls-meta">
-      <span id="c1-count-label" aria-live="polite">Chargement…</span>
-      <button type="button" id="c1-reset-filters" class="c1-btn-reset" hidden>Effacer les filtres</button>
-    </div>
-  </section>
-
-  <!-- ── Corps principal : carte + panneau ── -->
-  <div class="c1-grid">
-
-    <!-- Carte -->
-    <div class="c1-map-wrap">
-      <div id="c1-map" aria-label="Carte des implantations internationales Cercle 1"></div>
-      <div id="c1-knds-msg" class="c1-knds-message" hidden>
-        Dans cette sélection V1, aucune implantation étrangère n'est affichée dans le périmètre strict de KNDS France. Activez « Inclure périmètre groupe KNDS » pour explorer les implantations documentées du groupe.
-        <em>Cette phrase décrit le périmètre du référentiel V1 ; elle ne constitue pas un jugement juridique sur la présence internationale de KNDS France.</em>
-      </div>
-    </div>
-
-    <!-- Panneau latéral -->
-    <aside class="c1-panel" id="c1-panel" aria-label="Fiche analytique">
-      <div id="c1-panel-welcome" class="c1-panel-welcome">
-        <p>Sélectionnez une entreprise dans le filtre ou cliquez sur un marqueur pour afficher la fiche analytique.</p>
-      </div>
-      <div id="c1-panel-content" hidden></div>
+  <div class="c1x-grid">
+    <div id="c1x-map" aria-label="Carte des implantations internationales du Cercle 1"></div>
+    <aside class="c1x-panel">
+      <nav class="c1x-tabs" id="c1x-tabs" aria-label="Contenu du panneau">
+        <button data-tab="implantations" class="is-active">Implantations</button>
+        <button data-tab="cooperations">Coopérations</button>
+      </nav>
+      <div class="c1x-panel-body" id="c1x-panel-body"><p class="c1x-empty">Chargement des données…</p></div>
     </aside>
   </div>
 
-  <!-- ── Zone erreur ── -->
-  <div id="c1-error" class="c1-error" hidden role="alert">
-    <p id="c1-error-msg">Impossible de charger les données.</p>
-  </div>
-
-  <!-- ── Méthodologie ── -->
   <section id="methodologie-cercle1" class="c1-methodo-section">
     <h2>Méthode &amp; sources — Cercle 1 International</h2>
 
@@ -167,5 +87,5 @@ format:
 
 </div>
 
-<script src="scripts/cercle1-international.js?v=20260814a" defer></script>
+<script src="scripts/cercle1-international.js?v=20260814b" defer></script>
 ```
