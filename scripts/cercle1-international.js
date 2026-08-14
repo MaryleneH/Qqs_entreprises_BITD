@@ -74,9 +74,16 @@
     const cls = p === 'directe' ? 'directe' : (/dual|mixte|defense/.test(p) ? 'duale' : 'autre');
     return `<span class="c1x-badge c1x-badge--${cls}">${esc(p)}</span>`;
   }
+  const STATUT_TIP = {
+    'LOI_2026': "Lettre d'intention (Letter of Intent) signée en 2026 : engagement politique ou industriel préalable, pas encore un contrat.",
+    'demonstration_2026': "Phase de démonstrateur en 2026 : validation technique, pas une production en série.",
+    'annoncee_industrialisation': "Industrialisation annoncée publiquement, mise en œuvre non encore vérifiée.",
+    'annonce': "Implantation annoncée publiquement, ouverture non encore vérifiée."
+  };
   function badgeStatut(s) {
-    return s && s !== 'actif' && s !== 'actuelle'
-      ? `<span class="c1x-badge c1x-badge--annonce">${esc(s.replace(/_/g, ' '))}</span>` : '';
+    if (!s || s === 'actif' || s === 'actuelle') return '';
+    const tip = STATUT_TIP[s] ? ` title="${STATUT_TIP[s]}"` : '';
+    return `<span class="c1x-badge c1x-badge--annonce"${tip}>${esc(s.replace(/_/g, ' '))}</span>`;
   }
   function srcLink(url) {
     return url ? ` <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">source ↗</a>` : '';
@@ -168,11 +175,15 @@
   function initials(e) { return shortName(e).split(/[\s–-]+/).map(w => w[0]).join('').slice(0, 3); }
   function renderMatrix(rels) {
     const n = data.entreprises.length;
-    const count = {};
+    const count = {}, seen = new Set();
     rels.forEach(r => {
       const a = r.entreprise_id, b = r.partenaire_cercle1_entreprise_id;
       if (!b) return;
       const k = [a, b].sort((x, y) => x - y).join('-');
+      // Une même relation saisie dans les deux sens (gouvernance) ne compte qu'une fois.
+      const sig = k + '|' + (r.programme_projet || '').toLowerCase().replace(/gouvernance /, '');
+      if (seen.has(sig)) return;
+      seen.add(sig);
       count[k] = (count[k] || 0) + 1;
     });
     let html = `<div class="c1x-group-title">Coopérations croisées au sein du Cercle 1</div>
