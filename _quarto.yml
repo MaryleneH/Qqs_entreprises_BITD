@@ -7,6 +7,7 @@ project:
     - comprendre.qmd
     - risques.qmd
     - methodologie.qmd
+    - cercle1-international.qmd
   resources:
     - data/**
     - scripts/**
@@ -26,6 +27,12 @@ website:
         text: Comprendre les données
       - href: methodologie.qmd
         text: Méthodologie & sources
+      - text: "Cercle 1"
+        menu:
+          - text: "International & coopérations"
+            href: cercle1-international.qmd
+          - text: "Méthode & sources"
+            href: cercle1-international.qmd#methodologie-cercle1
     right:
       - text: Situation au 12 août 2026
   page-footer:

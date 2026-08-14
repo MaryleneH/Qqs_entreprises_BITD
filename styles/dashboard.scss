@@ -5336,3 +5336,398 @@ body.mobile-detail-open {
   margin: 0.75rem 0 1rem;
   line-height: 1.55;
 }
+
+// =============================================================================
+// CERCLE 1 — INTERNATIONAL  (.c1-* scope uniquement)
+// =============================================================================
+
+.c1-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 1.75rem;
+  box-sizing: border-box;
+}
+
+// En-tête
+.c1-header {
+  margin-bottom: 1.5rem;
+}
+.c1-title {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.4rem;
+}
+.c1-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.97rem;
+  margin: 0 0 0.9rem;
+}
+.c1-scope-banner {
+  background: rgba(201,154,74,0.10);
+  border-left: 3px solid var(--gold);
+  padding: 0.7rem 1rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.84rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+// KPI
+.c1-kpi-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.c1-kpi {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  box-shadow: var(--shadow-card);
+}
+.c1-kpi-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+}
+.c1-kpi-label {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+// Contrôles
+.c1-controls {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+.c1-mode-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+.c1-tab {
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: 44px;
+  &:hover { border-color: var(--navy); color: var(--navy); }
+  &.is-active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+}
+.c1-filters-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+.c1-filter-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  gap: 0.2rem;
+  select {
+    font-size: 0.88rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    min-height: 36px;
+    cursor: pointer;
+  }
+}
+.c1-toggles-row {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+.c1-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.87rem;
+  color: var(--text);
+  cursor: pointer;
+  input[type="checkbox"] { accent-color: var(--navy); width: 16px; height: 16px; }
+}
+.c1-controls-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.c1-btn-reset {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  &:hover { border-color: var(--navy); color: var(--navy); }
+}
+
+// Grille carte + panneau
+.c1-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  align-items: start;
+}
+.c1-map-wrap {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border);
+  min-height: 480px;
+  #c1-map {
+    height: 500px;
+    width: 100%;
+    background: #e8edf2;
+  }
+}
+.c1-knds-message {
+  background: rgba(201,154,74,0.12);
+  border-top: 2px solid var(--gold);
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  em { display: block; margin-top: 0.3rem; font-size: 0.78rem; color: var(--text-secondary); }
+}
+
+// Panneau latéral
+.c1-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.1rem;
+  box-shadow: var(--shadow-card);
+  max-height: 600px;
+  overflow-y: auto;
+  position: sticky;
+  top: 1rem;
+}
+.c1-panel-welcome {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  padding: 1rem 0;
+  text-align: center;
+}
+.c1-panel-header {
+  margin-bottom: 0.9rem;
+}
+.c1-panel-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.25rem;
+}
+.c1-panel-specialite {
+  font-size: 0.83rem;
+  color: var(--teal);
+  margin: 0;
+}
+.c1-panel-location {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0.2rem 0 0;
+}
+.c1-panel-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+  dt { font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+  dd { margin: 0; color: var(--text); word-break: break-word; }
+}
+.c1-panel-section {
+  margin-bottom: 1rem;
+  h3 { font-size: 0.88rem; font-weight: 600; color: var(--navy); margin: 0 0 0.45rem; }
+}
+.c1-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.c1-list-item {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.84rem;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  &:hover, &:focus { border-color: var(--navy); background: rgba(20,38,61,0.04); outline: none; }
+}
+.c1-list-name { font-weight: 600; color: var(--text); }
+.c1-list-meta  { font-size: 0.78rem; color: var(--text-secondary); }
+.c1-list-empty { font-size: 0.84rem; color: var(--text-secondary); font-style: italic; padding: 0.3rem 0; }
+
+.c1-preuve { font-style: italic; }
+.c1-coord-note {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+.c1-note-nocoords {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+.c1-knds-inline-msg {
+  background: rgba(201,154,74,0.10);
+  border-left: 3px solid var(--gold);
+  padding: 0.55rem 0.8rem;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-bottom: 0.85rem;
+  line-height: 1.5;
+}
+
+// Source card
+.c1-source-card {
+  border-top: 1px solid var(--border);
+  padding-top: 0.65rem;
+  margin-top: 0.65rem;
+}
+.c1-source-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.81rem;
+}
+.c1-source-label  { font-weight: 600; color: var(--text-secondary); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.c1-source-title  { a { color: var(--teal); text-decoration: underline; } }
+.c1-source-org    { color: var(--text-secondary); }
+.c1-source-date   { color: var(--text-secondary); font-size: 0.78rem; }
+.c1-source-unresolved { font-size: 0.8rem; color: var(--text-secondary); font-style: italic; }
+
+// Badges statut
+.c1-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-badge);
+  font-size: 0.73rem;
+  font-weight: 600;
+  &.badge-loi     { background: #EAF2F8; color: #1A5276; border: 1px solid #1A5276; }
+  &.badge-demo    { background: #EAF2F8; color: #1A5276; border: 1px dashed #1A5276; }
+  &.badge-annonce { background: #FEF5E7; color: var(--risk-modere); border: 1px solid var(--risk-modere); }
+  &.badge-autre   { background: var(--background); color: var(--text-secondary); border: 1px solid var(--border); }
+}
+
+// Bouton retour panneau
+.c1-btn-back {
+  background: transparent;
+  border: none;
+  color: var(--teal);
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0 0 0.4rem;
+  text-decoration: underline;
+}
+
+// Erreurs
+.c1-error {
+  background: #FDEDEC;
+  border: 1px solid var(--risk-eleve);
+  border-radius: 8px;
+  padding: 0.9rem 1.2rem;
+  color: var(--risk-eleve);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.c1-partial-error {
+  background: #FEF5E7;
+  border-left: 3px solid var(--gold);
+  padding: 0.5rem 0.9rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  p { margin: 0.2rem 0; }
+}
+
+// Méthodologie
+.c1-methodo-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow-card);
+  margin-top: 2rem;
+  h2 { font-size: 1.15rem; font-weight: 700; color: var(--navy); margin: 0 0 1rem; }
+  h3 { font-size: 0.95rem; font-weight: 700; color: var(--navy-secondary); margin: 1.2rem 0 0.4rem; }
+  p  { font-size: 0.9rem; color: var(--text); line-height: 1.6; margin: 0 0 0.5rem; }
+  ul { font-size: 0.9rem; color: var(--text); line-height: 1.6; padding-left: 1.2rem; }
+  dl { font-size: 0.9rem; color: var(--text); }
+  dt { font-weight: 700; margin-top: 0.8rem; }
+  dd { margin: 0.1rem 0 0 1rem; line-height: 1.55; }
+  code { background: rgba(0,0,0,0.05); padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.82rem; }
+}
+.c1-methodo-note {
+  margin-top: 1rem;
+  font-size: 0.82rem !important;
+  color: var(--text-secondary) !important;
+  font-style: italic;
+}
+
+// ── Mobile <= 900px ──────────────────────────────────────────────────────────
+@media (max-width: 900px) {
+  .c1-page { padding: 1rem; }
+  .c1-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .c1-map-wrap { min-height: unset; }
+  #c1-map { height: 55vw !important; min-height: 240px; max-height: 60vh; }
+  .c1-panel {
+    position: static;
+    max-height: none;
+  }
+  .c1-filters-row { gap: 0.5rem; }
+  .c1-filter-label { width: 100%; select { width: 100%; } }
+  .c1-toggles-row { flex-direction: column; gap: 0.5rem; }
+  .c1-tab { min-height: 44px; padding: 0.5rem 0.9rem; }
+  .c1-kpi-row { gap: 0.6rem; }
+  .c1-kpi { min-width: 80px; padding: 0.6rem 0.8rem; }
+  .c1-kpi-value { font-size: 1.35rem; }
+  .c1-methodo-section { padding: 1rem; }
+}
