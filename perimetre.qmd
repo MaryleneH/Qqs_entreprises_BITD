@@ -34,6 +34,16 @@ format:
 </div>
 ```
 
+## Vocation du dashboard
+
+Le site a vocation **factuelle, descriptive et pédagogique**. Il cherche à répondre à trois questions :
+
+- **Où ?** où sont situés les sièges et les établissements industriels ;
+- **Quoi ?** quels produits, services ou programmes sont associés à chaque acteur ;
+- **Quelle dimension économique ?** quels indicateurs publics permettent d'apprécier la taille, la charge et la dynamique.
+
+Pour les définitions des indicateurs financiers et des acronymes industriels, voir <a href="comprendre.html">Comprendre les données</a>.
+
 ## Pourquoi 30 entreprises
 
 Le panel retient trente acteurs industriels majeurs, choisis pour couvrir l'ensemble de la chaîne de
@@ -46,6 +56,30 @@ quelques centaines de salariés positionnée sur un maillon critique — pyrotec
 matériaux énergétiques — figure au panel, tandis que des groupes plus gros mais dont l'activité
 défense française est marginale n'y figurent pas. Le panel n'est pas non plus stable dans le temps :
 il reflète un état de la base industrielle à une date donnée.
+
+## Constitution du panel {#constitution-du-panel}
+
+```{=html}
+    <h2 id="comment-les-entreprises-ont-elles-ete-selectionnees" class="panel-section-anchor">
+      Comment les 30 entreprises ont-elles été sélectionnées ?
+    </h2>
+    <!-- filled by panel-methodology.js buildMethodologieSection() -->
+    <div id="panel-methodo-section"></div>
+```
+
+## Pourquoi cette entreprise ? {#pourquoi-cette-entreprise}
+
+```{=html}
+    <p class="methodo-lead">Sélectionnez une entreprise pour afficher la justification exacte de son inclusion dans le panel, ses critères de sélection et ses sources documentaires.</p>
+    <div class="panel-company-select-wrap">
+      <label for="panel-company-select" class="sr-only">Entreprise</label>
+      <select id="panel-company-select" aria-label="Sélectionner une entreprise pour afficher la justification de son inclusion dans le panel">
+        <option value="">— Choisir une entreprise —</option>
+      </select>
+    </div>
+    <div id="panel-company-fiche" aria-live="polite"></div>
+```
+
 
 ## Les quatre catégories d'acteurs
 
@@ -66,6 +100,60 @@ analyse dédiée.
 Ces catégories sont **déclaratives et discutables**. La frontière entre « acteur technologique
 stratégique » et « ETI stratégique » relève d'un jugement sur la criticité, pas d'un seuil
 mesurable.
+
+## Lire la chaîne de valeur {#chaine-de-valeur}
+
+```{=html}
+    <p class="methodo-lead">
+      Cette classification est une <strong>lecture analytique</strong> propre au dashboard.
+      Elle structure la position des entreprises en huit fonctions industrielles, construites à
+      partir des sources documentées — notamment les travaux EcoDef sur les fonctions industrielles
+      des entreprises de défense.
+    </p>
+
+    <div class="cv-no-hierarchy-note">
+      <strong>Ces huit catégories ne constituent ni un classement, ni une note, ni un niveau
+      d'importance.</strong> Une position amont n'est pas « inférieure » à une position
+      d'intégration. Elles décrivent la <em>fonction industrielle</em> de chaque acteur dans
+      la chaîne, indépendamment de son statut institutionnel dans le panel.
+    </div>
+
+    <h3>Les huit positions</h3>
+    <div class="cv-referentiel-grid" id="cv-methodo-grid">
+      <!-- filled by identite.js renderMethodologieCVGrid() -->
+    </div>
+
+    <h3>Type d'acteur et position dans la chaîne de valeur</h3>
+    <p>
+      Le champ <em>type d'acteur</em> (grand maître d'œuvre, équipementier, etc.) reflète le
+      statut <strong>institutionnel</strong> d'une entreprise dans le panel&nbsp;: comment elle
+      est identifiée par les acteurs de la politique industrielle de défense.
+      La <em>position dans la chaîne de valeur</em>, quant à elle, est une lecture
+      <strong>fonctionnelle</strong> propre au dashboard&nbsp;: elle décrit la contribution
+      industrielle principale de l'entreprise.
+    </p>
+    <p>
+      Ces deux informations peuvent diverger. Une entreprise peut être identifiée
+      institutionnellement comme grand maître d'œuvre tout en ayant, dans notre lecture
+      fonctionnelle, une position principale d'équipementier de systèmes.
+    </p>
+
+    <h3>Source méthodologique</h3>
+    <p>
+      La classification s'appuie notamment sur&nbsp;:
+    </p>
+    <ul>
+      <li>
+        <a href="https://www.defense.gouv.fr/ssm/ecodef-statistiques/ecodef-statistiques" target="_blank" rel="noopener noreferrer">
+          EcoDef Statistiques n°&nbsp;279 ↗
+        </a> — DGA / Observatoire économique de la défense, travaux sur les fonctions industrielles.
+      </li>
+    </ul>
+    <p class="methodo-lead" style="font-size:0.8rem;color:var(--text-secondary)">
+      Cette nomenclature ne constitue pas une classification officielle.
+    </p>
+```
+
 
 ## Quelles entités juridiques sont retenues
 

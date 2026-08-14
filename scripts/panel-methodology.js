@@ -172,7 +172,7 @@
       tooltipEl.innerHTML = `
         <div class="panel-tooltip__header">À propos du panel</div>
         <div class="panel-tooltip__body">${esc(text)}</div>
-        <a href="methodologie.html#constitution-du-panel" class="panel-tooltip__link">Voir la méthodologie →</a>
+        <a href="perimetre.html#constitution-du-panel" class="panel-tooltip__link">Voir la méthodologie →</a>
       `;
 
       let hoverOpen = false;
@@ -311,7 +311,7 @@
           <h4 class="panel-why-fiche__section-title">Sources documentaires</h4>
           <ul class="panel-sources-list">${sourcesHtml}</ul>
         </div>
-        <a href="methodologie.html#constitution-du-panel" class="panel-why-fiche__methodo-link">Méthodologie complète →</a>
+        <a href="perimetre.html#constitution-du-panel" class="panel-why-fiche__methodo-link">Méthodologie complète →</a>
       </div>
     `;
   }

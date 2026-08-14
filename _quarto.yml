@@ -7,6 +7,7 @@ project:
     - comprendre.qmd
     - risques.qmd
     - methodologie.qmd
+    - perimetre.qmd
     - cercle1-international.qmd
   resources:
     - data/**
@@ -27,6 +28,8 @@ website:
         text: Comprendre les données
       - href: methodologie.qmd
         text: Méthodologie & sources
+      - href: perimetre.qmd
+        text: Périmètre & sélection
       - text: "Cercle 1"
         menu:
           - text: "International & coopérations"
@@ -62,7 +65,7 @@ format:
           <script src="scripts/provenance.js?v=20260813b" defer></script>
           <script src="scripts/dashboard.js?v=20260813b" defer></script>
           <script src="scripts/identite.js?v=20260813b" defer></script>
-          <script src="scripts/panel-methodology.js?v=20260813b" defer></script>
+          <script src="scripts/panel-methodology.js?v=20260814a" defer></script>
           <script src="scripts/filters.js?v=20260813b" defer></script>
           <script src="scripts/programme.js?v=20260813b" defer></script>
           <script src="scripts/map.js?v=20260813b" defer></script>
