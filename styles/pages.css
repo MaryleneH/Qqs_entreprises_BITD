@@ -81,3 +81,44 @@
   text-transform: uppercase; border-radius: 4px; padding: .1rem .4rem; margin-right: .35rem;
   background: #E8F0F8; color: #1A3A5C; border: 1px solid #A9C4DE;
 }
+
+
+/* ============================================================
+   Explorateur d'entreprises : liste à défilement propre
+   ------------------------------------------------------------
+   La liste des 30 fiches dictait la hauteur de toute la page
+   (plus de 9 000 px). Sur grand écran elle devient une colonne
+   autonome, fixée à hauteur d'écran, avec des cartes compactes.
+   ============================================================ */
+@media (min-width: 992px) {
+  .entreprises-explorer { align-items: start; }
+  .entreprises-master {
+    position: sticky; top: 84px;
+    max-height: calc(100vh - 104px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .entreprises-master::-webkit-scrollbar { width: 8px; }
+  .entreprises-master::-webkit-scrollbar-thumb { background: #D5DCE4; border-radius: 4px; }
+
+  /* Cartes compactes : l'essentiel visible, le détail dans la fiche. */
+  .entreprise-card-btn { padding: .55rem .7rem !important; }
+  .entreprise-card-btn h3 { font-size: .92rem !important; margin-bottom: .1rem !important; }
+  .entreprise-card-role, .entreprise-card-domain { font-size: .72rem !important; margin: 0 !important; }
+  .entreprise-card-cv { margin: .3rem 0 0 !important; }
+  .entreprise-card-cv .cv-badge { font-size: .68rem !important; }
+  /* Au-delà de deux capacités, on n'affiche rien : la fiche les donne toutes. */
+  .entreprise-card-tags .chip:nth-of-type(n+3) { display: none; }
+  .entreprise-card-tags { gap: .25rem !important; margin-top: .35rem !important; }
+  .entreprise-card-tags .chip { font-size: .66rem !important; padding: .1rem .45rem !important; }
+  .entreprise-card-link, .entreprise-card-btn + a { font-size: .72rem !important; }
+}
+
+/* Sur téléphone, la liste reste linéaire mais les cartes s'allègent. */
+@media (max-width: 991px) {
+  .entreprise-card-btn { padding: .5rem .65rem !important; }
+  .entreprise-card-btn h3 { font-size: .9rem !important; }
+  .entreprise-card-role, .entreprise-card-domain { font-size: .72rem !important; margin: 0 !important; }
+  .entreprise-card-tags .chip:nth-of-type(n+3) { display: none; }
+  .entreprise-card-tags .chip { font-size: .66rem !important; }
+}
