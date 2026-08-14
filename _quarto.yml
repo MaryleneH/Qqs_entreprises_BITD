@@ -9,6 +9,7 @@ project:
     - methodologie.qmd
     - perimetre.qmd
     - cercle1-international.qmd
+    - cercle1-profils.qmd
   resources:
     - data/**
     - scripts/**
@@ -34,6 +35,8 @@ website:
         menu:
           - text: "International & coopérations"
             href: cercle1-international.qmd
+          - text: "Fiches groupes"
+            href: cercle1-profils.qmd
           - text: "Méthode & sources"
             href: cercle1-international.qmd#methodologie-cercle1
     right:
