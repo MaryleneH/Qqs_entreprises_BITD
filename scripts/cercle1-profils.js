@@ -174,6 +174,8 @@
       <p class="c1p-spec">${esc(x.specialite || e.specialite_cercle1)}</p>
       <p class="c1p-type">${esc(idn.type_acteur_panel || x.categorie || '')}</p></div>`;
 
+    html += `<div class="c1p-blocs">`;
+
     /* 1. ce qu'il fait */
     html += `<section class="c1p-bloc"><h3>Ce qu'il fait</h3>`;
     if (idn.ce_qu_il_faut_retenir) html += `<p class="c1p-retenir">${esc(idn.ce_qu_il_faut_retenir)}</p>`;
@@ -229,7 +231,13 @@
         au titre du groupe (${esc(p2.join(', '))}), rattachée${horsPerim.length > 1 ? 's' : ''} à d'autres sociétés
         que celle retenue dans le panel. Elles ne sont pas comptées ci-dessus.</p>`;
     }
-    if (e.perimetre_international) html += `<p class="c1p-detail"><strong>Périmètre retenu :</strong> ${esc(e.perimetre_international)}</p>`;
+    const PERIM = {
+      selection_documentee_non_exhaustive: "sélection documentée, non exhaustive",
+      selection_documentee: "sélection documentée",
+      groupe_hors_entite_panel: "périmètre du groupe, au-delà de l'entité du panel"
+    };
+    if (e.perimetre_international) html += `<p class="c1p-detail"><strong>Périmètre retenu :</strong>
+      ${esc(PERIM[e.perimetre_international] || e.perimetre_international.replace(/_/g, ' '))}</p>`;
     html += `</section>`;
 
     /* 5. liens juridiques */
@@ -264,7 +272,7 @@
       référentiel. Les plans de recrutement et tensions de compétences de la BITD ne font pas l'objet d'une
       publication homogène par entreprise ; ce champ reste ouvert.</p></section>`;
 
-    html += `<p class="c1p-note">${esc(p.limites_interpretation || '')}
+    html += `</div><p class="c1p-note">${esc(p.limites_interpretation || '')}
       Dernière vérification&nbsp;: ${esc(p.derniere_verification || '')}.</p>`;
     return html;
   }

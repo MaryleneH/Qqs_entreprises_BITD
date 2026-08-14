@@ -26,13 +26,17 @@
     let current = '';
     let row = [];
     let inQuotes = false;
+    // Séparateur déduit de la ligne d'en-tête : le dépôt mêle des CSV à virgule
+    // (panel, provenance) et à point-virgule (Cercle 1, programmes).
+    const entete = text.split(/\r?\n/)[0] || '';
+    const sep = (entete.split(';').length > entete.split(',').length) ? ';' : ',';
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
       const next = text[i + 1];
       if (char === '"') {
         if (inQuotes && next === '"') { current += '"'; i++; }
         else inQuotes = !inQuotes;
-      } else if (char === ',' && !inQuotes) {
+      } else if (char === sep && !inQuotes) {
         row.push(current); current = '';
       } else if ((char === '\n' || char === '\r') && !inQuotes) {
         if (char === '\r' && next === '\n') i++;
@@ -43,6 +47,40 @@
     const [header, ...body] = rows;
     if (!header) return [];
     return body.map((cells) => Object.fromEntries(header.map((k, i) => [k.replace(/^\uFEFF/, ''), cells[i] ?? ''])));
+  }
+
+  // ---------------------------------------------------------------------------
+  // Fédération du catalogue Cercle 1
+  // ---------------------------------------------------------------------------
+  // Les deux catalogues n'ont ni le même schéma ni le même vocabulaire de niveau
+  // de source (grille A1/A2/B2 d'un côté, « primaire »/« méthode » de l'autre).
+  // On projette le second sur le schéma du premier SANS traduire les valeurs :
+  // le champ `catalogue` permet de les distinguer à l'affichage.
+  function normaliserCercle1(sources, companies) {
+    if (!Array.isArray(sources) || !sources.length) return [];
+    const noms = {};
+    (companies || []).forEach((c) => { if (c.entreprise_id) noms[c.entreprise_id] = c.entreprise; });
+    const CATEGORIES = {
+      constitution_panel: 'constitution du panel',
+      implantations: 'implantations internationales',
+      relation_industrielle: 'relation industrielle',
+      implantations_relation: 'implantations et relations',
+      localisation_partenaire: 'localisation de partenaire',
+      methodologie: 'méthodologie'
+    };
+    return sources.map((s) => ({
+      source_id: s.source_id,
+      entreprise: noms[s.entreprise_id] || '',
+      niveau_source: s.niveau_source || '',
+      type_source: s.type_source || '',
+      libelle: s.titre || s.source_id,
+      url: s.url || '',
+      usage_principal: CATEGORIES[s.categorie] || (s.categorie || '').replace(/_/g, ' '),
+      date_consultation: s.date_acces || '',
+      commentaire: [s.objet, s.perimetre, s.notes].filter(Boolean).join(' — '),
+      organisme: s.organisme || '',
+      catalogue: 'Cercle 1'
+    }));
   }
 
   function fetchCSV(relativePath) {
@@ -58,9 +96,12 @@
     state.promise = Promise.all([
       fetchCSV('data/provenance/catalogue_sources.csv'),
       fetchCSV('data/provenance/provenance_entreprises.csv'),
-      fetchCSV('data/provenance/provenance_etablissements.csv')
-    ]).then(([sources, companyProv, siteProv]) => {
-      state.allSources = sources;
+      fetchCSV('data/provenance/provenance_etablissements.csv'),
+      // Catalogue Cercle 1 : fédéré au catalogue principal, sans réécriture de ses valeurs.
+      fetchCSV('data/cercle1/cercle1_sources.csv').catch(() => []),
+      fetchCSV('data/cercle1/cercle1_entreprises.csv').catch(() => [])
+    ]).then(([sources, companyProv, siteProv, c1Sources, c1Companies]) => {
+      state.allSources = sources.concat(normaliserCercle1(c1Sources, c1Companies));
       state.allCompanyProv = companyProv;
       state.allSiteProv = siteProv;
 

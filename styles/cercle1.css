@@ -173,6 +173,16 @@
 .c1p-rels li { font-size: .8rem; color: #45566A; padding: .4rem 0; border-bottom: 1px solid #F1F4F7; }
 .c1p-src { font-size: .74rem !important; }
 .c1p-scrollhint { display: none; font-size: .72rem; color: #8A96A3; margin: 0 0 .3rem; }
+/* Confort de lecture sur grand écran : au-delà d'environ 90 signes par ligne le
+   texte devient pénible. Les blocs de fiche passent en deux colonnes. */
+#c1p-app .c1x-sub, #c1p-app .c1x-scope { max-width: 900px; }
+@media (min-width: 1100px) {
+  .c1p-blocs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem; align-items: start; }
+  .c1p-blocs > .c1p-bloc { margin-bottom: 0; }
+  .c1p-fiche-head p { max-width: 900px; }
+  .c1p-table { font-size: .8rem; }
+}
 @media (max-width: 700px) {
   .c1x-page { padding: 1rem .9rem 2.5rem; }
   .c1x-header h1 { font-size: 1.5rem; }

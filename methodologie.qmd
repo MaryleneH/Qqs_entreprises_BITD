@@ -161,6 +161,15 @@ Les données du dashboard appartiennent à l'un de ces sept types. Un petit badg
       <button type="submit" class="source-search-submit">Rechercher</button>
     </form>
     <div id="source-search-results" aria-live="polite"></div>
+
+    <p class="methodo-note">
+      La recherche couvre deux catalogues&nbsp;: celui du panel principal et celui du Cercle 1,
+      signalé par un badge. Ils n'emploient pas la même grille de qualification&nbsp;: le premier
+      distingue des niveaux <em>A1 / A2 / B2</em> (registre officiel, source primaire corporate,
+      vérification secondaire), le second se limite à <em>primaire</em> et <em>méthode</em>.
+      Ces vocabulaires sont affichés tels qu'ils ont été saisis, sans traduction&nbsp;: une
+      correspondance automatique donnerait une fausse impression d'homogénéité.
+    </p>
 ```
 
 ## Statut des programmes
