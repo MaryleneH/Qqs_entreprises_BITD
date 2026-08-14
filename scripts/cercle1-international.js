@@ -115,7 +115,13 @@
 
   /* ---------- carte ---------- */
   function buildMap() {
-    if (!window.L) return;
+    if (!window.L) {
+      const el = document.getElementById('c1x-map');
+      if (el) el.innerHTML = '<p class="c1x-mapfail">La bibliothèque cartographique (Leaflet) n' + "'" + 'a pas pu être chargée : ' +
+        'la carte ne peut pas s' + "'" + 'afficher. Les implantations restent consultables dans le panneau ci-contre. ' +
+        'Si le problème persiste, le réseau bloque peut-être unpkg.com.</p>';
+      return;
+    }
     map = L.map('c1x-map', { worldCopyJump: true }).setView([28, 10], 2);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
       { attribution: '© OpenStreetMap contributors © CARTO', maxZoom: 12 }).addTo(map);
