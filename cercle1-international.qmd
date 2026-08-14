@@ -1,6 +1,6 @@
 ---
 pagetitle: "Cercle 1 — International"
-page-layout: full
+page-layout: custom
 format:
   html:
     css: [styles/pages.css, styles/cercle1.css]
@@ -36,13 +36,28 @@ format:
 
   <div class="c1x-grid">
     <div id="c1x-map" aria-label="Carte des implantations internationales du Cercle 1"></div>
-    <aside class="c1x-panel">
+    <div class="c1x-panel" role="complementary">
       <nav class="c1x-tabs" id="c1x-tabs" aria-label="Contenu du panneau">
         <button data-tab="implantations" class="is-active">Implantations</button>
         <button data-tab="cooperations">Coopérations</button>
       </nav>
       <div class="c1x-panel-body" id="c1x-panel-body"><p class="c1x-empty">Chargement des données…</p></div>
-    </aside>
+    </div>
+  </div>
+
+  <div class="c1x-sigles">
+    <h2>Sigles utilisés sur cette page</h2>
+    <dl>
+      <dt>LOI</dt><dd>Letter of Intent (lettre d'intention) : engagement préalable entre États ou industriels, qui précède un éventuel contrat — ce n'en est pas un.</dd>
+      <dt>JV</dt><dd>Joint-venture (coentreprise) : société commune détenue par plusieurs groupes.</dd>
+      <dt>MRO</dt><dd>Maintenance, Repair &amp; Overhaul : maintenance, réparation et révision — l'équivalent du MCO français (maintien en condition opérationnelle).</dd>
+      <dt>C4ISR</dt><dd>Commandement, contrôle, communications, informatique, renseignement, surveillance et reconnaissance : les systèmes d'information et de commandement militaires.</dd>
+      <dt>AESA</dt><dd>Active Electronically Scanned Array : radar à antenne active à balayage électronique (ex. RBE2 du Rafale).</dd>
+      <dt>DRAL</dt><dd>Dassault Reliance Aerospace Limited : coentreprise indienne de Dassault Aviation à Nagpur.</dd>
+      <dt>RESUS</dt><dd>Système de sauvetage par récupération des lanceurs, conçu et fabriqué par ArianeGroup à Trauen (Allemagne).</dd>
+      <dt>ICN</dt><dd>Itaguaí Construções Navais : coentreprise brésilienne de Naval Group (programme de sous-marins Prosub).</dd>
+      <dt>DGA</dt><dd>Direction générale de l'armement : maître d'œuvre étatique des programmes d'armement français, dont la liste des neuf maîtres d'œuvre industriels fonde ce Cercle 1.</dd>
+    </dl>
   </div>
 
   <section id="methodologie-cercle1" class="c1-methodo-section">
@@ -87,5 +102,5 @@ format:
 
 </div>
 
-<script src="scripts/cercle1-international.js?v=20260814b" defer></script>
+<script src="scripts/cercle1-international.js?v=20260814c" defer></script>
 ```
