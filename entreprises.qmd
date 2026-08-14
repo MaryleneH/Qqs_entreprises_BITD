@@ -1,4 +1,4 @@
----
+ommit -m---
 pagetitle: "Entreprises"
 page-layout: full
 format:
@@ -53,13 +53,16 @@ format:
   <div id="entreprises-loading" class="entreprises-loading" aria-live="polite">Chargement des entreprises…</div>
 
   <section id="entreprises-explorer" class="entreprises-explorer" hidden>
-    <div class="entreprises-master surface-card">
+    <details class="entreprises-browse">
+      <summary>Parcourir les 30 entreprises</summary>
+      <div class="entreprises-master surface-card">
       <div id="entreprises-list" class="entreprises-list"></div>
       <div id="entreprises-empty" class="entreprises-empty" hidden>
         <p>Aucune entreprise ne correspond à ces critères.</p>
         <button type="button" id="entreprises-empty-reset">Effacer les filtres</button>
       </div>
-    </div>
+      </div>
+    </details>
     <article id="entreprises-detail" class="entreprises-detail surface-card" aria-live="polite"></article>
   </section>
 

@@ -106,6 +106,56 @@ sids = {r['site_id'] for r in eta}
 orph = sorted({r['site_id'] for r in pe if r['site_id'] not in sids})
 for o in orph: errors.append(f"provenance: site_id inconnu {o}")
 
+# 6bis. Cohérence de l'unité légale : détecter les homonymies SIRENE
+# ------------------------------------------------------------------
+# Cas rencontré : une société financière homonyme immatriculée en 2023 avait été
+# rattachée à un groupe industriel créé en 1988. Trois signaux la trahissaient.
+
+# a) Familles d'activité incompatibles avec un site industriel ou un siège de groupe BITD.
+APE_A_RISQUE = {
+    '64.19': 'autres intermédiations monétaires', '64.30': 'fonds de placement',
+    '64.91': 'crédit-bail', '64.92': 'autre distribution de crédit', '64.99': 'autres services financiers',
+    '65.11': 'assurance vie', '65.12': 'autres assurances', '65.20': 'réassurance',
+    '66.19': 'auxiliaires de services financiers', '66.22': 'courtage d’assurance',
+    '66.30': 'gestion de fonds',
+    '68.10': 'marchands de biens', '68.20': 'location immobilière', '68.31': 'agences immobilières',
+    '68.32': 'administration de biens', '70.21': 'conseil en relations publiques',
+    '79.11': 'agences de voyage', '82.99': 'services de soutien divers',
+    '85.59': 'enseignement divers', '94.99': 'organisations associatives',
+}
+for r in eta:
+    ape = (r.get('ape_sirene') or '').strip()
+    if not ape:
+        continue
+    famille = ape[:5]
+    if famille in APE_A_RISQUE:
+        warns.append(
+            f"{r['entreprise']} ({r['site_id']}) : APE SIRENE {ape} — {APE_A_RISQUE[famille]} — "
+            f"incompatible avec une activité industrielle ; vérifier qu'il ne s'agit pas d'une société homonyme")
+
+# b) SIREN récent sur un siège : les numéros commençant par 9 sont attribués
+#    aux immatriculations les plus récentes, improbable pour un groupe historique.
+for r in eta:
+    siren = (r.get('siren') or '').strip()
+    if siren.startswith('9') and (r.get('est_siege') == 'true' or r.get('est_siege_unite_legale_sirene') == 'true'):
+        warns.append(
+            f"{r['entreprise']} ({r['site_id']}) : SIREN {siren} correspond à une immatriculation récente "
+            f"alors que la ligne est un siège ; vérifier l'ancienneté de l'unité légale")
+
+# c) Siège d'unité légale dont la raison sociale ne partage aucun mot avec le nom du panel.
+MOTS_VIDES = {'sas', 'sa', 'sarl', 'sasu', 'group', 'groupe', 'france', 'holding', 'soc', 'societe', 'société', 'de', 'du', 'des', 'la', 'le', 'les', 'et'}
+def mots(x):
+    x = x.lower().replace('-', ' ').replace("'", ' ')
+    return {m for m in re.findall(r"[a-zàâäéèêëîïôöùûüç]+", x) if m not in MOTS_VIDES and len(m) > 2}
+for r in eta:
+    rs = (r.get('raison_sociale_sirene') or '').strip()
+    if not rs or r.get('est_siege_unite_legale_sirene') != 'true':
+        continue
+    if not (mots(rs) & mots(r['entreprise'])) and not (mots(rs) & mots(r.get('entite') or '')):
+        warns.append(
+            f"{r['entreprise']} ({r['site_id']}) : raison sociale SIRENE « {rs} » sans mot commun "
+            f"avec le nom du panel ; vérifier le rattachement")
+
 # 7. Cercle 1 — International, fiches groupes et catalogue de sources
 c1_ent = load('data/cercle1/cercle1_entreprises.csv')
 c1_imp = load('data/cercle1/cercle1_implantations_internationales.csv')
