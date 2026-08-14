@@ -84,41 +84,129 @@
 
 
 /* ============================================================
-   Explorateur d'entreprises : liste à défilement propre
+   Explorateur d'entreprises — liste dense
    ------------------------------------------------------------
-   La liste des 30 fiches dictait la hauteur de toute la page
-   (plus de 9 000 px). Sur grand écran elle devient une colonne
-   autonome, fixée à hauteur d'écran, avec des cartes compactes.
+   Avant : 30 cartes de 274 px, page de 9 200 px, fiche étroite.
+   Après : lignes d'une seule ligne de texte, liste fixée à
+   hauteur d'écran, largeur rendue à la fiche.
    ============================================================ */
 @media (min-width: 992px) {
-  .entreprises-explorer { align-items: start; }
+  .entreprises-explorer {
+    align-items: start;
+    grid-template-columns: 300px minmax(0, 1fr) !important;
+    gap: 1.2rem !important;
+  }
   .entreprises-master {
     position: sticky; top: 84px;
     max-height: calc(100vh - 104px);
     overflow-y: auto;
+    padding: .4rem !important;
     scrollbar-width: thin;
   }
   .entreprises-master::-webkit-scrollbar { width: 8px; }
   .entreprises-master::-webkit-scrollbar-thumb { background: #D5DCE4; border-radius: 4px; }
 
-  /* Cartes compactes : l'essentiel visible, le détail dans la fiche. */
-  .entreprise-card-btn { padding: .55rem .7rem !important; }
-  .entreprise-card-btn h3 { font-size: .92rem !important; margin-bottom: .1rem !important; }
-  .entreprise-card-role, .entreprise-card-domain { font-size: .72rem !important; margin: 0 !important; }
-  .entreprise-card-cv { margin: .3rem 0 0 !important; }
-  .entreprise-card-cv .cv-badge { font-size: .68rem !important; }
-  /* Au-delà de deux capacités, on n'affiche rien : la fiche les donne toutes. */
-  .entreprise-card-tags .chip:nth-of-type(n+3) { display: none; }
-  .entreprise-card-tags { gap: .25rem !important; margin-top: .35rem !important; }
-  .entreprise-card-tags .chip { font-size: .66rem !important; padding: .1rem .45rem !important; }
-  .entreprise-card-link, .entreprise-card-btn + a { font-size: .72rem !important; }
+  /* Une entreprise = une ligne : nom, puis domaine en gris. */
+  .entreprises-list { display: block !important; }
+  .entreprise-card { border: 0 !important; box-shadow: none !important; margin: 0 !important;
+    border-radius: 6px !important; background: transparent !important; }
+  .entreprise-card + .entreprise-card { border-top: 1px solid #EEF1F5 !important; }
+  .entreprise-card.is-active { background: #EEF3F8 !important; }
+  .entreprise-card-btn { padding: .42rem .6rem !important; display: block !important; width: 100%; }
+  .entreprise-card-btn h3 { font-size: .82rem !important; margin: 0 !important; line-height: 1.25; }
+  .entreprise-card-domain { font-size: .7rem !important; color: #7A8794 !important; margin: 0 !important; }
+  /* Tout le reste appartient à la fiche, pas à la liste. */
+  .entreprise-card-role,
+  .entreprise-card-cv,
+  .entreprise-card-tags,
+  .entreprise-card-link { display: none !important; }
 }
 
-/* Sur téléphone, la liste reste linéaire mais les cartes s'allègent. */
+/* Sur téléphone la liste reste en cartes, simplement allégées. */
 @media (max-width: 991px) {
   .entreprise-card-btn { padding: .5rem .65rem !important; }
   .entreprise-card-btn h3 { font-size: .9rem !important; }
   .entreprise-card-role, .entreprise-card-domain { font-size: .72rem !important; margin: 0 !important; }
+  .entreprise-card-cv { margin: .25rem 0 0 !important; }
   .entreprise-card-tags .chip:nth-of-type(n+3) { display: none; }
   .entreprise-card-tags .chip { font-size: .66rem !important; }
+}
+
+/* ============================================================
+   Matrice de positionnement : infobulles lisibles
+   ------------------------------------------------------------
+   L'infobulle s'ouvrait toujours vers la droite : sur les deux
+   dernières colonnes elle sortait du cadre et se faisait couper,
+   tout en recouvrant la colonne voisine. Elle s'ouvre désormais
+   du côté où il y a de la place, et rien ne la rogne.
+   ============================================================ */
+.cv-viz, .cv-zones, .cv-zone, .cv-zone-nodes { overflow: visible !important; }
+/* Les nœuds inactifs sont atténués par « opacity », qui s'applique aussi à
+   leurs enfants : l'infobulle héritait de 40 % de transparence. On rend au
+   nœud survolé son opacité pleine — l'infobulle redevient lisible, et le
+   survol gagne un retour visuel. */
+.cv-node--inactive:hover, .cv-node--inactive:focus, .cv-node--inactive:focus-within,
+.cv-node--open { opacity: 1 !important; }
+.cv-node { position: relative; }
+.cv-tooltip { width: 240px !important; max-height: 60vh; overflow-y: auto;
+  background: #14263D !important; border: 1px solid rgba(245, 246, 242, .18) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .45) !important; z-index: 400 !important; }
+.cv-tooltip p { opacity: 1 !important; color: rgba(245, 246, 242, .92) !important; }
+.cv-tooltip strong { color: #E8C88A !important; }
+/* L'infobulle flottante recouvrait les colonnes voisines : en lisant une
+   définition on perdait de vue la position de l'entreprise. Elle est désormais
+   ancrée SOUS la matrice, dans un espace réservé — rien n'est masqué, et le
+   comportement est identique au doigt et à la souris. */
+.cv-viz { position: relative; padding-bottom: 7.5rem !important; }
+.cv-node { position: static !important; }
+.cv-tooltip, .cv-zone:nth-child(n+3) .cv-tooltip {
+  left: 1rem !important; right: 1rem !important; top: auto !important;
+  bottom: 3.2rem !important; width: auto !important; max-width: none !important;
+  margin: 0 !important; max-height: 6.4rem; overflow-y: auto;
+}
+/* Sous 700 px, l'infobulle se place sous le nœud, pleine largeur. */
+@media (max-width: 700px) {
+  .cv-tooltip, .cv-zone:nth-child(n+3) .cv-tooltip {
+    left: 0 !important; right: auto !important; top: 100% !important;
+    margin: .35rem 0 0 !important; width: 100% !important; min-width: 200px;
+  }
+}
+
+
+/* ============================================================
+   Bandeau de sélection : une ligne au lieu d'un pavé
+   ============================================================ */
+@media (min-width: 992px) {
+  .entreprises-controls { padding: .7rem .9rem !important; }
+  .entreprises-controls #entreprises-search { font-size: .85rem !important; padding: .5rem .7rem !important; }
+  .entreprises-filters { display: flex !important; flex-wrap: nowrap !important; gap: .6rem !important;
+    align-items: flex-end; margin-top: .6rem !important; }
+  .entreprises-filters label { flex: 1 1 0; min-width: 0; font-size: .66rem !important;
+    text-transform: uppercase; letter-spacing: .04em; color: #7A8794; }
+  .entreprises-filters select { width: 100%; font-size: .8rem !important; padding: .35rem .5rem !important; }
+  .entreprises-controls-meta { margin-top: .5rem !important; font-size: .78rem !important; }
+}
+
+/* ============================================================
+   La liste des 30 ne s'affiche qu'à la demande
+   ------------------------------------------------------------
+   Par défaut la fiche occupe toute la largeur ; le parcours
+   exhaustif reste disponible d'un clic, et dans la vue Tableau.
+   ============================================================ */
+.entreprises-browse > summary {
+  cursor: pointer; list-style: none; user-select: none;
+  font-size: .8rem; font-weight: 600; color: #1F5FA8;
+  padding: .45rem .7rem; border: 1px solid #D5DCE4; border-radius: 8px;
+  background: #fff; display: inline-flex; align-items: center; gap: .4rem;
+}
+.entreprises-browse > summary::-webkit-details-marker { display: none; }
+.entreprises-browse > summary::before { content: '▸'; font-size: .7rem; }
+.entreprises-browse[open] > summary::before { content: '▾'; }
+.entreprises-browse > summary:hover { border-color: #B8C4D0; }
+.entreprises-browse[open] > summary { margin-bottom: .5rem; }
+@media (min-width: 992px) {
+  .entreprises-explorer:has(.entreprises-browse:not([open])) {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+  }
+  .entreprises-browse:not([open]) { position: sticky; top: 84px; }
 }
