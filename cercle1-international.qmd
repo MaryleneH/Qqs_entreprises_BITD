@@ -7,8 +7,7 @@ format:
 ---
 
 ```{=html}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet est charge globalement par _quarto.yml (include-in-header) : ne pas le recharger ici. -->
 
 <div class="c1x-page" id="c1x-app">
 
@@ -35,7 +34,7 @@ format:
   </div>
 
   <div class="c1x-grid">
-    <div id="c1x-map" aria-label="Carte des implantations internationales du Cercle 1"></div>
+    <div id="c1x-map" style="min-height:620px" aria-label="Carte des implantations internationales du Cercle 1"></div>
     <div class="c1x-panel" role="complementary">
       <nav class="c1x-tabs" id="c1x-tabs" aria-label="Contenu du panneau">
         <button data-tab="implantations" class="is-active">Implantations</button>
@@ -102,5 +101,5 @@ format:
 
 </div>
 
-<script src="scripts/cercle1-international.js?v=20260814c" defer></script>
+<script src="scripts/cercle1-international.js?v=20260814d" defer></script>
 ```
