@@ -41,7 +41,7 @@ website:
           - text: "Méthode & sources"
             href: cercle1-international.qmd#methodologie-cercle1
     right:
-      - text: Situation au 12 août 2026
+      - text: Situation au 14 août 2026
   page-footer:
     left: "<span class='footer-signature'>BITD France · Données issues de sources publiques</span>"
     right: "<span class='footer-signature'>Le panel ne constitue ni un classement officiel, ni une liste exhaustive de la BITD française. La méthode de sélection est détaillée dans <a href='methodologie.html#constitution-du-panel'>Méthodologie &amp; sources</a>.</span>"
