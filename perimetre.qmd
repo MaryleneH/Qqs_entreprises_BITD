@@ -1,0 +1,147 @@
+---
+pagetitle: "Périmètre & choix de sélection"
+format:
+  html:
+    page-layout: full
+    toc: true
+    css: styles/pages.css
+    grid:
+      body-width: 1050px
+      margin-width: 260px
+      gutter-width: 2rem
+    toc-title: "Sommaire"
+    toc-depth: 2
+---
+
+```{=html}
+<div id="perimetre-page" class="page-container">
+  <div class="methodo-container">
+    <h1 class="page-title">Périmètre &amp; choix de sélection</h1>
+    <p class="page-subtitle">Ce qui est dans le dashboard, ce qui n'y est pas, et pourquoi</p>
+
+    <p class="methodo-lead">
+      Un panel n'est jamais neutre : chaque entreprise retenue, chaque établissement cartographié
+      résulte d'une décision explicite. Cette page documente ces décisions une par une, avec leurs
+      limites, pour que vous puissiez juger vous-même de ce que les chiffres autorisent à dire — et
+      de ce qu'ils n'autorisent pas.
+    </p>
+
+    <div class="disclaimer-box">
+      Le panel ne constitue ni un classement officiel, ni une liste exhaustive de la BITD française.
+      Il n'engage que ce site et ne reflète aucune position institutionnelle.
+    </div>
+  </div>
+</div>
+```
+
+## Pourquoi 30 entreprises
+
+Le panel retient trente acteurs industriels majeurs, choisis pour couvrir l'ensemble de la chaîne de
+valeur plutôt que pour constituer un palmarès. Trois critères ont guidé la sélection : une activité
+de défense documentée par des sources publiques, une implantation industrielle en France, et une
+contribution identifiable à un programme d'armement ou à une capacité critique.
+
+Ce choix a une conséquence directe : **la taille n'est pas le critère principal**. Une ETI de
+quelques centaines de salariés positionnée sur un maillon critique — pyrotechnie, optronique,
+matériaux énergétiques — figure au panel, tandis que des groupes plus gros mais dont l'activité
+défense française est marginale n'y figurent pas. Le panel n'est pas non plus stable dans le temps :
+il reflète un état de la base industrielle à une date donnée.
+
+## Les quatre catégories d'acteurs
+
+Chaque entreprise est rattachée à une catégorie qui décrit sa position dans la chaîne de valeur, non
+son importance :
+
+| Catégorie | Nombre | Ce qu'elle désigne |
+|---|---|---|
+| Grand maître d'œuvre / systémier | 10 | Conçoit et intègre des systèmes complets, contracte directement avec l'État |
+| Maître d'œuvre spécialisé | 1 | Maîtrise d'œuvre sur un domaine technique circonscrit |
+| Équipementier / acteur technologique stratégique | 5 | Fournit des briques technologiques difficilement substituables |
+| Équipementier / ETI stratégique | 14 | Apporte des capacités industrielles ou des composants au tissu de défense |
+
+Les dix grands maîtres d'œuvre forment le « Cercle 1 » du panel, auquel la vue
+<a href="cercle1-international.html">Cercle 1 — International &amp; coopérations</a> consacre une
+analyse dédiée.
+
+Ces catégories sont **déclaratives et discutables**. La frontière entre « acteur technologique
+stratégique » et « ETI stratégique » relève d'un jugement sur la criticité, pas d'un seuil
+mesurable.
+
+## Quelles entités juridiques sont retenues
+
+C'est le choix le plus structurant, et le moins visible. Pour chaque groupe, le dashboard retient
+les **unités légales porteuses de l'activité industrielle de défense**, pas la totalité du
+périmètre juridique.
+
+Concrètement, pour Thales cela signifie six sociétés (AVS France, SIX GTS France, LAS France, DMS
+France, Alenia Space France, et la holding), pour Safran sept, pour Airbus cinq. Les filiales
+spécialisées disposant de leur propre personnalité morale sont, par défaut, **hors périmètre** :
+c'est le cas de Sodern, Pyroalliance, Nuclétudes, Arianespace et MaiaSpace pour ArianeGroup, ou de
+Matra Électronique pour MBDA.
+
+Deux conséquences à garder en tête. D'une part, une activité de défense bien réelle peut être
+absente du dashboard parce qu'elle est portée par une filiale non retenue — Nuclétudes assure le
+durcissement des systèmes stratégiques français sans apparaître sur la carte. D'autre part, les
+coentreprises sont traitées comme des entités autonomes : Roxel, détenue par MBDA, figure comme
+entreprise du panel à part entière, avec ses propres établissements.
+
+## Ce qu'est un « établissement » ici
+
+Le dashboard cartographie les implantations industrielles, de R&D, de MCO, d'essais et les fonctions
+centrales publiquement identifiables. Il **ne reproduit pas chaque SIRET administratif** ni les
+bureaux commerciaux.
+
+Cette règle explique l'écart entre les compteurs affichés et les chiffres que publient les
+entreprises. Safran recense environ 115 établissements français ; le dashboard en cartographie 63.
+Airbus en annonce 46 ; le dashboard en retient 31. **Cet écart n'est pas une lacune, c'est le
+périmètre.** Le libellé de couverture de chaque fiche entreprise indique systématiquement le nombre
+de sites cartographiés, leur origine et, lorsqu'il est connu, le total public annoncé.
+
+## D'où viennent les données
+
+Trois sources se superposent, dans cet ordre de priorité :
+
+1. **Les publications officielles des entreprises** — pages « nos sites », documents
+   d'enregistrement universels, communiqués. Ce sont les sources les plus fiables sur l'activité
+   réelle d'un site, mais elles ne listent souvent que les implantations principales.
+2. **Le référentiel SIRENE de l'Insee** — utilisé en enrichissement pour rattraper les
+   établissements que les pages corporate ne mentionnent pas. Sur 461 établissements cartographiés, 156 proviennent de ce recoupement.
+3. **Les sources institutionnelles** — DGA, publications ÉcoDef du service statistique ministériel
+   de la Défense, pour les programmes et les statuts.
+
+Chaque valeur affichée dans le dashboard est traçable jusqu'à sa source dans la page
+<a href="methodologie.html">Méthodologie &amp; sources</a>.
+
+## Les limites que je connais
+
+Les signaler est plus utile que les taire.
+
+**Les sites rattachés échappent souvent aux listes officielles.** Une entreprise communique sur ses
+sites principaux et mentionne en passant ses antennes. C'est ainsi que Sainte-Hélène et l'antenne de
+Biscarrosse d'ArianeGroup, ou Marolles-en-Hurepoix chez Arquus, manquaient initialement.
+
+**Les coordonnées sont majoritairement au centre de la commune.** Le champ de précision le signale
+pour chaque site. Conséquence visible sur la carte : plusieurs établissements d'une même commune se
+superposent en un seul marqueur.
+
+**Certaines lignes sont des quasi-doublons.** L'enrichissement SIRENE a parfois créé une seconde
+entrée pour un site déjà présent, lorsque l'adresse administrative et l'adresse d'usage diffèrent.
+Les cas identifiés sont corrigés au fil de l'eau.
+
+**Le rattachement juridique n'est pas toujours exact.** Chez Airbus, les sites toulousains sont
+rattachés à la holding Airbus SAS alors qu'ils relèvent d'Airbus Operations SAS. La carte est juste,
+la lecture juridique l'est moins.
+
+**Trois dossiers restent ouverts** à la date de cette page : le site de Rennes de KNDS France, non
+encore documenté ; la couverture d'Exail Technologies, construite sur une source inadaptée et
+incomplète ; et le statut du site de Lisses chez Arquus, qui n'apparaît plus dans les communications
+récentes du groupe sans qu'une fermeture soit attestée.
+
+## Comment vérifier par vous-même
+
+Chaque fiche entreprise porte l'adresse de la source d'implantations utilisée. Le dépôt du projet
+contient les fichiers de données bruts et le journal des corrections apportées. Un contrôle
+automatique vérifie chaque semaine que les liens externes cités restent valides.
+
+Si vous constatez une erreur ou une omission, elle est probablement documentée dans les limites
+ci-dessus — ou elle mérite d'être signalée.
