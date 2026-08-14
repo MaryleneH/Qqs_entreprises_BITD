@@ -27,8 +27,10 @@ format:
     </p>
 
     <div class="disclaimer-box">
-      Le panel ne constitue ni un classement officiel, ni une liste exhaustive de la BITD française.
-      Il n'engage que ce site et ne reflète aucune position institutionnelle.
+      Dashboard construit à des fins exclusivement pédagogiques : un exercice pour éprouver la
+      difficulté de cerner statistiquement une entreprise. Le panel ne constitue ni un classement
+      officiel, ni une liste exhaustive de la BITD française. Les choix présentés n'engagent que
+      leur auteure et ne reflètent aucune position institutionnelle.
     </div>
   </div>
 </div>
@@ -36,7 +38,16 @@ format:
 
 ## Vocation du dashboard
 
-Le site a vocation **factuelle, descriptive et pédagogique**. Il cherche à répondre à trois questions :
+Ce dashboard est construit **à des fins pédagogiques, et uniquement à ces fins**. C'est un
+exercice d'entraînement : comprendre, en le faisant, la difficulté qu'il y a à cerner
+statistiquement une entreprise — la définir, en délimiter le périmètre, la rattacher à un
+secteur, la mesurer. Chaque page de ce site est une illustration de cette difficulté, pas une
+réponse définitive.
+
+Les choix opérés ici — panel, catégories, périmètres, sources — **n'engagent que moi, et rien
+d'autre**. Ils ne reflètent aucune position institutionnelle, officielle ou professionnelle.
+
+Dans ce cadre, le site a une vocation factuelle et descriptive. Il cherche à répondre à trois questions :
 
 - **Où ?** où sont situés les sièges et les établissements industriels ;
 - **Quoi ?** quels produits, services ou programmes sont associés à chaque acteur ;
