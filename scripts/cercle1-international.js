@@ -122,7 +122,7 @@
         'Si le problème persiste, le réseau bloque peut-être unpkg.com.</p>';
       return;
     }
-    map = L.map('c1x-map', { worldCopyJump: true }).setView([28, 10], 2);
+    map = L.map('c1x-map', { worldCopyJump: true, scrollWheelZoom: false }).setView([28, 10], 2);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
       { attribution: '© OpenStreetMap contributors © CARTO', maxZoom: 12 }).addTo(map);
     layer = L.layerGroup().addTo(map);

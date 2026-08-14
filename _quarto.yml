@@ -69,6 +69,7 @@ format:
           <script src="scripts/filters.js?v=20260813b" defer></script>
           <script src="scripts/programme.js?v=20260813b" defer></script>
           <script src="scripts/map.js?v=20260813b" defer></script>
+          <script src="scripts/map-legend-mobile.js?v=20260814a" defer></script>
           <script src="scripts/table.js?v=20260813b" defer></script>
           <script src="scripts/comprendre.js?v=20260813b" defer></script>
           <script src="scripts/methodologie.js?v=20260813b" defer></script>
