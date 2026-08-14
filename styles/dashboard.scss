@@ -76,6 +76,18 @@ body {
   display: flex; align-items: center; gap: 0.5rem;
 }
 .navbar-brand img { width: 28px; height: 28px; }
+/* Le conteneur du titre était comprimé par les éléments de navigation sur les
+   écrans intermédiaires (portables ~1368 px) : Bootstrap applique overflow:hidden
+   au titre, qui perdait sa dernière lettre. On lui interdit de rétrécir. */
+.navbar-brand-container { flex: 0 0 auto; min-width: max-content; }
+.navbar-brand { flex: 0 0 auto; white-space: nowrap; overflow: visible; text-overflow: clip; }
+/* Plage intermédiaire (menu déplié mais écran étroit) : on resserre les liens
+   plutôt que de laisser la barre déborder. */
+@media (min-width: 992px) and (max-width: 1200px) {
+  .navbar-nav .nav-link { padding: 0.45rem 0.5rem !important; font-size: 0.8rem !important; }
+  /* La mention de date, purement informative, cède la place aux rubriques. */
+  .navbar-nav.ms-auto { display: none !important; }
+}
 .navbar-nav .nav-link {
   color: rgba(245,246,242,0.78) !important;
   font-size: 0.875rem !important;
