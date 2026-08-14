@@ -18,6 +18,7 @@
       <div class="source-card">
         ${linkHtml}
         <div class="source-card__meta">
+          ${s.catalogue ? `<span class="source-card__catalogue">${escapeHtml(s.catalogue)}</span>` : ''}
           <span class="source-card__type">${escapeHtml(s.type_source || '—')}</span>
           <span class="source-card__usage">${escapeHtml(usageLabel)} ${dateLabel}</span>
         </div>
@@ -82,7 +83,8 @@
       if (type) sources = sources.filter((s) => s.type_source === type);
       if (query) {
         sources = sources.filter((s) => {
-          const haystack = [s.libelle, s.entreprise, s.usage_principal, s.type_source, s.commentaire]
+          const haystack = [s.libelle, s.entreprise, s.usage_principal, s.type_source, s.commentaire,
+                            s.organisme, s.catalogue, s.source_id]
             .join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
           return haystack.includes(query);
         });

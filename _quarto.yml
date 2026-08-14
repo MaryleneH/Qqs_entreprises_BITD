@@ -65,7 +65,7 @@ format:
           <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
       - text: |
           <script src="scripts/glossary.js?v=20260813b" defer></script>
-          <script src="scripts/provenance.js?v=20260813b" defer></script>
+          <script src="scripts/provenance.js?v=20260814b" defer></script>
           <script src="scripts/dashboard.js?v=20260813b" defer></script>
           <script src="scripts/identite.js?v=20260813b" defer></script>
           <script src="scripts/panel-methodology.js?v=20260814a" defer></script>
@@ -75,4 +75,4 @@ format:
           <script src="scripts/map-legend-mobile.js?v=20260814a" defer></script>
           <script src="scripts/table.js?v=20260813b" defer></script>
           <script src="scripts/comprendre.js?v=20260813b" defer></script>
-          <script src="scripts/methodologie.js?v=20260813b" defer></script>
+          <script src="scripts/methodologie.js?v=20260814b" defer></script>

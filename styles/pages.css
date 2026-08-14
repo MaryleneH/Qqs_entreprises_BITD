@@ -74,3 +74,10 @@
 }
 
 .glossary-hero .chip-link { white-space: nowrap; }
+
+/* Badge de catalogue dans les resultats de recherche de sources */
+.source-card__catalogue {
+  display: inline-block; font-size: .62rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; border-radius: 4px; padding: .1rem .4rem; margin-right: .35rem;
+  background: #E8F0F8; color: #1A3A5C; border: 1px solid #A9C4DE;
+}

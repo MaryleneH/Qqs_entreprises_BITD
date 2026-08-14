@@ -106,8 +106,109 @@ sids = {r['site_id'] for r in eta}
 orph = sorted({r['site_id'] for r in pe if r['site_id'] not in sids})
 for o in orph: errors.append(f"provenance: site_id inconnu {o}")
 
+# 7. Cercle 1 — International, fiches groupes et catalogue de sources
+c1_ent = load('data/cercle1/cercle1_entreprises.csv')
+c1_imp = load('data/cercle1/cercle1_implantations_internationales.csv')
+c1_par = load('data/cercle1/cercle1_partenaires_defense.csv')
+c1_loc = load('data/cercle1/cercle1_partenaires_localisation.csv')
+c1_src = load('data/cercle1/cercle1_sources.csv')
+c1_pro = load('data/cercle1/cercle1_profils.csv')
+
+c1_ids = {e['entreprise_id']: e['entreprise'] for e in c1_ent}
+c1_sids = {s['source_id'] for s in c1_src}
+c1_lids = {l['partner_location_id'] for l in c1_loc}
+
+# 7a. rattachement au panel principal (mêmes identifiants, mêmes libellés)
+noms_panel = {e['id']: e['entreprise'] for e in ent}
+for i, nom in c1_ids.items():
+    if i not in noms_panel:
+        errors.append(f"cercle1: entreprise_id {i} absent du panel principal")
+    elif noms_panel[i] != nom:
+        errors.append(f"cercle1: « {nom} » ≠ panel « {noms_panel[i]} » (id {i})")
+
+# 7b. intégrité référentielle
+for r in c1_imp:
+    if r['entreprise_id'] not in c1_ids:
+        errors.append(f"cercle1 implantation {r['site_intl_id']}: entreprise inconnue")
+    elif r['entreprise'] != c1_ids[r['entreprise_id']]:
+        errors.append(f"cercle1 implantation {r['site_intl_id']}: nom ≠ identifiant")
+    for col in ('source_site_id', 'source_coord_id'):
+        if r.get(col) and r[col] not in c1_sids:
+            errors.append(f"cercle1 implantation {r['site_intl_id']}: {col} absent du catalogue")
+for r in c1_par:
+    if r['entreprise_id'] not in c1_ids:
+        errors.append(f"cercle1 relation {r['relation_id']}: entreprise inconnue")
+    b = r.get('partenaire_cercle1_entreprise_id')
+    if b and b not in c1_ids:
+        errors.append(f"cercle1 relation {r['relation_id']}: partenaire interne inconnu {b}")
+    if r.get('source_relation_id') and r['source_relation_id'] not in c1_sids:
+        errors.append(f"cercle1 relation {r['relation_id']}: source absente du catalogue")
+    if r.get('partenaire_location_id') and r['partenaire_location_id'] not in c1_lids:
+        errors.append(f"cercle1 relation {r['relation_id']}: localisation absente")
+for e in c1_ent:
+    if e.get('source_inclusion_id') and e['source_inclusion_id'] not in c1_sids:
+        errors.append(f"cercle1: source d'inclusion absente pour {e['entreprise']}")
+for s_ in c1_src:
+    if s_.get('entreprise_id') and s_['entreprise_id'] not in c1_ids:
+        errors.append(f"cercle1 source {s_['source_id']}: entreprise inconnue")
+
+# 7c. profils : une ligne par entreprise du Cercle 1, vocabulaire contrôlé
+MESURABILITE = {'isolable_publie', 'isolable_par_nature', 'partiellement_isolable', 'non_isolable'}
+if len(c1_pro) != len(c1_ent):
+    errors.append(f"cercle1 profils: {len(c1_pro)} lignes pour {len(c1_ent)} entreprises")
+vus = set()
+for r in c1_pro:
+    if r['entreprise_id'] in vus:
+        errors.append(f"cercle1 profils: entreprise_id {r['entreprise_id']} en double")
+    vus.add(r['entreprise_id'])
+    if r['entreprise_id'] not in c1_ids:
+        errors.append(f"cercle1 profils: entreprise_id {r['entreprise_id']} hors Cercle 1")
+    if r['mesurabilite_defense'] not in MESURABILITE:
+        errors.append(f"cercle1 profils: mesurabilité inconnue « {r['mesurabilite_defense'] }» ({r['entreprise']})")
+    if r['mesurabilite_defense'] == 'isolable_publie' and not r['ca_defense_mdeur']:
+        errors.append(f"cercle1 profils: {r['entreprise']} déclarée isolable sans chiffre d'affaires défense")
+    if r['part_defense_pct'] and not r['part_defense_methode']:
+        errors.append(f"cercle1 profils: {r['entreprise']} part défense sans méthode")
+    if not r['source_profil_url'].startswith('https://'):
+        errors.append(f"cercle1 profils: source non https pour {r['entreprise']}")
+
+# 7d. domaines de valeurs, dates, URL, coordonnées
+for nom, lignes, col, dom in (
+        ('implantations', c1_imp, 'confiance_information', {'haute', 'moyenne', 'faible'}),
+        ('relations', c1_par, 'confiance_information', {'haute', 'moyenne', 'faible'}),
+        ('profils', c1_pro, 'confiance_information', {'haute', 'moyenne', 'faible'})):
+    hors = {r[col] for r in lignes if r.get(col) and r[col] not in dom}
+    if hors: errors.append(f"cercle1 {nom}: {col} hors domaine {sorted(hors)}")
+for nom, lignes, col in (('implantations', c1_imp, 'derniere_verification'),
+                         ('relations', c1_par, 'derniere_verification'),
+                         ('sources', c1_src, 'date_acces'),
+                         ('profils', c1_pro, 'derniere_verification')):
+    mauvaises = [r[col] for r in lignes if r.get(col) and not re.fullmatch(r'\d{4}-\d{2}(-\d{2})?', r[col])]
+    if mauvaises: errors.append(f"cercle1 {nom}: dates mal formées {mauvaises[:3]}")
+for nom, lignes, col in (('sources', c1_src, 'url'),
+                         ('implantations', c1_imp, 'source_site_url'),
+                         ('relations', c1_par, 'source_relation_url')):
+    n = sum(1 for r in lignes if r.get(col) and not r[col].startswith('https://'))
+    if n: errors.append(f"cercle1 {nom}: {n} URL non https")
+for r in c1_imp:
+    try:
+        lat, lng = float(r['latitude']), float(r['longitude'])
+        if not (-60 <= lat <= 75 and -180 <= lng <= 180):
+            errors.append(f"cercle1 {r['site_intl_id']}: coordonnées hors plage")
+    except ValueError:
+        errors.append(f"cercle1 {r['site_intl_id']}: coordonnées non numériques")
+
+# 7e. sources jamais référencées (non bloquant)
+utilisees = ({r[c] for r in c1_imp for c in ('source_site_id', 'source_coord_id') if r.get(c)}
+             | {r['source_relation_id'] for r in c1_par if r.get('source_relation_id')}
+             | {e['source_inclusion_id'] for e in c1_ent if e.get('source_inclusion_id')}
+             | {l.get('source_location_id') for l in c1_loc if l.get('source_location_id')})
+for o in sorted(c1_sids - utilisees):
+    warns.append(f"cercle1: source jamais référencée {o}")
+
 # Bilan
 print(f"Contrôle qualité — {len(ent)} entreprises, {len(eta)} établissements, {len(prog)} programmes")
+print(f"                   Cercle 1 : {len(c1_ent)} entreprises, {len(c1_imp)} implantations, {len(c1_par)} relations, {len(c1_pro)} profils, {len(c1_src)} sources")
 for w in warns: print(f"  [AVERTISSEMENT] {w}")
 if errors:
     print(f"\n{len(errors)} ERREUR(S) :")
