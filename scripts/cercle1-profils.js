@@ -14,7 +14,8 @@
     profils:      ['data/cercle1/cercle1_profils.csv', ';'],
     c1:           ['data/cercle1/cercle1_entreprises.csv', ';'],
     implantations:['data/cercle1/cercle1_implantations_internationales.csv', ';'],
-    partenaires:  ['data/cercle1/cercle1_partenaires_defense.csv', ';']
+    partenaires:  ['data/cercle1/cercle1_partenaires_defense.csv', ';'],
+    mainOeuvre:   ['data/cercle1/cercle1_main_oeuvre.csv', ';']
   };
   const COLORS = ['#1F5FA8', '#B33A3A', '#C89B3C', '#2F5D3A', '#6C3483',
                   '#0E7C7B', '#8A4B12', '#5D6D7E', '#A03B70'];
@@ -159,6 +160,75 @@
     return `<div class="c1p-row"><span class="c1p-row-lib">${lib}</span>
       <span class="c1p-row-val">${val}${per ? `<span class="c1p-per">${esc(per)}</span>` : ''}</span></div>`;
   }
+  /* ---------- besoins en main-d'œuvre ---------- */
+  const PREUVE = {
+    A: { lib: 'Preuve A', tip: "Chiffre lu dans une publication de l'entreprise elle-même, datée et explicite." },
+    B: { lib: 'Preuve B', tip: "Chiffre publié hors du domaine corporate de l'entreprise (plateforme partenaire, presse) : plus fragile." },
+    ND: { lib: 'Non disponible', tip: "Aucun chiffre prospectif publié n'a été identifié pour cette entreprise." }
+  };
+  const VERIF = {
+    verifie_independamment: { lib: 'Vérifié', cls: 'ok',
+      tip: "Chiffre retrouvé dans au moins une source indépendante de l'entreprise." },
+    non_verifie: { lib: 'Non revérifié', cls: 'part',
+      tip: "Chiffre repris de la source citée, sans confirmation par une source indépendante." },
+    a_reverifier: { lib: 'À revérifier', cls: 'non',
+      tip: "Un doute documenté existe sur ce chiffre : lisez la note avant de vous en servir." }
+  };
+
+  function renderMainOeuvre(id) {
+    const m = byId(data.mainOeuvre, id);
+    if (!m) return '';
+    const publie = /^publie/.test(m.statut_chiffrage_futur);
+    const pr = PREUVE[m.niveau_preuve_futur] || null;
+    const vf = VERIF[m.statut_verification] || null;
+    const defenseSeule = /défense|missile|naval|terrestre|spatial/i.test(m.perimetre_activite) &&
+                         !/toutes activités|non séparées|civil/i.test(m.perimetre_activite);
+
+    let h = `<section class="c1p-bloc c1p-bloc--emploi"><h3>Besoins en main-d'œuvre
+      ${vf ? `<span class="c1p-mes c1p-mes--${vf.cls}" title="${esc(vf.tip)}">${esc(vf.lib)}</span>` : ''}</h3>`;
+
+    if (publie) {
+      h += `<p class="c1p-chiffre">${esc(m.chiffre_futur_affichable)}</p>`;
+      h += `<p class="c1p-couvre"><strong>Ce que ce chiffre couvre :</strong> ${esc(m.perimetre_geographique)}
+        — ${esc(m.perimetre_activite)}.</p>`;
+      if (!defenseSeule) {
+        h += `<p class="c1p-alerte">Ce chiffre porte sur l'ensemble des activités du groupe, défense comprise
+          mais pas seulement. Le présenter comme un besoin de la base industrielle de défense serait inexact.</p>`;
+      }
+      if (m.decomposition_chiffre) h += `<p class="c1p-detail"><strong>Décomposition :</strong> ${esc(m.decomposition_chiffre)}</p>`;
+    } else {
+      h += `<p class="c1p-vide">${esc(m.chiffre_futur_affichable)}. ${esc(m.perimetre_activite)}.</p>`;
+    }
+    if (m.chiffre_complementaire_affichable) {
+      h += `<p class="c1p-detail"><strong>Repère chiffré disponible :</strong> ${esc(m.chiffre_complementaire_affichable)}
+        ${m.annee_chiffre_complementaire ? `(${esc(m.annee_chiffre_complementaire)})` : ''}</p>`;
+    }
+    if (m.metiers_competences_signales) {
+      h += `<p class="c1p-detail"><strong>Métiers signalés :</strong> ${esc(m.metiers_competences_signales)}</p>`;
+    }
+
+    /* le mode d'emploi : retrouver le chiffre soi-même */
+    h += `<details class="c1p-verif"><summary>Retrouver ce chiffre par vous-même</summary>
+      <ol class="c1p-etapes">
+        <li>Ouvrez la source : ${lien(m.source_principale_url,
+            esc([m.source_principale_editeur, m.source_principale_titre].filter(Boolean).join(' — ')) + ' ↗')}
+            ${m.source_principale_date ? `<span class="c1p-per">${esc(m.source_principale_date)}</span>` : ''}</li>
+        ${m.repere_exact_source ? `<li>Rendez-vous à&nbsp;: <em>${esc(m.repere_exact_source)}</em></li>` : ''}
+        ${m.phrase_cle_a_rechercher ? `<li>Cherchez cette phrase dans la page (Ctrl+F)&nbsp;:
+            <span class="c1p-phrase">${esc(m.phrase_cle_a_rechercher)}</span></li>` : ''}
+        ${m.source_secondaire_url ? `<li>Recoupement possible&nbsp;: ${lien(m.source_secondaire_url,
+            esc(m.source_secondaire_editeur || 'seconde source') + ' ↗')}</li>` : ''}
+      </ol>
+      ${m.limite_interpretation ? `<p class="c1p-limite"><strong>Limite d'interprétation&nbsp;:</strong>
+        ${esc(m.limite_interpretation)}</p>` : ''}
+      ${m.note_verification ? `<p class="c1p-limite"><strong>Contrôle indépendant&nbsp;:</strong>
+        ${esc(m.note_verification)}</p>` : ''}
+      <p class="c1p-per">${pr ? esc(pr.lib) + ' — ' + esc(pr.tip) + ' ' : ''}
+        Vérifié le ${esc(m.date_verification_independante || m.date_verification || '')}.</p>
+    </details></section>`;
+    return h;
+  }
+
   function renderFiche(id) {
     const e = byId(data.c1, id), p = byId(data.profils, id) || {},
           x = byId(data.panel, id, 'id') || {}, idn = byId(data.identite, id) || {};
@@ -268,9 +338,10 @@
     html += `<section class="c1p-bloc"><h3>Emploi</h3>`;
     html += ligne('Effectif', p.effectif_groupe ? parseInt(p.effectif_groupe, 10).toLocaleString('fr-FR') : '', p.effectif_perimetre);
     if (p.emploi_note) html += `<p>${esc(p.emploi_note)}</p>`;
-    html += `<p class="c1p-vide"><strong>Besoins futurs en main-d'œuvre :</strong> non documentés dans ce
-      référentiel. Les plans de recrutement et tensions de compétences de la BITD ne font pas l'objet d'une
-      publication homogène par entreprise ; ce champ reste ouvert.</p></section>`;
+    html += `</section>`;
+
+    /* 7. besoins en main-d'œuvre */
+    html += renderMainOeuvre(id);
 
     html += `</div><p class="c1p-note">${esc(p.limites_interpretation || '')}
       Dernière vérification&nbsp;: ${esc(p.derniere_verification || '')}.</p>`;
@@ -294,3 +365,4 @@
         `<p class="c1x-empty">Erreur de chargement des données (${esc(String(err.message || err))}).</p>`;
     });
 })();
+
