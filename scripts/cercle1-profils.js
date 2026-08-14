@@ -344,14 +344,16 @@
     if (!rels.length) html += `<p class="c1p-vide">Aucune relation documentée dans ce référentiel.</p>`;
     html += `</section>`;
 
-    /* 6. emploi */
+    /* 6. emploi + 7. besoins : empilés dans une même case de la grille,
+       pour que les besoins suivent immédiatement l'effectif sans défilement. */
+    html += `<div class="c1p-pile">`;
     html += `<section class="c1p-bloc"><h3>Emploi</h3>`;
     html += ligne('Effectif', p.effectif_groupe ? parseInt(p.effectif_groupe, 10).toLocaleString('fr-FR') : '', p.effectif_perimetre);
     if (p.emploi_note) html += `<p>${esc(p.emploi_note)}</p>`;
     html += `</section>`;
 
-    /* 7. besoins en main-d'œuvre */
     html += renderMainOeuvre(id);
+    html += `</div>`;
 
     html += `</div><p class="c1p-note">${esc(p.limites_interpretation || '')}
       Dernière vérification&nbsp;: ${esc(p.derniere_verification || '')}.</p>`;

@@ -179,7 +179,9 @@
 @media (min-width: 1100px) {
   .c1p-blocs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem; align-items: start; }
-  .c1p-blocs > .c1p-bloc { margin-bottom: 0; }
+  .c1p-blocs > .c1p-bloc, .c1p-blocs > .c1p-pile { margin-bottom: 0; }
+  .c1p-pile { display: flex; flex-direction: column; gap: 1rem; }
+  .c1p-pile > .c1p-bloc { margin-bottom: 0; }
   .c1p-fiche-head p { max-width: 900px; }
   .c1p-table { font-size: .8rem; }
 }
