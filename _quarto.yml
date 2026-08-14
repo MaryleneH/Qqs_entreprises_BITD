@@ -31,7 +31,7 @@ website:
         text: Méthodologie & sources
       - href: perimetre.qmd
         text: Périmètre & sélection
-      - text: "Entreprise du Cercle 1"
+      - text: "Entreprises du Cercle 1"
         menu:
           - text: "International & coopérations"
             href: cercle1-international.qmd

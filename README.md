@@ -8,6 +8,8 @@ Le projet permet d'explorer les entreprises, leurs implantations, certains grand
 > Ce panel ne constitue ni un classement officiel, ni une liste exhaustive de la BITD française.  
 > La méthode de sélection est explicitée dans la rubrique **Méthodologie & sources** du dashboard.
 
+
+Lien vers le [Tableaau de bord](https://maryleneh.github.io/Qqs_entreprises_BITD/)
 ---
 
 ## Objectifs
