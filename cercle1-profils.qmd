@@ -21,5 +21,5 @@ format:
 
 </div>
 
-<script src="scripts/cercle1-profils.js?v=20260814b" defer></script>
+<script src="scripts/cercle1-profils.js?v=20260814c" defer></script>
 ```
