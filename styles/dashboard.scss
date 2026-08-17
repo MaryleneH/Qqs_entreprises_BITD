@@ -84,7 +84,9 @@ body {
 /* Plage intermédiaire (menu déplié mais écran étroit) : on resserre les liens
    plutôt que de laisser la barre déborder. */
 @media (min-width: 992px) and (max-width: 1200px) {
-  .navbar-nav .nav-link { padding: 0.45rem 0.5rem !important; font-size: 0.8rem !important; }
+  .navbar-nav .nav-link { padding: 0.45rem 0.45rem !important; font-size: 0.78rem !important; }
+  /* Le titre interrogatif est long : on le resserre sur les ecrans intermediaires. */
+  .navbar-brand { font-size: 0.95rem !important; }
   /* La mention de date, purement informative, cède la place aux rubriques. */
   .navbar-nav.ms-auto { display: none !important; }
 }
