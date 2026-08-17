@@ -1,5 +1,5 @@
 ---
-pagetitle: "BITD France"
+pagetitle: "Où s'arrête une entreprise ?"
 page-layout: custom
 format:
   html:

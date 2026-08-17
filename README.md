@@ -1,4 +1,4 @@
-# BITD France — Panel de 30 acteurs industriels majeurs
+# Où s'arrête une entreprise ? — panel de 30 acteurs industriels majeurs
 
 Dashboard documentaire et cartographique consacré à un **panel de 30 acteurs industriels majeurs de la Base industrielle et technologique de défense (BITD) française**.
 
