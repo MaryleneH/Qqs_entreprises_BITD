@@ -60,7 +60,9 @@
       .trim();
   }
 
-  function parseCSV(text) {
+  function parseCSV(text, sep) {
+    const premiere = String(text).replace(/^\uFEFF/, '').split(/\r?\n/)[0] || '';
+    if (!sep) sep = (premiere.split(';').length > premiere.split(',').length) ? ';' : ',';
     const rows = [];
     let current = '';
     let row = [];
@@ -76,7 +78,7 @@
         } else {
           inQuotes = !inQuotes;
         }
-      } else if (char === ',' && !inQuotes) {
+      } else if (char === sep && !inQuotes) {
         row.push(current);
         current = '';
       } else if ((char === '\n' || char === '\r') && !inQuotes) {
@@ -277,6 +279,20 @@
         })
       );
     }
+
+    // Alertes d'unité légale produites par controle_qualite.py : elles doivent
+    // être visibles par le lecteur, pas seulement dans la console du mainteneur.
+    optionalTasks.push(
+      fetch(new URL('data/qualite/alertes_unite_legale.csv', document.baseURI))
+        .then((r) => (r.ok ? r.text() : Promise.reject(new Error('alertes indisponibles'))))
+        .then((txt) => {
+          state.alertesUL = parseCSV(txt, ';');
+        })
+        .catch((err) => {
+          state.alertesUL = [];
+          console.warn('[BITD][Entreprises] Alertes qualité indisponibles (fail-soft) :', err);
+        })
+    );
 
     await Promise.all(optionalTasks);
 
@@ -618,6 +634,43 @@
     `;
   }
 
+  const ALERTE_TITRES = {
+    activite_non_industrielle: 'Activité déclarée non industrielle',
+    immatriculation_recente: 'Unité légale récemment immatriculée',
+    raison_sociale_divergente: 'Raison sociale différente du nom du panel'
+  };
+
+  function renderAlertesUL(row) {
+    const liste = (state.alertesUL || []).filter((a) => String(a.entreprise_id) === String(row.id));
+    if (!liste.length) return '';
+    // Une même alerte peut concerner plusieurs établissements : on regroupe.
+    const parType = {};
+    liste.forEach((a) => {
+      const cle = a.type_alerte + '|' + a.valeur_constatee;
+      (parType[cle] = parType[cle] || { a, sites: [] }).sites.push(a.site_id);
+    });
+    const blocs = Object.values(parType).map(({ a, sites }) => `
+      <details class="ul-alerte">
+        <summary>
+          <span class="ul-alerte-pastille" aria-hidden="true">!</span>
+          ${esc(ALERTE_TITRES[a.type_alerte] || 'Point de vigilance')}
+          <span class="ul-alerte-valeur">${esc(a.valeur_constatee)}</span>
+          <span class="ul-alerte-nb">${a.portee ? `porte sur ${esc(a.portee)}` : `${sites.length} établissement${sites.length > 1 ? 's' : ''}`}</span>
+        </summary>
+        <div class="ul-alerte-corps">
+          <p><strong>Ce qui est constaté.</strong> ${esc(a.ce_qui_est_constate)}</p>
+          <p><strong>Pourquoi cela mérite attention.</strong> ${esc(a.pourquoi_cela_alerte)}</p>
+          <p><strong>Ce que cela ne signifie pas.</strong> ${esc(a.ce_que_cela_ne_signifie_pas)}</p>
+          <p><strong>Vérification à faire.</strong> ${esc(a.verification_a_faire)}</p>
+          <p class="ul-alerte-meta">${a.lieu ? `Lieu : ${esc(a.lieu)} · ` : ''}Établissement${sites.length > 1 ? 's' : ''} concerné${sites.length > 1 ? 's' : ''} :
+            ${sites.map((s) => esc(s)).join(', ')} · contrôle automatique du ${esc(a.date_controle)}</p>
+        </div>
+      </details>`).join('');
+    return `<div class="ul-alertes">
+      <p class="ul-alertes-intro">Point de vigilance sur le rattachement juridique des établissements —
+        signalé automatiquement, non tranché.</p>${blocs}</div>`;
+  }
+
   function buildDetailHtml(row, mobile = false) {
     const identite = row.identite || null;
     const figures = keyFigures(row);
@@ -732,6 +785,7 @@
 
         <section class="detail-section">
           <h3>Implantation en France</h3>
+          ${renderAlertesUL(row)}
           <p>${row.implantationsCount != null ? `${esc(formatCount(row.implantationsCount, `établissement${row.implantationsCount > 1 ? 's' : ''} référencé${row.implantationsCount > 1 ? 's' : ''}`))}` : 'Implantations non disponibles.'}</p>
           ${row.regionsCount != null ? `<p>${esc(formatCount(row.regionsCount, `région${row.regionsCount > 1 ? 's' : ''} représentée${row.regionsCount > 1 ? 's' : ''}`))}</p>` : ''}
           <a href="index.html?entreprise=${encodeURIComponent(row.slug || row.id)}" class="detail-map-link">Voir les implantations sur la carte →</a>

@@ -1,0 +1,63 @@
+name: Contrôle qualité des données
+
+on:
+  push:
+    paths:
+      - 'data/**'
+      - 'controle_qualite.py'
+      - '.github/workflows/controle-qualite.yml'
+  pull_request:
+    paths:
+      - 'data/**'
+      - 'controle_qualite.py'
+  workflow_dispatch:
+
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Le script n'utilise que la bibliothèque standard : aucune installation.
+      - name: Exécuter le contrôle qualité
+        id: controle
+        run: |
+          python3 controle_qualite.py | tee rapport.txt
+
+      # Les alertes d'unité légale sont regénérées à chaque exécution : si le
+      # fichier versionné diffère, c'est qu'il n'a pas été mis à jour après une
+      # modification des données.
+      - name: Vérifier que les alertes versionnées sont à jour
+        run: |
+          if [ -n "$(git status --porcelain data/qualite/)" ]; then
+            echo "::warning::Le fichier data/qualite/alertes_unite_legale.csv n'est pas à jour."
+            echo "Relancez « python3 controle_qualite.py » en local et poussez le fichier régénéré."
+            git --no-pager diff --stat data/qualite/
+          else
+            echo "Alertes d'unité légale à jour."
+          fi
+
+      - name: Résumé lisible dans l'onglet Actions
+        if: always()
+        run: |
+          {
+            echo "## Contrôle qualité des données"
+            echo ""
+            echo '```'
+            cat rapport.txt 2>/dev/null || echo "Le script s'est interrompu avant de produire un rapport."
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Conserver le rapport
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-controle-qualite
+          path: |
+            rapport.txt
+            data/qualite/alertes_unite_legale.csv
+          retention-days: 30

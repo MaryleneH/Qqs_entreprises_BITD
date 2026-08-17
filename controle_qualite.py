@@ -3,7 +3,8 @@
 Rejoue les contrôles internes de l'audit du 13/08/2026. Code de sortie 0 si tout est vert.
 Usage : python3 controle_qualite.py   (à la racine du dépôt)
 """
-import csv, io, re, sys
+import csv
+import io, io, re, sys
 from collections import Counter, defaultdict
 
 def load(path):
@@ -38,6 +39,56 @@ def in_bounds(lat, lng):
 
 errors, warns = [], []
 ent = load('data/entreprises.csv'); eta = load('data/etablissements.csv')
+
+# 0. Hygiène des fichiers CSV : en-têtes et encodage (avant tout accès par clé)
+# --------------------------------------------------
+# Un espace parasite dans un nom de colonne suffit à casser silencieusement toute
+# lecture par clé (cas rencontré : «  site_id » au lieu de « site_id »). Ces
+# contrôles portent sur TOUS les CSV du dépôt, y compris ceux ajoutés plus tard.
+import glob
+import unicodedata
+
+INVISIBLES = {'\u00a0': 'espace insécable', '\u200b': 'espace de largeur nulle',
+              '\u200e': 'marque gauche-à-droite', '\ufeff': 'BOM en milieu de ligne',
+              '\t': 'tabulation'}
+
+for chemin in sorted(glob.glob('data/**/*.csv', recursive=True) + glob.glob('sources/**/*.csv', recursive=True)):
+    with open(chemin, 'rb') as f:
+        brut = f.read()
+    if not brut.strip():
+        errors.append(f"{chemin} : fichier vide")
+        continue
+    texte = brut.decode('utf-8-sig', errors='replace')
+    if '\ufffd' in texte:
+        errors.append(f"{chemin} : caractères non décodables — le fichier n'est pas en UTF-8")
+        continue
+    entete = texte.split('\n')[0].rstrip('\r')
+    sep = ';' if entete.count(';') > entete.count(',') else ','
+    colonnes = next(csv.reader([entete], delimiter=sep))
+    for c in colonnes:
+        if c != c.strip():
+            errors.append(f"{chemin} : nom de colonne « {c} » entouré d'espaces — "
+                          f"toute lecture par clé échouera silencieusement")
+        for car, libelle in INVISIBLES.items():
+            if car in c:
+                errors.append(f"{chemin} : nom de colonne « {c.strip()} » contient un caractère invisible ({libelle})")
+        if not c.strip():
+            errors.append(f"{chemin} : colonne sans nom")
+    doublons = [c for c in set(colonnes) if colonnes.count(c) > 1]
+    if doublons:
+        errors.append(f"{chemin} : colonnes en double {sorted(doublons)}")
+    # largeur constante des lignes
+    lignes = list(csv.reader(io.StringIO(texte), delimiter=sep))
+    mauvaises = [i + 1 for i, l in enumerate(lignes[1:], start=1) if l and len(l) != len(colonnes)]
+    if mauvaises:
+        errors.append(f"{chemin} : {len(mauvaises)} ligne(s) au nombre de colonnes incorrect "
+                      f"(première : ligne {mauvaises[0] + 1}) — souvent une virgule non protégée")
+
+# Un en-tête corrompu rend tous les contrôles suivants ininterprétables : on s'arrête ici.
+if errors:
+    print("Contrôle qualité — arrêt : structure de fichier invalide")
+    for e in errors: print(f"  [ERREUR] {e}")
+    sys.exit(1)
 
 # 1. Références et unicité
 ids = {e['id'] for e in ent}
@@ -112,6 +163,8 @@ for o in orph: errors.append(f"provenance: site_id inconnu {o}")
 # rattachée à un groupe industriel créé en 1988. Trois signaux la trahissaient.
 
 # a) Familles d'activité incompatibles avec un site industriel ou un siège de groupe BITD.
+DATE_CONTROLE = '2026-08-14'
+alertes_ul = []
 APE_A_RISQUE = {
     '64.19': 'autres intermédiations monétaires', '64.30': 'fonds de placement',
     '64.91': 'crédit-bail', '64.92': 'autre distribution de crédit', '64.99': 'autres services financiers',
@@ -129,9 +182,39 @@ for r in eta:
         continue
     famille = ape[:5]
     if famille in APE_A_RISQUE:
+        libelle = APE_A_RISQUE[famille]
         warns.append(
-            f"{r['entreprise']} ({r['site_id']}) : APE SIRENE {ape} — {APE_A_RISQUE[famille]} — "
+            f"{r['entreprise']} ({r['site_id']}) : APE SIRENE {ape} — {libelle} — "
             f"incompatible avec une activité industrielle ; vérifier qu'il ne s'agit pas d'une société homonyme")
+        siege_ul = r.get('est_siege_unite_legale_sirene') == 'true'
+        lieu = r.get('nom_site') or r.get('ville') or r['site_id']
+        portee = "l'unité légale (siège)" if siege_ul else "cet établissement uniquement"
+        if siege_ul:
+            constat = (f"Le siège de l'unité légale rattachée à cette ligne — {lieu} — est enregistré à l'INSEE "
+                       f"sous l'activité « {libelle} » (code {ape}).")
+            pourquoi = ("L'activité de l'unité légale décrit l'entité juridique de tête. Une classification "
+                        "financière peut être légitime pour une holding, mais elle peut aussi révéler qu'une "
+                        "société homonyme a été rattachée par erreur.")
+            pas_signifier = ("Cela ne signifie pas que le groupe n'est pas industriel : beaucoup de têtes de "
+                             "groupe cotées ou familiales sont classées en gestion de fonds ou en holding, "
+                             "leurs filiales portant les codes industriels.")
+            verif = ("Comparer la date de création, l'effectif et l'adresse de l'unité légale avec ceux du "
+                     "groupe industriel connu ; vérifier que les filiales industrielles lui sont bien rattachées.")
+        else:
+            constat = (f"L'établissement de {lieu} porte à l'INSEE l'activité « {libelle} » (code {ape}), "
+                       f"alors que la fiche le décrit comme un site de type « {r.get('type_site') or 'non précisé'} ».")
+            pourquoi = ("Dans SIRENE, chaque établissement possède son propre code d'activité, distinct de celui "
+                        "de l'entreprise. Un écart peut désigner un site annexe (centre de formation, entité "
+                        "immobilière) plutôt qu'un site industriel — ou un mauvais rapprochement de SIRET.")
+            pas_signifier = ("Cela ne dit rien de l'activité de l'entreprise elle-même, qui conserve son propre "
+                             "code d'activité industriel : seul cet établissement est concerné.")
+            verif = (f"Ouvrir la fiche SIRET {r.get('siret') or ''} et vérifier ce que le site abrite réellement, "
+                     f"puis décider s'il relève du périmètre cartographié.")
+        alertes_ul.append({
+            'site_id': r['site_id'], 'entreprise_id': r['entreprise_id'], 'entreprise': r['entreprise'],
+            'type': 'activite_non_industrielle', 'valeur': f"APE {ape} — {libelle}",
+            'portee': portee, 'lieu': lieu,
+            'constat': constat, 'pourquoi': pourquoi, 'pas_signifier': pas_signifier, 'verification': verif})
 
 # b) SIREN récent sur un siège : les numéros commençant par 9 sont attribués
 #    aux immatriculations les plus récentes, improbable pour un groupe historique.
@@ -141,6 +224,16 @@ for r in eta:
         warns.append(
             f"{r['entreprise']} ({r['site_id']}) : SIREN {siren} correspond à une immatriculation récente "
             f"alors que la ligne est un siège ; vérifier l'ancienneté de l'unité légale")
+        alertes_ul.append({
+            'site_id': r['site_id'], 'entreprise_id': r['entreprise_id'], 'entreprise': r['entreprise'],
+            'type': 'immatriculation_recente', 'valeur': f"SIREN {siren}",
+            'portee': "l'unité légale (siège)", 'lieu': r.get('nom_site') or r.get('ville') or r['site_id'],
+            'constat': "Le numéro SIREN rattaché à ce siège appartient aux tranches les plus récemment attribuées.",
+            'pourquoi': "Un groupe industriel ancien possède normalement une unité légale de tête immatriculée "
+                        "de longue date ; un numéro récent peut désigner une société homonyme créée depuis peu.",
+            'pas_signifier': "Une immatriculation récente peut être parfaitement légitime : réorganisation "
+                             "juridique, création d'une nouvelle holding, filialisation d'activités.",
+            'verification': "Comparer la date de création de l'unité légale avec l'ancienneté du groupe."})
 
 # c) Siège d'unité légale dont la raison sociale ne partage aucun mot avec le nom du panel.
 MOTS_VIDES = {'sas', 'sa', 'sarl', 'sasu', 'group', 'groupe', 'france', 'holding', 'soc', 'societe', 'société', 'de', 'du', 'des', 'la', 'le', 'les', 'et'}
@@ -155,6 +248,33 @@ for r in eta:
         warns.append(
             f"{r['entreprise']} ({r['site_id']}) : raison sociale SIRENE « {rs} » sans mot commun "
             f"avec le nom du panel ; vérifier le rattachement")
+        alertes_ul.append({
+            'site_id': r['site_id'], 'entreprise_id': r['entreprise_id'], 'entreprise': r['entreprise'],
+            'type': 'raison_sociale_divergente', 'valeur': f"SIRENE : {rs}",
+            'portee': "l'unité légale (siège)", 'lieu': r.get('nom_site') or r.get('ville') or r['site_id'],
+            'constat': f"La raison sociale enregistrée à l'INSEE (« {rs} ») ne partage aucun mot avec le nom "
+                       f"retenu dans le panel.",
+            'pourquoi': "Le rattachement d'un établissement à une entreprise repose sur son unité légale ; "
+                        "des noms totalement différents peuvent signaler une erreur d'appariement.",
+            'pas_signifier': "Beaucoup de filiales portent légitimement un nom sans rapport avec leur maison mère.",
+            'verification': "Vérifier le lien capitalistique entre l'unité légale et le groupe du panel."})
+
+# 6ter. Export des alertes d'unité légale pour affichage dans le dashboard
+# ------------------------------------------------------------------------
+# Le fichier produit alimente la fiche entreprise : une alerte qui ne vit que
+# dans la console n'est lue par personne.
+import os
+os.makedirs('data/qualite', exist_ok=True)
+with open('data/qualite/alertes_unite_legale.csv', 'w', encoding='utf-8-sig', newline='') as f:
+    w = csv.writer(f, delimiter=';', lineterminator='\r\n')
+    w.writerow(['site_id', 'entreprise_id', 'entreprise', 'type_alerte', 'valeur_constatee',
+                'portee', 'lieu', 'ce_qui_est_constate', 'pourquoi_cela_alerte',
+                'ce_que_cela_ne_signifie_pas', 'verification_a_faire', 'date_controle'])
+    for a in sorted(alertes_ul, key=lambda x: (int(x['entreprise_id']), x['site_id'])):
+        w.writerow([a['site_id'], a['entreprise_id'], a['entreprise'], a['type'], a['valeur'],
+                    a.get('portee', ''), a.get('lieu', ''),
+                    a['constat'], a['pourquoi'], a['pas_signifier'], a['verification'], DATE_CONTROLE])
+print(f"  → data/qualite/alertes_unite_legale.csv : {len(alertes_ul)} alerte(s) d'unité légale")
 
 # 7. Cercle 1 — International, fiches groupes et catalogue de sources
 c1_ent = load('data/cercle1/cercle1_entreprises.csv')
