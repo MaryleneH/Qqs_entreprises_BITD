@@ -17,7 +17,7 @@ format:
 <div id="methodo-page" class="page-container">
   <div class="methodo-container">
     <h1 class="page-title">Méthodologie &amp; sources</h1>
-    <p class="page-subtitle">Comment sont construites, vérifiées et documentées les données du dashboard BITD France</p>
+    <p class="page-subtitle">Comment sont construites, vérifiées et documentées les données de ce dashboard</p>
 
     <p class="methodo-lead">
       Le dashboard repose sur des sources publiques : publications officielles des entreprises, rapports financiers,
