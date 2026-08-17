@@ -1,4 +1,4 @@
-ommit -m---
+---
 pagetitle: "Entreprises"
 page-layout: full
 format:
