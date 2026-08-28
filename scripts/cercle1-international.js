@@ -125,6 +125,7 @@
     map = L.map('c1x-map', { worldCopyJump: true, scrollWheelZoom: false }).setView([28, 10], 2);
     L.maplibreGL({
       style: 'https://tiles.openfreemap.org/styles/positron',
+      interactive: false,
       attribution: '&copy; <a href="https://www.openfreemap.org/" target="_blank" rel="noopener noreferrer">OpenFreeMap</a> ' +
         '&copy; <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener noreferrer">OpenMapTiles</a> ' +
         '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>'

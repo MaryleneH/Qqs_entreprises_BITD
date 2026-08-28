@@ -101,5 +101,5 @@ format:
 
 </div>
 
-<script src="scripts/cercle1-international.js?v=20260814e" defer></script>
+<script src="scripts/cercle1-international.js?v=20260828a" defer></script>
 ```
